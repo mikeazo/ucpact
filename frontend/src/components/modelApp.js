@@ -110,7 +110,7 @@ function ModelApp(props) {
             delete reduxData["model"];
             
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/return/" + modelSelector.name;
@@ -154,7 +154,7 @@ function ModelApp(props) {
         if (id) {
             // Load existing model
         let token = "none";
-        if (process.env.NODE_ENV !== 'test') {
+        if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
             token = auth.user?.access_token;
         }
 	    let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + id;
@@ -348,7 +348,7 @@ function ModelApp(props) {
             
             // Creates the POST message after the redux store is initially set
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + modelName;
@@ -396,7 +396,7 @@ function ModelApp(props) {
             // Updates the Backend through the PUT method on a redux store change
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + modelPath;
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             axios({
@@ -439,7 +439,7 @@ function ModelApp(props) {
             if (subfunc.idealFunctionalityId) {
                 // Make api call
                 let token = "none";
-                if (process.env.NODE_ENV !== 'test') {
+                if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                     token = auth.user?.access_token;
                 }
                 let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/idealFunctionalities/" + subfunc.idealFunctionalityId + "/messages";
@@ -480,7 +480,7 @@ function ModelApp(props) {
                 if (paramInter.idOfInterface) {
                     // Make api call
                     let token = "none";
-                    if (process.env.NODE_ENV !== 'test') {
+                    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                         token = auth.user?.access_token;
                     }
                     let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/compInterfaces/" + paramInter.idOfInterface + "/messages";
@@ -513,7 +513,7 @@ function ModelApp(props) {
 
     const refreshModelStatus = () => {
         let token = "none";
-        if (process.env.NODE_ENV !== 'test') {
+        if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
             token = auth.user?.access_token;
         }
         let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + id;
@@ -537,7 +537,7 @@ function ModelApp(props) {
                     setIsDone(false)
                     setModelIsActive(false)
                     let token = "none";
-                    if (process.env.NODE_ENV !== 'test') {
+                    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                         token = auth.user?.access_token;
                     }
                     let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/return/" + res["name"];
@@ -624,7 +624,7 @@ function ModelApp(props) {
                 let reduxData = {...reduxSelector}
                 delete reduxData["model"];
                 let token = "none";
-                if (process.env.NODE_ENV !== 'test') {
+                if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                     token = auth.user?.access_token;
                 }
                 let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/return/" + modelSelector.name;
@@ -666,7 +666,7 @@ function ModelApp(props) {
             let reduxData = {...reduxSelector}
             delete reduxData["model"];
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/return/" + modelSelector.name;
@@ -703,7 +703,7 @@ function ModelApp(props) {
         let urlPath = process.env.REACT_APP_SERVER_PREFIX;
         let token = "none";
         let newModelName = modelNameRef.current.value
-        if (process.env.NODE_ENV !== 'test') {
+        if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
             token = auth.user?.access_token;
         }
         var fileDoesNotExist = true
@@ -767,7 +767,7 @@ function ModelApp(props) {
                     // Updates the Backend through the PUT method on a redux store change
 
                     let token = "none";
-                    if (process.env.NODE_ENV !== 'test') {
+                    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                         token = auth.user?.access_token;
                     }
                     let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + modelPath;

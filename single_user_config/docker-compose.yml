@@ -1,0 +1,113 @@
+services:
+    frontend:
+        build:
+            args:
+                - ENVFILES_DIR=single_user_envfiles
+            context: ../frontend
+            dockerfile: ../frontend.Dockerfile
+        profiles:
+            - default
+        ports:
+            - 80:80
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../nginx.conf
+              target: /etc/nginx/conf.d/default.conf
+        container_name: frontend
+    frontend-dev:
+        build:
+            args:
+                - ENVFILES_DIR=single_user_envfiles
+            context: ../frontend
+            dockerfile: ../frontend-dev.Dockerfile
+        profiles:
+            - dev
+        ports:
+            - 80:3000
+            - 3000:3000
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../frontend/public
+              target: /frontend-build/public
+            - type: bind
+              source: ../frontend/src
+              target: /frontend-build/src
+        container_name: frontend-dev
+    frontend-tests:
+        build:
+            context: ../frontend
+            dockerfile: ../frontend-tests.Dockerfile
+        profiles:
+            - tests
+        ports:
+            - 80:3000
+            - 3000:3000
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../frontend/public
+              target: /frontend-build/public
+            - type: bind
+              source: ../frontend/src
+              target: /frontend-build/src
+        container_name: frontend-tests
+    backend:
+        build:
+            context: ../backend
+            dockerfile: ../backend.Dockerfile
+        profiles:
+            - default
+        environment:
+            MODEL_VERSION: "1.2"
+            BACKEND_AUTH_ENABLED: "false"
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../models
+              target: /app/models
+        container_name: backend
+    backend-dev:
+        build:
+            context: ../backend
+            dockerfile: ../backend.Dockerfile
+        profiles:
+            - dev
+        ports:
+            - 5000:5000
+        environment:
+            MODEL_VERSION: "1.2"
+            BACKEND_AUTH_ENABLED: "false"
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../models
+              target: /app/models
+        container_name: backend-dev
+    backend-tests:
+        build:
+            context: ../backend
+            dockerfile: ../backend-tests.Dockerfile
+        profiles:
+            - pytest
+        environment:
+            MODEL_VERSION: "1.2"
+            TEST_DATA_FN: "/app/tests/testData.json"
+            BACKEND_AUTH_ENABLED: "false"
+        networks:
+            - nginx-network
+        container_name: backend-tests
+volumes:
+    nginx.conf:
+    models:
+    src:
+    public:
+networks:
+    nginx-network:
+        name: nginx-network

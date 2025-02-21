@@ -1,5 +1,6 @@
 # Setup and then serve the backend
 FROM python:3.10
+
 WORKDIR /app
 COPY requirements.txt requirements.txt
 
@@ -16,4 +17,5 @@ COPY reconciliationScript.py reconciliationScript.py
 RUN mkdir models
 
 # Execute the backend using gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "-w", "4", "backend:app"]
+CMD gunicorn --bind 0.0.0.0:5000 -w 4 backend:app
+# CMD ["/bin/export", 'BACKEND_AUTH_ENABLED="${BACKEND_AUTH_ENABLED}" && ', "gunicorn", "--bind", "0.0.0.0:5000", "-w", "4", "backend:app"]

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ReactFlow,
@@ -547,7 +548,7 @@ function ReactFlowBox(props) {
 
   // Name constants for shortening
   const stateNameDnDMaxLength = 28;
-  const stateNameDnDModalMaxLength = 21;
+//   const stateNameDnDModalMaxLength = 21;
   const stateDropDownDisplayLength = 16;
 
   const messageFilterIn = (mes) => {

@@ -1,5 +1,7 @@
 # First we will build the webapp
-FROM node as buildstage
+FROM node AS buildstage
+ARG ENVFILES_DIR="."
+
 WORKDIR /webapp-build
 
 # Copy in the files we need
@@ -8,6 +10,7 @@ COPY src/ src
 COPY scripts/ scripts
 COPY package.json .
 COPY jest.config.js .
+COPY ${ENVFILES_DIR}/.env* .
 
 # Install dependencies
 RUN npm install
@@ -16,7 +19,7 @@ RUN npm install
 #RUN CI=true npm test
 
 # Do the build
-RUN REACT_APP_SERVER_PREFIX='/api/model' REACT_APP_KC_REALM_NAME="UCPACT-Realm" REACT_APP_KC_CLIENT_ID="uc-pact" REACT_APP_KEYCLOAK_PREFIX="http://localhost:8080" REACT_APP_KC_REDIRECT_URL="http://localhost/" npm run build
+RUN npm run build
 
 # Setup Nginx
 FROM nginx

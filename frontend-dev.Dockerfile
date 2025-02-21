@@ -1,5 +1,7 @@
 # First we will build the webapp
-FROM node as buildstage
+FROM node AS buildstage
+ARG ENVFILES_DIR="."
+
 WORKDIR /frontend-build
 
 # Copy in the files we need
@@ -12,6 +14,6 @@ RUN npm install
 # Copy over the other files we need
 COPY ./public ./public
 COPY ./src ./src
-COPY .env .
+COPY ${ENVFILES_DIR}/.env* .
 
 CMD npm start

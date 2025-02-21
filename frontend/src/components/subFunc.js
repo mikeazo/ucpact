@@ -67,7 +67,7 @@ function SubFunc(props) {
         // API call to handle idealFunctionalities
 	let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/idealFunctionalities";
     let token = "none";
-    if (process.env.NODE_ENV !== 'test') {
+    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
         token = auth.user?.access_token;
     }
         axios({
@@ -109,7 +109,7 @@ function SubFunc(props) {
         //URL Path needs to be based off of the subFunc that we are deleting
         if(idealIDOfThisSubFunc !== null){
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/idealFunctionalities/" + idealIDOfThisSubFunc + "/messages";
@@ -164,7 +164,7 @@ function SubFunc(props) {
         if((idealIDOfThisSubFunc !== idealFunctRef.current.props.value.value) && idealIDOfThisSubFunc !== null){
             //URL Path needs to be based off of the subFunc that we are deleting
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/idealFunctionalities/" + idealIDOfThisSubFunc + "/messages";

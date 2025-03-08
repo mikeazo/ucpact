@@ -1,0 +1,11 @@
+*.swp
+env/
+.py*
+__*
+*_log.txt
+single_user_config/*_log.txt
+frontend/node_*
+frontend/*.swp
+backend/env/
+backend/__*
+backend/.py*

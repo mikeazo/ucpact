@@ -6,7 +6,9 @@ from starlette import status
 from flask.testing import FlaskClient
 from flask import Response
 from os import environ
+import re
 from pathlib import Path
+from werkzeug.datastructures import FileStorage
 
 if "TEST_DATA_FN" in environ:
     TEST_DATA_PATH = Path(environ["TEST_DATA_FN"])
@@ -14,6 +16,8 @@ else:
     TEST_DATA_PATH = Path("./tests") / "testdata.json"
     environ["MODEL_VERSION"] = "1.1"
     environ["BACKEND_AUTH_ENABLED"] = "false"
+
+IMPORT_DIR = TEST_DATA_PATH.parent / "imports"
 
 @pytest.fixture(scope="module")
 def client() -> FlaskClient:
@@ -25,6 +29,33 @@ def data() -> dict[str, Any]:
     with open(TEST_DATA_PATH, "rb") as f:
         return json.load(f)
 
+@pytest.fixture(scope="module")
+def model_imports(data):
+    filenames = data["modelsToImport"]["files"]
+    invalid_models = data["modelsToImport"]["filesNegative"]
+    def gen1():
+        for fn in filenames:
+            fp = IMPORT_DIR / fn
+            file = FileStorage(
+                stream=open(fp, mode="rb"),
+                filename=fn,
+                content_type="application/json",
+            )
+            yield file, fn
+    
+    def gen2():
+        files = [d['file'] for d in invalid_models]
+        codes = [d['responseCode'] for d in invalid_models]
+        for fn, resp_code in zip(files, codes):
+            fp = IMPORT_DIR / fn
+            file = FileStorage(
+                stream=open(fp, mode="rb"),
+                filename=fn,
+                content_type="application/json",
+            )
+            yield file, fn, resp_code
+    
+    return gen1, gen2
 
 def get_model(
     client: FlaskClient,
@@ -235,9 +266,10 @@ class TestEndpoints:
         )
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp.json["name"] == model_id
-        assert not resp.json["readOnly"]
+        resp = return_model(client, model_id, data["postData"]["PostTest1"])
+        assert resp.status_code == status.HTTP_200_OK
         resp2 = delete_model(client, id=model_id)
-        assert resp2.status_code == status.HTTP_200_OK
+        assert resp2.status_code == status.HTTP_204_NO_CONTENT
 
     def test_post_model_neg(self, client, data):
         model_id = data["ids"]["models"]["PostTest3"]
@@ -258,6 +290,8 @@ class TestEndpoints:
         )
         assert resp.status_code == status.HTTP_201_CREATED
         assert resp.json["name"] == model_id
+        resp = return_model(client, model_id, data["postData"]["PostTest3"])
+        assert resp.status_code == status.HTTP_200_OK
         resp = create_model(
             client,
             model_id,
@@ -271,9 +305,9 @@ class TestEndpoints:
         resp = delete_model(client, id=model_id, dummy_token="invalid token")
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
         resp = delete_model(client, id=model_id)
-        assert resp.status_code == status.HTTP_200_OK
+        assert resp.status_code == status.HTTP_204_NO_CONTENT
         resp = delete_model(client, id=model_id)
-        assert resp.status_code == status.HTTP_400_BAD_REQUEST
+        assert resp.status_code == status.HTTP_404_NOT_FOUND
         resp = create_model(
             client,
             model_id,
@@ -292,6 +326,124 @@ class TestEndpoints:
             dummy_token="invalid token",
         )
         assert resp.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_import_model_pos(self, client, data, model_imports):
+        """Response json schema:
+
+        response.json: {
+            "model": model_data,
+            "meta": metadata,
+        }
+        model_data: json.load(
+            io.BytesIO(
+                filepath="/models/{model_name}.json"
+            )
+        ) -> full_data["model"]
+        metadata: {
+            "original": {
+                "filepath": original_filepath,
+                "model_name": original_model_name,
+            }, "new": {
+                "filepath": filepath,
+                "model_name": model_name,
+            },
+        }
+        """
+        models_to_delete = set([])
+        for file_data, fn in model_imports[0]():
+            fdata = {fn: file_data}
+            model_id = fn.removesuffix(".json")
+            with client:
+                resp = client.post(
+                    f"/model/import/{fn}",
+                    data=fdata,
+                )
+            print(model_id)
+            assert resp.status_code == status.HTTP_201_CREATED
+            if (
+                resp.json["meta"]["original"]["model_name"]
+                == (resp.json["meta"]["new"]["model_name"])
+            ):
+                assert resp.json["model"]["name"] == model_id
+            else:
+                print(resp.json["meta"]["original"]["filepath"])
+                model_id = resp.json["model"]["name"]
+                assert re.search(
+                    r"_([_0-9hm]{19})$",
+                    model_id,
+                )
+            models_to_delete.add(model_id)
+            resp = get_model(
+                client,
+                model_id,
+                "user1",
+                data["tab_ids"][0],
+            )
+            assert resp.status_code == status.HTTP_200_OK
+            assert resp.json["name"] == model_id
+            assert not resp.json["readOnly"]
+            resp = return_model(client, model_id, resp.json)
+            assert resp.status_code == status.HTTP_200_OK
+        for model_id in list(models_to_delete):
+            resp = delete_model(client, id=model_id)
+            assert resp.status_code == status.HTTP_204_NO_CONTENT
+
+    def test_import_model_neg(self, client, model_imports):
+        with client:
+            file_gen, negative_gen = model_imports
+            for (file_data, fn) in file_gen():
+                fdata = {fn: file_data}
+                resp = client.post(
+                    f"/model/import/{fn}",
+                    data=fdata,
+                    headers={"Authorization": "invalid token"},
+                )
+                assert resp.status_code == status.HTTP_401_UNAUTHORIZED
+            for (file_data, fn, code) in negative_gen():
+                fdata = {fn: file_data}
+                resp = client.post(
+                    f"/model/import/{fn}",
+                    data=fdata,
+                )
+                print(fn)
+                assert resp.status_code == code
+
+    def test_export_model_pos(self, client, data):
+        with client:
+            model_id = data["ids"]["models"]["FullModel1"]
+            resp = client.get(
+                f"/model/export/{model_id}",
+            )
+            assert resp.status_code == status.HTTP_200_OK
+            file_data = resp.data
+            model_data = json.loads(file_data.decode("utf-8"))
+            assert model_data["model"]["name"] == model_id
+
+    def test_export_model_neg(self, client, data):
+        with client:
+            model_ids = [
+                data["ids"]["models"]["FullModel1"],
+                data["ids"]["models"]["CorruptedModel"],
+                "Missing_Model",
+                data["ids"]["models"]["ReadOnlyModel"],
+            ]
+            resp = client.get(
+                f"/model/export/{model_ids[0]}",
+                headers={"Authorization": "invalid token"},
+            )
+            assert resp.status_code == status.HTTP_401_UNAUTHORIZED
+            resp = client.get(
+                f"/model/export/{model_ids[1]}",
+            )
+            assert resp.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+            resp = client.get(
+                f"/model/export/{model_ids[2]}",
+            )
+            assert resp.status_code == status.HTTP_404_NOT_FOUND
+            resp = client.get(
+                f"/model/export/{model_ids[3]}",
+            )
+            assert resp.status_code == status.HTTP_200_OK
 
     def test_put_model_pos(self, client, data):
         model_id = data["ids"]["models"]["PostTest2"]
@@ -320,8 +472,10 @@ class TestEndpoints:
         assert len(resp2.json["interfaces"]["messages"]) == len(
             data["putData"][0]["interfaces"]["messages"]
         )
+        resp = return_model(client, updated_id, data["postData"]["PostTest2"])
+        assert resp.status_code == status.HTTP_200_OK
         resp2 = delete_model(client, id=updated_id)
-        assert resp2.status_code == status.HTTP_200_OK
+        assert resp2.status_code == status.HTTP_204_NO_CONTENT
 
     def test_put_model_neg(self, client, data):
         model_ids = [
@@ -406,10 +560,14 @@ class TestEndpoints:
             data["tab_ids"][0],
         )
         assert resp.status_code == status.HTTP_412_PRECONDITION_FAILED
+        resp = return_model(client, model_ids[0], data["postData"]["PostTest4"])
+        assert resp.status_code == status.HTTP_200_OK
+        resp = return_model(client, model_ids[1], data["postData"]["PostTest5"])
+        assert resp.status_code == status.HTTP_200_OK
         resp = delete_model(client, id=model_ids[0])
-        assert resp.status_code == status.HTTP_200_OK
+        assert resp.status_code == status.HTTP_204_NO_CONTENT
         resp = delete_model(client, id=model_ids[1])
-        assert resp.status_code == status.HTTP_200_OK
+        assert resp.status_code == status.HTTP_204_NO_CONTENT
 
     def test_return_pos(self, client, data):
         model_ids = [
@@ -440,9 +598,7 @@ class TestEndpoints:
                 },
             )
         assert resp2.status_code == status.HTTP_200_OK
-        assert resp2.json["message"].startswith(
-            str(data["return_all_count"][0]["user1"])
-        )
+        assert resp2.json["count"] >= data["return_all_count"][0]["user1"]
         resp2b = refresh_model(
             client,
             model_ids[2],
@@ -460,9 +616,7 @@ class TestEndpoints:
                 },
             )
         assert resp3.status_code == status.HTTP_200_OK
-        assert resp3.json["message"].startswith(
-            str(data["return_all_count"][1]["user1"])
-        )
+        assert resp3.json["count"] >= data["return_all_count"][1]["user1"]
         with client:
             resp4 = client.get(
                 "/model/return",
@@ -472,9 +626,7 @@ class TestEndpoints:
                 },
             )
         assert resp4.status_code == status.HTTP_200_OK
-        assert resp4.json["message"].startswith(
-            str(data["return_all_count"][0]["user2"])
-        )
+        assert resp4.json["count"] >= data["return_all_count"][0]["user2"]
 
     def test_return_neg(self, client, data):
         model_ids1 = [
@@ -503,6 +655,8 @@ class TestEndpoints:
         data_readonly = responses[0].json.copy()
         data_readonly["readOnly"] = True
         resp = return_model(client, model_ids1[0], data_readonly)
+        assert resp.status_code == status.HTTP_403_FORBIDDEN
+        resp = delete_model(client, model_ids1[0])
         assert resp.status_code == status.HTTP_403_FORBIDDEN
         resp = return_model(client, model_ids2[1], responses[0].json)
         assert resp.status_code == status.HTTP_404_NOT_FOUND

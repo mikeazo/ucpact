@@ -9,13 +9,15 @@ import { useNavigate } from 'react-router';
 import { ReactNotifications } from 'react-notifications-component';
 import { Store } from "react-notifications-component";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from "react-oidc-context";
+import { FileUploader } from "react-drag-drop-files";
 import ModelList from './modelList';
 
 function LandingPage(props) {
 
     const [apiData, setApiData] = useState();
+    const [file, setFile] = useState(null);
     const [newModelName, setNewModelName] = useState("");
     const navigate = useNavigate();
     const auth = useAuth();
@@ -26,10 +28,14 @@ function LandingPage(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [showImport, setShowImport] = useState(false);
+    const handleCloseImport = () => setShowImport(false);
+    const handleShowImport = () => setShowImport(true);
+
     useEffect(() => {
 	let urlPath = process.env.REACT_APP_SERVER_PREFIX;
     let token = "none";
-    if (process.env.NODE_ENV !== 'test') {
+    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
         token = auth.user?.access_token;
     }
         axios({
@@ -142,11 +148,41 @@ function LandingPage(props) {
         
         return exists
     }
+    const downloadModel = (model) => {
+        let urlPath = `${process.env.REACT_APP_SERVER_PREFIX}/export/${model}`;
+        let token = "none";
+        if (process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE') {
+            token = auth.user?.access_token;
+        }
+        axios({
+            method: "GET",
+            url: urlPath,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        .then((response) => {
+            const blob = new Blob([JSON.stringify(response.data)], {type: "application/json"});
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = model + ".json";
+            link.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch((err) => {
+            if (err.response) {
+                console.log(err.response);
+                console.log(err.response.status);
+                console.log(err.response.headers);
+            }
+        })
+    }
     const deleteModel = (model) => {
         if (window.confirm("Are you sure you want to delete model \"" + model + "\"?")) {
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + model;
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             axios({
@@ -157,25 +193,81 @@ function LandingPage(props) {
                 }
             })
             .then((response) => {
-                let urlPath2 = process.env.REACT_APP_SERVER_PREFIX;
-                axios({
-                    method: "GET",
-                    url: urlPath2,
-                    headers: {
-                      Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
-                    }
-                })
-                .then((response) => {
-                    const res2 = response.data;
-                    setApiData(res2);
-                })
-                .catch((err) => {
-                    if (err.response) {
-                        console.log(err.response);
-                        console.log(err.response.status);
-                        console.log(err.response.headers);
-                    }
-                });
+                if (response.status === 204) {
+                    let urlPath2 = process.env.REACT_APP_SERVER_PREFIX;
+                    axios({
+                        method: "GET",
+                        url: urlPath2,
+                        headers: {
+                          Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
+                        }
+                    })
+                    .then((response) => {
+                        const res2 = response.data;
+                        setApiData(res2);
+                    })
+                    .catch((err) => {
+                        if (err.response) {
+                            console.log(err.response);
+                            console.log(err.response.status);
+                            console.log(err.response.headers);
+                        }
+                    });
+                }
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 403) {
+                    let notiMessage = `Warning: ${model} is in ReadOnly mode; cannot delete!`;
+                    window.alert(notiMessage);
+                } else if (err.response) {
+                    console.log(err.response);
+                    console.log(err.response.status);
+                    console.log(err.response.headers);
+                }
+            });
+        }
+    }
+    const handleFile = (newFile) => setFile(newFile);
+    const saveImportInfo = (e) => {
+        e.preventDefault();
+        let urlPath = `${process.env.REACT_APP_SERVER_PREFIX}/import/${file.name}`;
+        let token = "none";
+        if (process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE') {
+            token = auth.user?.access_token;
+        }
+        var bodyFormData = new FormData();
+        bodyFormData.append(file.name, file);
+        axios({
+            method: "POST",
+            url: urlPath,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
+                "Content-type": "multipart/form-data",
+            },
+            data: bodyFormData
+        })
+        .then((response) => {
+            if (response.status === 201) {
+                const res = response.data;
+                const metadata = res["meta"];
+                if (metadata.original.model_name !== metadata.new.model_name) {
+                    let notiMessage = `Timestamp (in UTC) added/updated! New name: ${metadata.new.model_name}`;
+                    window.alert(notiMessage)
+                }
+            }
+            setShowImport(false);
+            let urlPath2 = process.env.REACT_APP_SERVER_PREFIX;
+            axios({
+                method: "GET",
+                url: urlPath2,
+                headers: {
+                    Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
+                }
+            })
+            .then((response) => {
+                const res2 = response.data;
+                setApiData(res2);
             })
             .catch((err) => {
                 if (err.response) {
@@ -184,7 +276,40 @@ function LandingPage(props) {
                     console.log(err.response.headers);
                 }
             });
-        }
+        })
+        .catch((err) => {
+            let notiType = 'danger';
+            let notification = {
+                title: "",
+                message: "",
+                type: notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            };
+            if (err.response && err.response.status === 500) {
+                // Corrupted JSON file
+                notification.message = "Message: Can't import model; JSON file is corrupted!";
+                notification.title = file.name +" Corrupted JSON File";
+            } else if (err.response && err.response.status === 400) {
+                // Invalid model name
+                notification.message = "Message: Model could not be imported due to an invalid name!";
+                notification.title = file.name +" Invalid Model Name";
+            }
+            if (err.response) {
+                console.log(err.response);
+                console.log(err.response.status);
+                console.log(err.response.headers);
+                if (notification.message && notification.title) {
+                    Store.addNotification(notification);
+                }
+            }
+        })
     }
     const hideTabId = (model) => {
         if (!model['readOnly']) {
@@ -223,6 +348,12 @@ function LandingPage(props) {
                         <input type='text' className='new-model-name form-control form-control-15' 
                             placeholder='New Model Name' defaultValue={newModelName} onChange={(e) => setNewModelName(e.target.value)}/>
                         <button className='btn btn-primary' onClick={modelNameCheck}>New Model...</button>
+                        <button
+                            className='btn btn-primary'
+                            onClick={handleShowImport}
+                            style={{marginTop: '5px'}}
+                        >Import Model JSON...
+                        </button>
                     </div>
                     <div className='inner-item list'><button className='btn btn-primary' onClick={handleShow}>All Models...</button></div>
                     <div className='inner-item list'>
@@ -231,12 +362,27 @@ function LandingPage(props) {
                         modelData.map(model => (
                             <div key={model['name']}>
                                 <FontAwesomeIcon icon={faTrash} className='interfaceDel' title="Delete Model" onClick={() => deleteModel(model['name'])} />
+                                <FontAwesomeIcon icon={faFileArrowDown} className='interfaceDel' title='Download Model' onClick={() => downloadModel(model['name'])} />
                                 {modelLink(model)}
                             </div>
-                        )))}  
+                        )))}
                     </div>
                 </div>
             </div>
+            <Modal show={showImport} onHide={handleCloseImport} animation={false} data-testid="import-modal">
+                <Modal.Header>
+                    <Modal.Title>Import a Model JSON File</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <FileUploader onDrop={handleFile} handleChange={handleFile} name="file" types={['json']} label="Add UC Model JSON File" multiple={false} uploadedLabel="Upload Successful! Hit Save Changes to complete the Import!"></FileUploader>
+                    <br></br>
+                    {file ? <h3> {file.name} is currently loaded</h3> : <h3> No file is loaded </h3>}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={saveImportInfo}>Save Changes</Button>
+                    <Button variant="secondary" onClick={handleCloseImport}>Close</Button>
+                </Modal.Footer>
+            </Modal>
             <Modal show={show} onHide={handleClose} animation={false} className="modelListModal">
                 <Modal.Header> 
                     <Modal.Title>All Models</Modal.Title>

@@ -56,6 +56,10 @@
     text-align: center;
 }
 
-.nameHeader:hover, .statusHeader:hover, .lastModifiedHeader:hover, .trashcan:hover {
+.modelDownload {
+    text-align: center;
+}
+
+.nameHeader:hover, .statusHeader:hover, .lastModifiedHeader:hover, .trashcan:hover, .downarrow:hover {
     cursor: pointer;
 }

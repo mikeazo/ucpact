@@ -138,7 +138,7 @@ function Party(props) {
         subfuncSelector.subfunctionalities.forEach((subfunc) => {
             if (subfunc.idealFunctionalityId) {
                 let token = "none";
-                if (process.env.NODE_ENV !== 'test') {
+                if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                     token = auth.user?.access_token;
                 }
                 // Make api call
@@ -206,7 +206,7 @@ function Party(props) {
                 if (paramInter.idOfInterface) {
                     // Make api call
                     let token = "none";
-                    if (process.env.NODE_ENV !== 'test') {
+                    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                         token = auth.user?.access_token;
                     }
                     let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/compInterfaces/" + paramInter.idOfInterface + "/messages";

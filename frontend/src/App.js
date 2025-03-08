@@ -26,7 +26,7 @@ function App(props) {
     if (auth.isAuthenticated) {
       let urlPath = process.env.REACT_APP_SERVER_PREFIX + '/return';
       let token = "none";
-      if (process.env.NODE_ENV !== 'test') {
+      if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
           token = auth.user?.access_token;
       }
       axios({
@@ -56,7 +56,7 @@ function App(props) {
       auth.signoutRedirect();
     }
   }
-  if (process.env.NODE_ENV !== 'test') {
+  if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
     switch (auth.activeNavigator) {
       case "signinSilent":
         return <div>Signing you in ...</div>;
@@ -74,7 +74,7 @@ function App(props) {
     }
   }
   window.addEventListener('storage', () => {
-    if (process.env.NODE_ENV !== 'test' && auth.isAuthenticated) {
+    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE') && auth.isAuthenticated) {
       let flag = true;
       for (let i = 0; i < localStorage.length; i++) {
         if (localStorage.key(i).startsWith('oidc.user:')) {
@@ -91,13 +91,13 @@ function App(props) {
   window.addEventListener('pagehide', (event) => {
     event.preventDefault();
 
-    if ((process.env.NODE_ENV === 'test' || auth.isAuthenticated) && !modelSelector.readOnly) {
+    if (((process.env.NODE_ENV === 'test' || process.env.REACT_APP_AUTH_DISABLED === 'TRUE') || auth.isAuthenticated) && !modelSelector.readOnly) {
       changeModelReadOnlyDispatch("");
       
       let reduxData = {...reduxSelector}
       delete reduxData["model"];
       let token = "none";
-      if (process.env.NODE_ENV !== 'test') {
+      if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
           token = auth.user?.access_token;
       }
       let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/return/" + modelSelector.name;
@@ -123,10 +123,10 @@ function App(props) {
       });
     }
   });
-  if (process.env.NODE_ENV !== 'test' && auth.error) {
+  if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE') && auth.error) {
     return <div>Oops... Auth error {auth.error.message}</div>;
   }
-  if (process.env.NODE_ENV === 'test' || auth.isAuthenticated) {
+  if ((process.env.NODE_ENV === 'test' || process.env.REACT_APP_AUTH_DISABLED === 'TRUE') || auth.isAuthenticated) {
     return (
       <div>
         <BrowserRouter>
@@ -144,12 +144,12 @@ function App(props) {
         <div className='modelSettings'>
             <FontAwesomeIcon data-testid="modelSettingsBtn" className='modelSettingsBtn' icon={faGear} size="2x" onClick={handleShow}/>
         </div>}
-        <div className='logout'>
-            <FontAwesomeIcon className='logoutBtn' title={"Logout"} icon={faRightFromBracket} size="2x"onClick={process.env.NODE_ENV !== 'test' ? handleLogout : () => {}}/>
-        </div>
+        {(process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE') && <div className='logout'>
+            <FontAwesomeIcon className='logoutBtn' title={"Logout"} icon={faRightFromBracket} size="2x" onClick={handleLogout}/>
+        </div>}
       </div>
     );
-  } else if (process.env.NODE_ENV !== 'test') {
+  } else if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
     auth.signinRedirect();
   } else {
     return (

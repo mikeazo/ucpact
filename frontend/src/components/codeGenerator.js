@@ -48,7 +48,7 @@ function CodeGenerator(props) {
   useEffect(() => {
     let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/idealFunctionalities";
     let token = "none";
-    if (process.env.NODE_ENV !== 'test') {
+    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
         token = auth.user?.access_token;
     }
         axios({
@@ -70,6 +70,11 @@ function CodeGenerator(props) {
             }
         });
   }, [simSelector]);
+
+  useEffect(() => {
+    // refresh editor whenever a new section might need to be rendered
+    editorRef.current.editor.renderer.updateFull();
+  }, [partySelector, subfuncSelector, simSelector]);
 
   const copyCode = (code) => {
     navigator.clipboard.writeText(code);
@@ -208,6 +213,10 @@ function CodeGenerator(props) {
     });
 
     return finalString;
+  }
+
+  const genTransitionNameComment = (transition, preSpaces) => {
+    return transition.name ? `${preSpaces}(* Transition Name: ${transition.name} *) \r\n` : "";
   }
 
   // generate the code for the Ideal Functionality
@@ -361,7 +370,10 @@ function CodeGenerator(props) {
               })
             }
 
+            let nameComment = genTransitionNameComment(transition, "           ");
+
             finalString += ( 
+              nameComment +
               "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
               "           and transition " + toState           
             );
@@ -497,8 +509,11 @@ function CodeGenerator(props) {
             })
           }
 
+          let nameComment = genTransitionNameComment(thisTransition, "          ");
+
           finalString += ( 
             "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+            nameComment +
             "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
             "          and transition " + toState           
           );
@@ -706,8 +721,11 @@ function CodeGenerator(props) {
                   }
                 })
               }
+
+              let nameComment = genTransitionNameComment(transition, "           ");
   
               finalString += ( 
+                nameComment +
                 "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
                 "           and transition " + toState           
               );
@@ -842,9 +860,12 @@ function CodeGenerator(props) {
                 }
               })
             }
+
+            let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
               "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+              nameComment +
               "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
               "          and transition " + toState           
             );
@@ -1113,7 +1134,10 @@ function CodeGenerator(props) {
               })
             }
 
+            let nameComment = genTransitionNameComment(transition, "           ");
+
             finalString += ( 
+              nameComment +
               "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
               "           and transition " + toState           
             );
@@ -1299,8 +1323,11 @@ function CodeGenerator(props) {
             })
           }
 
+          let nameComment = genTransitionNameComment(thisTransition, "          ");
+
           finalString += ( 
             "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+            nameComment +
             "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
             "          and transition " + toState           
           );
@@ -1557,8 +1584,11 @@ function CodeGenerator(props) {
                   }
                 })
               }
+
+              let nameComment = genTransitionNameComment(transition, "           ");
   
               finalString += ( 
+                nameComment +
                 "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
                 "           and transition " + toState           
               );
@@ -1734,9 +1764,12 @@ function CodeGenerator(props) {
                 }
               })
             }
+
+            let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
               "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+              nameComment +
               "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
               "          and transition " + toState           
             );
@@ -2038,8 +2071,11 @@ function CodeGenerator(props) {
                   }
                 })
               }
+
+              let nameComment = genTransitionNameComment(transition, "             ");
   
               finalString += ( 
+                nameComment +
                 "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
                 "             and transition " + toState           
               );
@@ -2220,16 +2256,21 @@ function CodeGenerator(props) {
                 }
               })
             }
+
+            let nameComment = genTransitionNameComment(thisTransition, "            ");
+
             if (subFuncMessages.find(element => element.id === currentInMessage) || 
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString += (
                 "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
+                nameComment +
                 "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
                 "            and transition " + toState
               );
             } else {
               finalString += (
                 "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+                nameComment +
                 "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
                 "            and transition " + toState
               );
@@ -2486,8 +2527,11 @@ function CodeGenerator(props) {
                     }
                   })
                 }
+
+                let nameComment = genTransitionNameComment(transition, "             ");
     
                 finalString += ( 
+                  nameComment +
                   "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
                   "             and transition " + toState           
                 );
@@ -2668,16 +2712,21 @@ function CodeGenerator(props) {
                   }
                 })
               }
+
+              let nameComment = genTransitionNameComment(thisTransition, "            ");
+
               if (subFuncMessages.find(element => element.id === currentInMessage) || 
                   (paramInterMessages.find(element => element.id === currentInMessage))) {
                 finalString += (
                   "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
+                  nameComment +
                   "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
                   "            and transition " + toState
                 );
               } else {
                 finalString += (
                   "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+                  nameComment +
                   "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
                   "            and transition " + toState
                 );
@@ -2783,11 +2832,17 @@ function CodeGenerator(props) {
   // the value of this function will be returned as the value to be displayed in the editor
   const finalCodeConstructor = () => {
     let finalCode = "";
+    let realFuncActive = false;
     finalCode = requiresCodeConstructor();
     finalCode += interCodeConstructor();
-    finalCode += realFuncCodeConstructor();
+    if (partySelector.parties.length || subfuncSelector.subfunctionalities.length) {
+      realFuncActive = true;
+      finalCode += realFuncCodeConstructor();
+    }
     finalCode += idealFuncCodeConstructor();
-    finalCode += simulatorCodeConstructor();
+    if (simSelector.basicAdversarialInterface && realFuncActive) {
+      finalCode += simulatorCodeConstructor();
+    }
     return finalCode;
   }
 

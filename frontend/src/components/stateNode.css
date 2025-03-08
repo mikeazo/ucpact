@@ -22,3 +22,6 @@ path.react-flow__edge-path {
     stroke-width: 4;
     stroke: #000000;
 }
+.react-flow__handle{
+    opacity: .5;
+}

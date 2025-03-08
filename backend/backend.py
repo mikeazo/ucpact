@@ -6,13 +6,15 @@ import logging
 from contextlib import contextmanager
 import json
 import re
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from starlette import status
 from flask_cors import CORS
 import jwt
 from jwt.exceptions import InvalidTokenError
 import requests
 import time
+import datetime
+from io import BytesIO
 
 app = Flask(__name__)
 CORS(app)
@@ -36,7 +38,8 @@ def wait_exists(filename, wait_time=0.25, wait_max=1):
     while not os.path.exists(filename):
         time.sleep(wait_time)
         wait_counter += wait_time
-        if wait_counter > wait_max:break
+        if wait_counter > wait_max:
+            break
 
     return os.path.exists(filename)
 
@@ -83,6 +86,36 @@ def unlock_model(fileName):
 
     with locked_open(fileName, 'w', fcntl.LOCK_EX) as fp:
         json.dump(data, fp, indent=2)
+
+def delete_writeable_model(fileName) -> tuple[str,int]:
+    def get_response(status_code: int):
+        match status_code:
+            case status.HTTP_204_NO_CONTENT as code:
+                return 'Model Deleted', code
+            case status.HTTP_403_FORBIDDEN as code:
+                return 'Model is ReadOnly; not deleted', code
+            case status.HTTP_404_NOT_FOUND as code:
+                return 'Model not found', code
+            case status.HTTP_500_INTERNAL_SERVER_ERROR as code:
+                return "Can't open model; JSON file is corrupted!", code
+            case _ as code:
+                return "Received unhandled Status Code!", code
+    if not os.path.exists(fileName):
+        return get_response(status.HTTP_404_NOT_FOUND)
+    try:
+        with locked_open(fileName, 'r', fcntl.LOCK_EX) as fp:
+            data = json.load(fp)
+    except json.JSONDecodeError:
+        logging.debug(f'File {fileName} is corrupted!')
+        return get_response(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    if not data['readOnly']:
+        if os.path.exists(fileName):
+            os.remove(fileName)
+            return get_response(status.HTTP_204_NO_CONTENT)
+        return get_response(status.HTTP_404_NOT_FOUND)
+    return get_response(status.HTTP_403_FORBIDDEN)
+
 class PubKey:
     val: str = ""
 
@@ -131,8 +164,8 @@ def decode_token(auth_token: str) -> dict:
     return token_data
 
 def validate_token(auth_token, test_username: str="user1") -> str:
-    auth_disabled = os.environ.get("BACKEND_AUTH_ENABLED", default="true") == "false"
-    if auth_disabled and not auth_token:
+    auth_disabled = os.environ.get("BACKEND_AUTH_ENABLED", "true") == "false"
+    if auth_disabled and (not auth_token or "Bearer" in auth_token):
         return test_username
     data = decode_token(auth_token)
     if data["token_status"] == "valid":
@@ -158,15 +191,15 @@ def index():
                 res.append({'name': file.removesuffix('.json'), 'readOnly': 'CORRUPTED'})
                 continue
             data = full_data['model']
-            data['modelVersion'] = full_data.get('modelVersion') if 'modelVersion' in full_data else ""
+            data['modelVersion'] = full_data.get('modelVersion', "")
             if ((full_data['lastModified'] < (time.time() - 4500)) and (full_data['readOnly'] != "")):
                 full_data['readOnly'] = ""
                 full_data['lastModified'] = time.time()
                 with locked_open(fileName, 'w', fcntl.LOCK_EX) as fp:
                     json.dump(full_data, fp, indent=2)
-                res.append({'name' : data['name'], 'readOnly' : "", 'lastModified': full_data['lastModified']})
+                res.append({'name': data['name'], 'readOnly': "", 'lastModified': full_data['lastModified']})
             else:
-                res.append({'name' : data['name'], 'readOnly' : full_data['readOnly'], 'lastModified': full_data['lastModified']})
+                res.append({'name': data['name'], 'readOnly': full_data['readOnly'], 'lastModified': full_data['lastModified']})
     return jsonify(res)
 
 
@@ -174,7 +207,7 @@ def index():
 def get_model(id):
     token = request.headers.get('Authorization')
     tabId = request.headers.get('SessionTabId')
-    testUser = request.headers.get('TestUsername', default="user1")
+    testUser = request.headers.get('TestUsername', "user1")
     try:
         username = validate_token(token, test_username=testUser)
     except AuthenticationError as e:
@@ -189,7 +222,9 @@ def get_model(id):
     except json.JSONDecodeError:
         return "Can't open model; JSON file is corrupted!", status.HTTP_500_INTERNAL_SERVER_ERROR
     data = full_data['model']
-    data['modelVersion'] = full_data.get('modelVersion') if 'modelVersion' in full_data else ""
+    data["modelVersion"] = (
+        full_data.get("modelVersion", "")
+    )
     if full_data['readOnly'] == f'{username}/{tabId}':
         data['readOnly'] = ""
     elif full_data['readOnly']:
@@ -201,12 +236,98 @@ def get_model(id):
             return "Can't open model; JSON file is corrupted!", status.HTTP_500_INTERNAL_SERVER_ERROR
     return data, status.HTTP_200_OK
 
+@app.route("/model/export/<id>", methods=["GET"])
+def export_model(id: str):
+    token = request.headers.get("Authorization")
+    try:
+        validate_token(token)
+    except AuthenticationError as e:
+        return str(e), status.HTTP_401_UNAUTHORIZED
+    fileName = os.path.join("models", id) + ".json"
+
+    if not os.path.exists(fileName):
+        return "No file of that name exists", status.HTTP_404_NOT_FOUND
+    try:
+        with locked_open(fileName, "r", fcntl.LOCK_EX) as fp:
+            full_data = json.load(fp)
+    except json.JSONDecodeError:
+        return (
+            "Can't open model; JSON file is corrupted!",
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    json_contents = json.dumps(full_data, indent=2).encode("utf-8")
+
+    return send_file(BytesIO(json_contents), download_name=f"{id}.json")
+
+
+@app.route("/model/import/<filename>", methods=["POST"])
+def import_model(filename: str):
+    token = request.headers.get("Authorization")
+    try:
+        validate_token(token)
+    except AuthenticationError as e:
+        return str(e), status.HTTP_401_UNAUTHORIZED
+    model_file = request.files[filename]
+    try:
+        full_data = json.loads(model_file.read().decode("utf-8"))
+    except json.JSONDecodeError:
+        return (
+            "Can't import model; JSON file is corrupted!",
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    model_name = full_data["model"]["name"]
+    internal_filename = f"{model_name}.json"
+    filepath = os.path.join("models", internal_filename)
+    original_filepath = os.path.join("models", filename)
+    original_model_name = model_name
+    # if file exists, append a timestamp to the filename (or replace an existing one)
+    if os.path.exists(filepath):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        timestamp = now.strftime("%Y_%m_%d_%Hh%Mm%S")
+        # example timestamp = "2024_11_06_09h47m30"
+        existing_match = re.search(r"_([_0-9hm]{6,20})\.json", internal_filename)
+        if existing_match:
+            filepath = filepath.replace(existing_match.group(1), timestamp)
+        else:
+            filepath = f"{filepath.removesuffix('.json')}_{timestamp}.json"
+        model_name = filepath.split("/")[-1].removesuffix(".json")
+        full_data["model"]["name"] = model_name
+    metadata = {
+        "original": {
+            "filepath": original_filepath,
+            "model_name": original_model_name,
+        },
+        "new": {
+            "filepath": filepath,
+            "model_name": model_name,
+        },
+    }
+    full_data["lastModified"] = time.time()
+    data = full_data["model"]
+    if not validation_check(data["name"]):
+        return (
+            "Model could not be imported due to an invalid name",
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    full_data["readOnly"] = ""
+    full_data["model"]["readOnly"] = False
+
+    with locked_open(filepath, "w", fcntl.LOCK_EX) as fp:
+        json.dump(full_data, fp, indent=2)
+
+    all_data = {
+        "model": data,
+        "meta": metadata,
+    }
+    return jsonify(all_data), status.HTTP_201_CREATED
+
 @app.route('/model/<id>', methods=['POST'])
 def post_model(id):
     token = request.headers.get('Authorization')
     tabId = request.headers.get('SessionTabId')
     model_ver = os.environ["MODEL_VERSION"]
-    testUser = request.headers.get('TestUsername', default="user1")
+    testUser = request.headers.get('TestUsername', "user1")
     try:
         username = validate_token(token, test_username=testUser)
     except AuthenticationError as e:
@@ -242,7 +363,7 @@ def post_model(id):
 def put_model(id):
     token = request.headers.get('Authorization')
     tabId = request.headers.get('SessionTabId')
-    testUser = request.headers.get('TestUsername', default="user1")
+    testUser = request.headers.get('TestUsername', "user1")
     try:
         username = validate_token(token, test_username=testUser)
     except AuthenticationError as e:
@@ -278,7 +399,7 @@ def put_model(id):
 
         with locked_open(filename, 'w', fcntl.LOCK_EX) as fp:
             file_data = {}
-            data['modelVersion'] = old_data.get('modelVersion') if 'modelVersion' in old_data else ""
+            data['modelVersion'] = old_data.get('modelVersion', "")
             file_data['model'] = data
             file_data['readOnly'] = f'{username}/{tabId}'
             file_data['lastModified'] = time.time()
@@ -287,7 +408,7 @@ def put_model(id):
         return data, status.HTTP_201_CREATED
     else:
         return 'Content-Type not supported!', status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
-    
+
 @app.route('/model/<id>', methods=['DELETE'])
 def delete_model(id):
 
@@ -300,20 +421,14 @@ def delete_model(id):
         return 'Unallowed Model Name', status.HTTP_400_BAD_REQUEST
 
     filename = os.path.join('models', id) + '.json'
-
     # if file exists, remove it
-    if os.path.exists(filename):
-        os.remove(filename)
-
-        return 'Model Deleted', status.HTTP_200_OK
-    else:
-        return 'Model not found', status.HTTP_400_BAD_REQUEST
+    return delete_writeable_model(filename)
     
 @app.route('/model/return', methods=['GET'])
 def return_all_by_user():
     token = request.headers.get('Authorization')
-    [sessionId, _] = request.headers.get('SessionTabId').split('/')
-    testUser = request.headers.get('TestUsername', default="user1")
+    [sessionId, _] = request.headers.get('SessionTabId', '').split('/')
+    testUser = request.headers.get('TestUsername', 'user1')
     try:
         username = validate_token(token, test_username=testUser)
     except AuthenticationError as e:
@@ -336,7 +451,12 @@ def return_all_by_user():
                     # model's JSON file is corrupted
                     continue
                 res.append(fileName)
-    return jsonify({"message": f"{len(res)} model(s) returned!"}), status.HTTP_200_OK
+    return jsonify(
+        {
+            "message": f"{len(res)} model(s) returned!",
+            "count": len(res),
+        }
+    ), status.HTTP_200_OK
 
 @app.route('/model/return/<id>', methods=['PUT'])
 def return_model(id):

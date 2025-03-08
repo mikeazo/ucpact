@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from "react-oidc-context";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faSort, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faSort, faFilter, faFileArrowDown } from '@fortawesome/free-solid-svg-icons';
 
 
 function ModelList(props) {
@@ -25,7 +25,7 @@ function ModelList(props) {
     useEffect(() => {
 	let urlPath = process.env.REACT_APP_SERVER_PREFIX;
     let token = "none";
-    if (process.env.NODE_ENV !== 'test') {
+    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
         token = auth.user?.access_token;
     }
         axios({
@@ -48,11 +48,42 @@ function ModelList(props) {
         });
     }, []);
 
+    const downloadModel = (model) => {
+        let urlPath = `${process.env.REACT_APP_SERVER_PREFIX}/export/${model}`;
+        let token = "none";
+        if (process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE') {
+            token = auth.user?.access_token;
+        }
+        axios({
+            method: "GET",
+            url: urlPath,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        .then((response) => {
+            const blob = new Blob([JSON.stringify(response.data)], {type: "application/json"});
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = model + ".json";
+            link.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch((err) => {
+            if (err.response) {
+                console.log(err.response);
+                console.log(err.response.status);
+                console.log(err.response.headers);
+            }
+        })
+    }
+
     const deleteModel = (model) => {
         if (window.confirm("Are you sure you want to delete model \"" + model + "\"?")) {
             let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + model;
             let token = "none";
-            if (process.env.NODE_ENV !== 'test') {
+            if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
                 token = auth.user?.access_token;
             }
             axios({
@@ -63,28 +94,33 @@ function ModelList(props) {
                 }
             })
             .then((response) => {
-                let urlPath2 = process.env.REACT_APP_SERVER_PREFIX;
-                axios({
-                    method: "GET",
-                    url: urlPath2,
-                    headers: {
-                      Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
-                    }
-                })
-                .then((response) => {
-                    const res2 = response.data;
-                    setApiData(res2);
-                })
-                .catch((err) => {
-                    if (err.response) {
-                        console.log(err.response);
-                        console.log(err.response.status);
-                        console.log(err.response.headers);
-                    }
-                });
+                if (response.status === 204) {
+                    let urlPath2 = process.env.REACT_APP_SERVER_PREFIX;
+                    axios({
+                        method: "GET",
+                        url: urlPath2,
+                        headers: {
+                          Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
+                        }
+                    })
+                    .then((response) => {
+                        const res2 = response.data;
+                        setApiData(res2);
+                    })
+                    .catch((err) => {
+                        if (err.response) {
+                            console.log(err.response);
+                            console.log(err.response.status);
+                            console.log(err.response.headers);
+                        }
+                    });
+                }
             })
             .catch((err) => {
-                if (err.response) {
+                if (err.response && err.response.status === 403) {
+                    let notiMessage = `Warning: ${model} is in ReadOnly mode; cannot delete!`;
+                    window.alert(notiMessage);
+                } else if (err.response) {
                     console.log(err.response);
                     console.log(err.response.status);
                     console.log(err.response.headers);
@@ -202,6 +238,7 @@ function ModelList(props) {
                         <td onClick={statusFilter} className="statusHeader">Status  <FontAwesomeIcon icon={faFilter} /></td>
                         <td onClick={lastModifiedSort} className="lastModifiedHeader">Last Modified  <FontAwesomeIcon icon={faSort} /></td>
                         <td>Actions</td>
+                        <td>Download</td>
                         <td>Delete</td>
                     </tr>
                 </thead>
@@ -212,6 +249,7 @@ function ModelList(props) {
                         <td>{modelStatusDisplay(model)}</td>
                         <td>{new Date(model.lastModified * 1000).toLocaleString()}</td>
                         <td>{modelLink(model)}</td>
+                        <td className="modelDownload"><FontAwesomeIcon icon={faFileArrowDown} title="Download Model" className="downarrow" onClick={() => downloadModel(model['name'])} /></td>
                         <td className="modelDelete"><FontAwesomeIcon icon={faTrash} title="Delete Model" className="trashcan" onClick={() => deleteModel(model['name'])} /></td>
                     </tr>
                 ))}

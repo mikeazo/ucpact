@@ -1,5 +1,5 @@
 # First we will build the webapp
-FROM node as buildstage
+FROM node AS buildstage
 WORKDIR /frontend-build
 
 # Copy in the files we need

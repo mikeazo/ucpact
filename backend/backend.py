@@ -508,7 +508,8 @@ def get_IFs():
 
         ifs.append({'model_id': data['id'], 'model_name': data['name'],
             'idealFunctionality_id': data['idealFunctionality']['id'], 
-            'idealFunctionality_name': data['idealFunctionality']['name']})
+            'idealFunctionality_name': data['idealFunctionality']['name'],
+            'adversarialInterface': data['idealFunctionality']['basicAdversarialInterface']})
 
     return jsonify(ifs)
 

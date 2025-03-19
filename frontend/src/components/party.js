@@ -16,6 +16,7 @@ import { changePartyDispatch,
 import { DisplayNameSetup, upperCaseValidation } from "./helperFunctions";
 import { removeStateMachineDispatch } from "../features/stateMachines/stateMachineSlice";
 import { useAuth } from "react-oidc-context";
+import { Store } from "react-notifications-component";
 
 function Party(props) {
     const dispatch = useDispatch() // dispatch function for altering the Redux store
@@ -30,7 +31,7 @@ function Party(props) {
     const subfuncSelector = useSelector(state => state.subfunctionalities);
     const realFuncSelector = useSelector((state) => state.realFunctionality) // Redux selector for Real Functionality
     const stateMachineSelector = useSelector((state) => state.stateMachines);
-    
+    const allPartySelector = useSelector((state) => state.parties.parties)
     const compAdvSelector = useSelector((state) => state.interfaces.compInters.find(basicInt => (basicInt.type === "adversarial") && (basicInt.id === realFuncSelector.compositeAdversarialInterface)));
     const compDirSelector = useSelector((state) => state.interfaces.compInters.find(basicInt => (basicInt.type === "direct") && (basicInt.id === realFuncSelector.compositeDirectInterface)));
 
@@ -117,7 +118,7 @@ function Party(props) {
         let updatedTempColor = {
             "color" : state.colorTemp,
         };
-        if(upperCaseValidation(nameRef.current.value)){
+        if(upperCaseValidation(nameRef.current.value) && checkPartyName(nameRef.current.value)){
             setState(prevState => ({
                 ...prevState,
                 ...updatedTempColor
@@ -129,7 +130,35 @@ function Party(props) {
         }
         
     }
-
+    const checkPartyName = (checkString) => {
+        let nameIsNotDup = true
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+        for(let i = 0; i < allPartySelector.length; i++){
+            if(allPartySelector[i].id !== props.id && checkString === allPartySelector[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches another Party's name"
+            }
+        }
+        if(!nameIsNotDup){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
+    }
     // Api call for subfunc messages
     useEffect(() => {
         // Clear subFuncMessages

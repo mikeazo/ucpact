@@ -28,6 +28,7 @@ import { addStateDispatch,
          addStateMachineDispatch } from '../features/stateMachines/stateMachineSlice';
 import { DisplayNameSetup } from './helperFunctions';
 import ParameterInterface from './parameterInterface';
+import { Store } from "react-notifications-component";
 
 function RealFunctionality(props) {
     const dispatch = useDispatch() // dispatch function for altering the Redux store
@@ -36,6 +37,8 @@ function RealFunctionality(props) {
     const interSelector = useSelector((state) => state.interfaces) // Redux selector for interfaces
     const partySelector = useSelector((state) => state.parties) // Redux selector for parties
     const subSelector = useSelector((state) => state.subfunctionalities) // Redux selector for subfunctionalities
+    const simSelector = useSelector((state) => state.simulator) // Redux selector for simulator
+    const idealFuncSelector = useSelector((state) => state.idealFunctionality)
 
     const [displayState, setDisplayState] = useState({});
     const [show, setShow] = useState(false);
@@ -219,13 +222,59 @@ function RealFunctionality(props) {
                 
             });
         }
-
-        dispatch(changeRealfuncDispatch(updatedValue))
-    
-        //Close the modal [May not want to do it]
-        setShow(false);
+        if(checkDuplicatesInNameSpace(nameRef.current.value)){
+            dispatch(changeRealfuncDispatch(updatedValue))
+        
+            //Close the modal [May not want to do it]
+            setShow(false);
+        }
     }    
 
+    const checkDuplicatesInNameSpace = (checkString) => {
+        let nameIsNotDup = true;  
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+    
+        for(let i= 0; i < interSelector.compInters.length; i++){
+            if(checkString === interSelector.compInters[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches a Composite Interface's name"
+            }
+        }
+        for(let i= 0; i < interSelector.basicInters.length; i++){
+            if(checkString === interSelector.basicInters[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches a Basic Interface's name"
+            }
+        }
+        if(checkString === simSelector.name){
+            nameIsNotDup = false
+            notiMessage += "Name matches the Simulator's name"
+        }
+        if(checkString === idealFuncSelector.name){
+            nameIsNotDup = false
+            notiMessage += "Name matches the Ideal Functionality's name"
+        }
+        if(!nameIsNotDup){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
+    }
+    
     // Dropdown menu functions
     const [directIntOptions, setDirectIntOptions] = useState([]);
     const [advIntOptions, setAdvIntOptions] = useState([]);

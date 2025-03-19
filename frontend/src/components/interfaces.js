@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import uuid from 'react-uuid';
 import './interfaces.css';
-
+import { Store } from "react-notifications-component";
 import { useSelector, useDispatch } from 'react-redux'
 import { setCompInterfaceNameDispatch, 
          addCompositeInterfaceDispatch,
@@ -41,7 +41,7 @@ import { removeInterFromIFDispatch } from '../features/idealFunctionalities/idea
 import { removeInterFromRealFuncDispatch } from '../features/realFunctionalities/realFuncSlice';
 import { removeOutArgumentFromTransitionsDispatch,
          addOutArgumentToTransitionDispatch } from '../features/stateMachines/stateMachineSlice';
-import { DisplayNameSetup, upperCaseValidation, lowerCaseValidation } from "./helperFunctions";
+import { DisplayNameSetup, upperCaseValidation, lowerCaseValidation} from "./helperFunctions";
 
 
 
@@ -59,6 +59,8 @@ function Interfaces(props) {
     const interSelector = useSelector((state) => state.interfaces) // Redux selector for interfaces
     const realFuncSelector = useSelector((state) => state.realFunctionality)
     const partySelector = useSelector((state) => state.parties)
+    const idealFuncSelector = useSelector((state) => state.idealFunctionality)
+    const simulatorSelector = useSelector((state) => state.simulator)
 
     const [nameState, setNameState] = useState([]);
     
@@ -79,12 +81,12 @@ function Interfaces(props) {
         const getData = setTimeout(() => {
             switch (nameState[nameState.length - 1]) {
                 case "compositeName":
-                    if(upperCaseValidation(nameState[1],true)){
+                    if(upperCaseValidation(nameState[1],true) && checkDuplicatesInNameSpace(nameState[1], nameState[0])){
                         setCompInterfaceName(nameState[0], nameState[1]);
                     }
                     break;
                 case "basicName":
-                    if(upperCaseValidation(nameState[1], true)){
+                    if(upperCaseValidation(nameState[1], true) && checkDuplicatesInNameSpace(nameState[1], nameState[0])){
                         setBasicInterfaceName(nameState[0], nameState[1]);
                     }
                     break;
@@ -99,12 +101,12 @@ function Interfaces(props) {
                     }
                     break;
                 case "parameterName":
-                    if(lowerCaseValidation(nameState[2], true)){
+                    if(lowerCaseValidation(nameState[2], true) && checkParametersInMessages(nameState[2], nameState[1], nameState[0], false)){
                         setParameterName(nameState[0], nameState[1], nameState[2]);
                     }
                     break;
                 case "basicForComposite":
-                    if(upperCaseValidation(nameState[2], true)){
+                    if(upperCaseValidation(nameState[2], true) && checkCompBasicNameSpace(nameState[2], nameState[1], nameState[0])){
                         setBasicInterfaceNameForComposite(nameState[0], nameState[1], nameState[2]);
                     }
                     break;
@@ -123,12 +125,12 @@ function Interfaces(props) {
         e.preventDefault();  
         switch (nameState[nameState.length - 1]) {
             case "compositeName":
-                if(upperCaseValidation(nameState[1],true)){
+                if(upperCaseValidation(nameState[1],true) && checkDuplicatesInNameSpace(nameState[1], nameState[0])){
                     setCompInterfaceName(nameState[0], nameState[1]);
                 }
                 break;
             case "basicName":
-                if(upperCaseValidation(nameState[1],true)){
+                if(upperCaseValidation(nameState[1],true) && checkDuplicatesInNameSpace(nameState[1], nameState[0])){
                     setBasicInterfaceName(nameState[0], nameState[1]);
                 }
                 break;
@@ -143,12 +145,12 @@ function Interfaces(props) {
                 }
                 break;
             case "parameterName":
-                if(lowerCaseValidation(nameState[2], true)){
+                if(lowerCaseValidation(nameState[2], true) && checkParametersInMessages(nameState[2], nameState[1], nameState[0], true)){
                     setParameterName(nameState[0], nameState[1], nameState[2]);
                 }
                 break;
             case "basicForComposite":
-                if(upperCaseValidation(nameState[2], true)){
+                if(upperCaseValidation(nameState[2], true) && checkCompBasicNameSpace(nameState[2], nameState[1], nameState[0])){
                     setBasicInterfaceNameForComposite(nameState[0], nameState[1], nameState[2]);
                 }
                 break;
@@ -393,37 +395,37 @@ function Interfaces(props) {
     };
 
 
-    const upperCheckBasic = (idx) => {
+    const upperCheckBasic = (idx, id) => {
         if(basicInterNameRefs.current[idx]){
-            return upperCaseValidation(basicInterNameRefs.current[idx].value, false)
+            return (upperCaseValidation(basicInterNameRefs.current[idx].value, false) && checkDuplicatesInNameSpace(basicInterNameRefs.current[idx].value, id))
         }else{
             return true
         }
     }
-    const upperCheckComp = (idx) => {
+    const upperCheckComp = (idx, id) => {
         if(compInterNameRefs.current[idx]){
-            return upperCaseValidation(compInterNameRefs.current[idx].value, false)
+            return (upperCaseValidation(compInterNameRefs.current[idx].value, false) && checkDuplicatesInNameSpace(compInterNameRefs.current[idx].value, id))
         }else{
             return true
         }
     }
-    const upperCheckBasicForComp = (idx) => {
+    const upperCheckBasicForComp = (idx, compId) => {
         if(basicForCompIntNameRefs.current[idx]){
-            return upperCaseValidation(basicForCompIntNameRefs.current[idx].value, false)
+            return (upperCaseValidation(basicForCompIntNameRefs.current[idx].value, false) && checkCompBasicNameSpace(basicForCompIntNameRefs.current[idx].value, idx, compId)) 
         }else{
             return true
         }
     }
-    const lowerCheckParameter = (idx) => {
+    const lowerCheckParameter = (idx, paramId, messageId) => {
         if(parameterNameRefs.current[idx]){
-            return lowerCaseValidation(parameterNameRefs.current[idx].value, false)
+            return (lowerCaseValidation(parameterNameRefs.current[idx].value, false) && checkParametersInMessages(parameterNameRefs.current[idx].value, paramId, messageId, false))
         }else{
             return true
         }
     }
     const lowerCheckMessage = (idx) => {
         if(messageNameRefs.current[idx]){
-            return lowerCaseValidation(messageNameRefs.current[idx].value, false)
+            return (lowerCaseValidation(messageNameRefs.current[idx].value, false)) 
         }else{
             return true
         }
@@ -434,6 +436,124 @@ function Interfaces(props) {
         }else{
             return true
         }
+    }
+
+    const checkParametersInMessages = (checkString, paramId, messageId, notify) => {
+        let nameIsNotDup = true
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+        let message = interSelector.messages.find(message => message.id === messageId)
+        for(let i= 0; i < message.parameters.length; i++){
+            if(paramId !== message.parameters[i].id && checkString === message.parameters[i].name && checkString !== ""){
+                nameIsNotDup = false
+                notiMessage += "This name matches another Parameter's name. Name did not save. "
+            }
+        }
+        if(!nameIsNotDup  && notify){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
+    }
+    const checkCompBasicNameSpace = (checkString, interIndex, compId) =>{
+        let nameIsNotDup = true
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+        let compSpace = interSelector.compInters.find(int => compId === int.id)
+        for(let i= 0; i < compSpace.basicInterfaces.length; i++){
+            if(interIndex !== i && checkString === compSpace.basicInterfaces[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches another Interface's name"
+            }
+        }
+        if(!nameIsNotDup){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
+
+    }
+    const checkDuplicatesInNameSpace = (checkString, eleId) => {
+        
+        let nameIsNotDup = true;
+    
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+    
+        for(let i= 0; i < interSelector.compInters.length; i++){
+            if(eleId !== interSelector.compInters[i].id && checkString === interSelector.compInters[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches a Composite Interface's name"
+            }
+        }
+        for(let i= 0; i < interSelector.basicInters.length; i++){
+            if(eleId !== interSelector.basicInters[i].id && checkString === interSelector.basicInters[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches a Basic Interface's name"
+            }
+        }
+        if(eleId !== realFuncSelector.id){
+            if(checkString === realFuncSelector.name){
+                nameIsNotDup = false
+                notiMessage += "Name matches the Real Functionality's name"
+            }
+        }
+        if(eleId !== idealFuncSelector.id){
+            if(checkString === idealFuncSelector.name){
+                nameIsNotDup = false
+                notiMessage += "Name matches the Ideal Functionality's name"
+            }
+        }
+        if(eleId !== simulatorSelector.id){
+            if(checkString === simulatorSelector.name){
+                nameIsNotDup = false
+                notiMessage += "Name matches the Simulator's name"
+            }
+        }
+        if(!nameIsNotDup){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
     }
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -486,7 +606,7 @@ function Interfaces(props) {
                                                 <Form.Control key={"basic-interface-name-" + value.id} id={"basic-interface-name-" + value.id}
                                                     defaultValue={value.name || ""}
                                                     ref={e => basicInterNameRefs.current[idx] = e} onChange={ e => setNameState([value.id, e.target.value, "basicName"]) }
-                                                    onBlur={e => finalCall(e) } isInvalid={!upperCheckBasic(idx)}
+                                                    onBlur={e => finalCall(e) } isInvalid={!upperCheckBasic(idx, value.id)}
                                                     type="text" autoComplete='off' placeholder='Interface Name'
                                                     onKeyDown={handleKeyDown}/>
                                             </Col>
@@ -566,7 +686,7 @@ function Interfaces(props) {
                                                                                 defaultValue={parameter.name || ""}
                                                                                 ref={e => parameterNameRefs.current[message.id+parameter.id] = e} type="text" autoComplete="off"
                                                                                 onChange={ e => setNameState([message.id, parameter.id, e.target.value, "parameterName"]) }
-                                                                                onBlur={e => finalCall(e) } isInvalid={!lowerCheckParameter(message.id+parameter.id)}
+                                                                                onBlur={e => finalCall(e) } isInvalid={!lowerCheckParameter(message.id+parameter.id, parameter.id, message.id)}
                                                                                 placeholder="Parameter Name" className='parametertextbox' onKeyDown={handleKeyDown}/>
                                                                 </Col>
                                                                 <Col>
@@ -607,7 +727,7 @@ function Interfaces(props) {
                                                 <Form.Control key={"cmop-interface-name-" + value.id} id={"cmop-interface-name-" + value.id} 
                                                             defaultValue={value.name || ""}
                                                             ref={e => compInterNameRefs.current[idx] = e} onChange={ e => setNameState([value.id, e.target.value, "compositeName"]) } 
-                                                            onBlur={e => finalCall(e) } isInvalid={!upperCheckComp(idx)}
+                                                            onBlur={e => finalCall(e) } isInvalid={!upperCheckComp(idx, value.id)}
                                                             type="text" autoComplete='off' placeholder='Interface Name' onKeyDown={handleKeyDown}/>
                                             </Col>
                                             <Col>
@@ -641,7 +761,7 @@ function Interfaces(props) {
                                                                 ref={e => basicForCompIntNameRefs.current[index] = e} type="text" autoComplete="off"
                                                                 onChange={ e => setNameState([value.id, index, e.target.value, "basicForComposite"]) }
                                                                 onBlur={e => finalCall(e) } onKeyDown={handleKeyDown}
-                                                                isInvalid={!upperCheckBasicForComp(index)}
+                                                                isInvalid={!upperCheckBasicForComp(index, value.id)}
                                                                 placeholder="Instance Name"/>
                                                 </Col>
                                                 <Col>

@@ -11,12 +11,13 @@ import { CirclePicker } from "react-color";
 import './subFunc.css';
 import axios from 'axios';
 import { useAuth } from "react-oidc-context";
-
+import Xarrow, { useXarrow } from 'react-xarrows';
 import { useSelector, useDispatch } from 'react-redux'
 import { changeSubfuncDispatch,
          removeSubfuncDispatch } from '../features/subfunctionalities/subfuncSlice'
 import { changeTransitionDispatch } from "../features/stateMachines/stateMachineSlice";
 import { DisplayNameSetup, upperCaseValidation } from "./helperFunctions";
+import { Store } from 'react-notifications-component'
 
 function SubFunc(props) {
     const dispatch = useDispatch() // dispatch function for altering the Redux store
@@ -27,6 +28,8 @@ function SubFunc(props) {
     const subfuncSelector = useSelector((state) => state.subfunctionalities.subfunctionalities.find(element => element.id === props.id))
     // Need the list of transitions to compare message 
     const transitionSelector = useSelector((state) => state.stateMachines.transitions)
+    const allSubFuncSelector = useSelector((state) => state.subfunctionalities.subfunctionalities)
+    const allParamSelector = useSelector((state) => state.realFunctionality.parameterInterfaces)
 
     const [state, setState] = useState({color: "#8a6996", colorTemp: "#8a6996"});
     const [idealFuncApiData, setIdealFuncApiData] = useState();
@@ -45,7 +48,14 @@ function SubFunc(props) {
             isDragging: !!monitor.isDragging(),
         }),
     }));
-
+    // hook for updating Xarrow
+    // eslint-disable-next-line no-unused-vars
+    const updateXarrow = useXarrow();
+    // arrow display parameters
+    const anchorSpacing = index => {
+        const multiplier = index % 2 ? -1 : 1;
+        return Math.ceil(index/2) * 20 * multiplier;
+    };
     const [show, setShow] = useState(props.id && !subfuncSelector.name);
     library.add(faGear);
 
@@ -60,6 +70,7 @@ function SubFunc(props) {
         setShow(false);
     }
     const handleShow = () => {
+        setState({color: subfuncSelector.color, colorTemp: subfuncSelector.color})
         setShow(true);
     }
 
@@ -234,7 +245,7 @@ function SubFunc(props) {
         let updatedTempColor = {
             "color": state.colorTemp,
         }
-        if(upperCaseValidation(nameRef.current.value)){
+        if(upperCaseValidation(nameRef.current.value) && checkNameDuplication(nameRef.current.value)){
             setState(prevState => ({
                 ...prevState,
                 ...updatedTempColor
@@ -245,9 +256,47 @@ function SubFunc(props) {
         }
         
     }
+    const checkNameDuplication = (checkString) => {
+        let nameIsNotDup = true;  
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+        for(let i = 0; i < allSubFuncSelector.length; i++){
+            if(allSubFuncSelector[i].id !== props.id && checkString === allSubFuncSelector[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name is in use by another Subfunctionality"
+            }
+        }
 
+        for(let i = 0; i < allParamSelector.length; i++){
+            if(checkString === allParamSelector[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name is in use by a Parameter Interface"
+            }
+        }
+        if(!nameIsNotDup){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
+        
+    }
+    
     // Dropdown menu functions
     const [idealFuncOptions, setIdealFuncOptions] = useState([]);
+    const [idealHasAdv, setIdealHasAdv] = useState(false)
 
     useEffect(() => {
         let optionsArray = [{key : "ideal-Func-id", value : "", label : "Select an Ideal Functionality..."}];
@@ -257,6 +306,21 @@ function SubFunc(props) {
         });
         setIdealFuncOptions(optionsArray);
     }, [idealFuncApiData]);
+
+    useEffect(() => {
+        if(idealFuncApiData && subfuncSelector){
+            const thisIDFunc = idealFuncApiData.find(element => element.idealFunctionality_id === subfuncSelector.idealFunctionalityId);
+            if(thisIDFunc){
+                setIdealHasAdv(thisIDFunc.adversarialInterface !== "")
+            }
+            else{
+                setIdealHasAdv(false)
+            }
+        }else{
+            setIdealHasAdv(false)
+        }
+        
+    }, [idealFuncApiData, subfuncSelector])
     
     let colorPalette = ["#8a6996", "#db585f", "#8e9cc6", "#d1b292", "#5f8ba1", "#e6a545", "#6b9a8d", "#c96383", "#5290a2", "#d1a27d", "#477090", "#c8b47b"];
 
@@ -331,6 +395,13 @@ function SubFunc(props) {
                     <Button variant="secondary" onClick={handleClose}> Close </Button>
                 </Modal.Footer> 
             </Modal>
+            { subfuncSelector && idealHasAdv &&
+                <Xarrow key={ props.id + "-adversarial-connector" } start={ props.id } end="realFunctionality-environment-right" 
+                        showHead={false} color="red" path="grid" startAnchor="right" 
+                        endAnchor={{position: "left", offset: { y: anchorSpacing(props.index) }}} zIndex= {-1} 
+                        data-testid="subFuncAdversarialArrow"
+                />
+            }
         </div>
     );     
 }

@@ -39,6 +39,8 @@ function StateNode(props) {
   const transitionSelector = useSelector((state) => state.stateMachines.transitions);
   const thisStateSelector = stateMachineSelector.states.find(element => element.id === data.id);
 
+  const thisStateMachineSelector = thisStateSelector ? stateMachineSelector.stateMachines.find((stateMachine) => stateMachine.states.includes(thisStateSelector.id)) : stateMachineSelector
+
   const [show, setShow] = useState(data.id && thisStateSelector && !thisStateSelector.name);
 
   const [state, setState] = useState({color: "#e3c85b", colorTemp: "#e3c85b"});
@@ -77,7 +79,7 @@ function StateNode(props) {
         paraNameRefArray.push(paraNameRef);
         paraTypeRefArray.push(paraTypeRef);
     });
-
+    setState({color: thisStateSelector.color, colorTemp: thisStateSelector.color})
     setShow(true);
   };   
   
@@ -134,8 +136,11 @@ function StateNode(props) {
         if(!lowerCaseValidation(paraNameRefArray[idx].current.value)){
             parametersAreGood = false
         }
+        if(!checkParameterNameDuplicates(paraNameRefArray[idx].current.value, idx, true)){
+            parametersAreGood = false
+        }
     });
-
+    
     let updatedValue = {
         "id": data.id,
         "name": nameRef.current.value,
@@ -147,7 +152,7 @@ function StateNode(props) {
     let updatedTempColor = {
         "color": state.colorTemp,
     };
-    if(upperCaseValidation(nameRef.current.value) && parametersAreGood){
+    if(upperCaseValidation(nameRef.current.value) && parametersAreGood && checkOtherStateNamesInSharedStateMachine(nameRef.current.value)){
         setState(prevState => ({
             ...prevState,
             ...updatedTempColor
@@ -188,7 +193,7 @@ function StateNode(props) {
   const lowerCheckParameter = (idx) => {
     if (show) {
         if (paraNameRefArray[idx].current) {
-            return lowerCaseValidation(paraNameRefArray[idx].current.value, false)
+            return (lowerCaseValidation(paraNameRefArray[idx].current.value, false) && checkParameterNameDuplicates(paraNameRefArray[idx].current.value, idx, false))
         } else {
             return true;
         }
@@ -196,7 +201,69 @@ function StateNode(props) {
         return true;
     }
   }
-  
+  const checkParameterNameDuplicates = (name, paraIndex, showNoti) =>{
+    let nameIsNotShared = true;
+    let notiTitle = "State Name Check Failure"
+    let notiMessage = "Message: Duplicate name detected in State Parameters"
+    let notiType = 'danger'
+    for(let i = 0; i < paraNameRefArray.length; i++){
+        if(paraNameRefArray[i].current){
+            if(paraIndex !== i && paraNameRefArray[i].current.value === name && name !== ""){
+                nameIsNotShared = false
+            }  
+        }
+          
+    }
+    if(!nameIsNotShared && showNoti){
+        let notification = {
+            title:   notiTitle,
+            message: notiMessage,
+            type:    notiType,
+            insert:  "top",
+            container: "top-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+                duration: 10000,
+                onScreen: true
+            }
+        }
+        Store.addNotification(notification)
+    }
+    return nameIsNotShared
+  }
+  //Checks the stateMachine namespace for duplicate state names
+  const checkOtherStateNamesInSharedStateMachine = (name) =>{
+    let nameIsNotShared = true;
+    for(let i = 0; i < thisStateMachineSelector.states.length; i++){
+        let currentStateId = thisStateMachineSelector.states[i]
+        let currentState = stateMachineSelector.states.find(element => element.id === currentStateId);     
+        if(currentState.id !== thisStateSelector.id){
+            if(currentState.name === name){
+
+                let notiTitle = "State Name Check Failure"
+                let notiMessage = "Message: Duplicate name detected in State Machine Space"
+                let notiType = 'danger'
+                let notification = {
+                    title:   notiTitle,
+                    message: notiMessage,
+                    type:    notiType,
+                    insert:  "top",
+                    container: "top-right",
+                    animationIn: ["animate__animated", "animate__fadeIn"],
+                    animationOut: ["animate__animated", "animate__fadeOut"],
+                    dismiss: {
+                        duration: 10000,
+                        onScreen: true
+                    }
+                }
+                Store.addNotification(notification)
+                nameIsNotShared = false
+            }
+        }
+    }
+    return nameIsNotShared
+  }
   return (
     <div className="state-node" style={{backgroundColor: data.color}}>
         {data.initState && (

@@ -224,11 +224,11 @@ function CodeGenerator(props) {
     let finalString = "";
 
     let compDir = (interSelector.compInters[interSelector.compInters.findIndex(inter => inter.id === idealFuncSelector.compositeDirectInterface)]) || "";
-    let basicAdv = (interSelector.basicInters[interSelector.basicInters.findIndex(inter => inter.id === idealFuncSelector.basicAdversarialInterface)]) || "";
+    let basicAdv = (interSelector.basicInters[interSelector.basicInters.findIndex(inter => inter.id === idealFuncSelector.basicAdversarialInterface)]) || {name: ""};
 
     finalString += (
       "(* Ideal functionality *)\r\n" +
-      "functionality " + idealFuncSelector.name + " implements " + compDir.name + " " + basicAdv.name + " {\r\n\r\n"
+      "functionality " + idealFuncSelector.name + " implements " + compDir.name + " " + basicAdv.name + "{\r\n\r\n"
     );
 
     // add the initial state code
@@ -374,7 +374,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
               "           and transition " + toState           
             );
 
@@ -514,7 +514,7 @@ function CodeGenerator(props) {
           finalString += ( 
             "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
             "          and transition " + toState           
           );
 
@@ -726,7 +726,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
                 "           and transition " + toState           
               );
   
@@ -866,7 +866,7 @@ function CodeGenerator(props) {
             finalString += ( 
               "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
               "          and transition " + toState           
             );
   
@@ -1005,10 +1005,9 @@ function CodeGenerator(props) {
               if (inMessageComp) {
                 inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";
               }
-
-              inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
             } else {
-              inMessageTrace = inMessageBasic.name + "." + inMessage.name;
+              inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
             }
             
           }       
@@ -1098,9 +1097,9 @@ function CodeGenerator(props) {
                   outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
                 }
   
-                outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
               } else {
-                outMessageTrace = outMessageBasic.name + "." + outMessage.name;
+                outMessageTrace = realFuncSelector.name + "." + outMessageBasic.name + "." + outMessage.name;
               }     
             }       
 
@@ -1138,7 +1137,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
               "           and transition " + toState           
             );
 
@@ -1214,9 +1213,9 @@ function CodeGenerator(props) {
                 inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";
               }
 
-              inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
             } else {
-              inMessageTrace = inMessageBasic.name + "." + inMessage.name;
+              inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
             }
             
           }
@@ -1254,9 +1253,9 @@ function CodeGenerator(props) {
                 outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
               }
 
-              outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
             } else {
-              outMessageTrace = outMessageBasic.name + "." + outMessage.name;
+              outMessageTrace = realFuncSelector.name + "." + outMessageBasic.name + "." + outMessage.name;
             }
           }
 
@@ -1328,7 +1327,7 @@ function CodeGenerator(props) {
           finalString += ( 
             "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
             "          and transition " + toState           
           );
 
@@ -1457,9 +1456,9 @@ function CodeGenerator(props) {
                   inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";
                 }
   
-                inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+                inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
               } else {
-                inMessageTrace = inMessageBasic.name + "." + inMessage.name;
+                inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
               }
               
             }
@@ -1549,9 +1548,9 @@ function CodeGenerator(props) {
                     outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
                   }
     
-                  outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
                 } else {
-                  outMessageTrace = outMessageBasic + "." + outMessage.name;
+                  outMessageTrace = realFuncSelector.name + "." + outMessageBasic + "." + outMessage.name;
                 }
               }
               
@@ -1589,7 +1588,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
                 "           and transition " + toState           
               );
   
@@ -1665,9 +1664,9 @@ function CodeGenerator(props) {
                   inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";
                 }
     
-                inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+                inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
               } else {
-                inMessageTrace = inMessageBasic.name + "." + inMessage.name;
+                inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
               }
             }
   
@@ -1704,9 +1703,9 @@ function CodeGenerator(props) {
                   outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
                 }
   
-                outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
               } else {
-                outMessageTrace = outMessageBasic.name + "." + outMessage.name;
+                outMessageTrace = realFuncSelector.name + "." + outMessageBasic.name + "." + outMessage.name;
               }
             }
 
@@ -1770,7 +1769,7 @@ function CodeGenerator(props) {
             finalString += ( 
               "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((outMessage.port) ? ("@" + outMessage.port) : "") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
               "          and transition " + toState           
             );
   

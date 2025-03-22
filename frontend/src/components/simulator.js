@@ -9,13 +9,15 @@ import { faGear } from '@fortawesome/free-solid-svg-icons'
 import Xarrow, { useXarrow } from 'react-xarrows';
 import { useSelector, useDispatch } from 'react-redux'
 import { DisplayNameSetup, upperCaseValidation } from './helperFunctions';
-import { changeSimDispatch } from '../features/simulators/simulatorSlice'
+import { changeSimDispatch } from '../features/simulators/simulatorSlice';
+import { Store } from "react-notifications-component";
 
 function Simulator(props) {
     const dispatch = useDispatch() // dispatch function for altering the Redux store
     const interSelector = useSelector((state) => state.interfaces) // Redux selector for interfaces
     const simSelector = useSelector((state) => state.simulator) // Redux selector for simulator
     const realFuncSelector = useSelector((state) => state.realFunctionality)
+    const idealFuncSelector = useSelector((state) => state.idealFunctionality)
     // eslint-disable-next-line no-unused-vars
     const stateMachineSelector = useSelector((state) => state.stateMachines)
 
@@ -46,12 +48,57 @@ function Simulator(props) {
             "name": nameRef.current.value,
             "basicAdversarialInterface": basicAdvIntRef.current.getValue()[0].value,
             "realFunctionality": realFunctRef.current.getValue()[0].value,};
-        if(upperCaseValidation(nameRef.current.value)){
+        if(upperCaseValidation(nameRef.current.value) && checkDuplicatesInNameSpace(nameRef.current.value)){
             dispatch(changeSimDispatch(updatedValue))
             //Close the modal [May not want to do it]
             setShow(false);
         }
         
+    }
+
+    const checkDuplicatesInNameSpace = (checkString) => {
+        let nameIsNotDup = true;  
+        let notiTitle = "Duplicate Name Check Failure"
+        let notiMessage = "Message: "
+        let notiType = 'danger'
+    
+        for(let i= 0; i < interSelector.compInters.length; i++){
+            if(checkString === interSelector.compInters[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches a Composite Interface's name"
+            }
+        }
+        for(let i= 0; i < interSelector.basicInters.length; i++){
+            if(checkString === interSelector.basicInters[i].name){
+                nameIsNotDup = false
+                notiMessage += "Name matches a Basic Interface's name"
+            }
+        }
+        if(checkString === realFuncSelector.name){
+            nameIsNotDup = false
+            notiMessage += "Name matches the Real Functionality's name"
+        }
+        if(checkString === idealFuncSelector.name){
+            nameIsNotDup = false
+            notiMessage += "Name matches the Ideal Functionality's name"
+        }
+        if(!nameIsNotDup){
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+        return nameIsNotDup
     }
 
     const interFilter = (inter) => {

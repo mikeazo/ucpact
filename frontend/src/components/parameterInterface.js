@@ -14,13 +14,16 @@ import { CirclePicker } from 'react-color';
 import { upperCaseValidation } from "./helperFunctions";
 import { changeTransitionDispatch } from '../features/stateMachines/stateMachineSlice';
 import { changeParamInterDispatch, deleteParamInterDispatch } from '../features/realFunctionalities/realFuncSlice';
-
+import Xarrow, { useXarrow } from 'react-xarrows';
+import { Store } from 'react-notifications-component'
 
 function ParameterInterface(props) {
 
     const paramInterSelector = useSelector((state) => state.realFunctionality.parameterInterfaces.find(paramInter => paramInter.id === props.id))
     const transitionSelector = useSelector((state) => state.stateMachines.transitions) // Redux selector for transitions
-    
+    const allSubFuncSelector = useSelector((state) => state.subfunctionalities.subfunctionalities)
+    const allParamSelector = useSelector((state) => state.realFunctionality.parameterInterfaces)
+
     const [state, setState] = useState({color: paramInterSelector && paramInterSelector.color, colorTemp: paramInterSelector && paramInterSelector.color});
     const [show, setShow] = useState(props.id && !paramInterSelector.name);
     const [paramInterAPIData, setParamInterAPIData] = useState();
@@ -54,8 +57,18 @@ function ParameterInterface(props) {
         }));
         setShow(false);
     }
-    const handleShow = () => setShow(true);
-
+    const handleShow = () =>{ 
+        setState({color: paramInterSelector.color, colorTemp: paramInterSelector.color})
+        setShow(true);
+    }
+    // hook for updating Xarrow
+    // eslint-disable-next-line no-unused-vars
+    const updateXarrow = useXarrow();
+    // arrow display parameters
+    const anchorSpacing = index => {
+        const multiplier = index % 2 ? -1 : 1;
+        return Math.ceil(index/2) * 20 * multiplier;
+    };
     //Deletes the component of the modal and closes the modal
     const handleDeleteComponent = () => {
         //Do we want to have a confirm before we delete?
@@ -144,7 +157,7 @@ function ParameterInterface(props) {
         let updatedTempColor = {
             "color" : state.colorTemp,
         };
-        if(upperCaseValidation(nameRef.current.value)) {
+        if(upperCaseValidation(nameRef.current.value) && checkNameDuplication(nameRef.current.value)) {
             setState(prevState => ({
                 ...prevState,
                 ...updatedTempColor
@@ -156,6 +169,44 @@ function ParameterInterface(props) {
         }
         
     };
+
+    const checkNameDuplication = (checkString) => {
+            let nameIsNotDup = true;  
+            let notiTitle = "Duplicate Name Check Failure"
+            let notiMessage = "Message: "
+            let notiType = 'danger'
+            for(let i = 0; i < allParamSelector.length; i++){
+                if(allParamSelector[i].id !== props.id && checkString === allParamSelector[i].name){
+                    nameIsNotDup = false
+                    notiMessage += "Name is in use by another Parameter Interface"
+                }
+            }
+    
+            for(let i = 0; i < allSubFuncSelector.length; i++){
+                if(checkString === allSubFuncSelector[i].name){
+                    nameIsNotDup = false
+                    notiMessage += "Name is in use by a Subfunctionality"
+                }
+            }
+            if(!nameIsNotDup){
+                let notification = {
+                    title:   notiTitle,
+                    message: notiMessage,
+                    type:    notiType,
+                    insert:  "top",
+                    container: "top-right",
+                    animationIn: ["animate__animated", "animate__fadeIn"],
+                    animationOut: ["animate__animated", "animate__fadeOut"],
+                    dismiss: {
+                        duration: 10000,
+                        onScreen: true
+                    }
+                }
+                Store.addNotification(notification)
+            }
+            return nameIsNotDup
+            
+        }
 
     useEffect(() => {
         // API Call for Parameter Interfaces
@@ -274,6 +325,13 @@ function ParameterInterface(props) {
                     <Button variant="secondary" onClick={handleClose}> Close </Button>
                 </Modal.Footer> 
             </Modal>
+            { paramInterSelector &&
+                <Xarrow key={ props.id + "-adversarial-connector" } start={ props.id } end="realFunctionality-environment-right" 
+                        showHead={false} color="red" path="grid" startAnchor="right" 
+                        endAnchor={{position: "left", offset: { y: anchorSpacing(props.index) }}} zIndex= {-1} 
+                        data-testid="partyAdversarialArrow"
+                />
+            }
         </div>
     )
 }

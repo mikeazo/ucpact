@@ -275,22 +275,22 @@ function StateNode(props) {
             {data.label}
             <FontAwesomeIcon className="stateOptions" data-testid="stateOptions" icon={faGear} onClick={handleShow} />
         </div>
-      <Handle type="source" position={Position.Top} id='1' isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Top} id='2' style={{left: 30, top: 4}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Top} id='3' style={{ left: 14, top: 14 }} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Left} id='4' style ={{left: 3, top: 32}} isConnectable={isConnectable} />
-      {!data.initState && <Handle type="source" position={Position.Left} id='5' isConnectable={isConnectable} />}
-      <Handle type="source" position={Position.Left} id='6' style ={{left: 3, top: 69}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Bottom} id="7" style={{ left: 14, top: 80 }} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Bottom} id="8" style={{left: 30, top: 90}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Bottom} id="9" isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Bottom} id="10" style={{left: 71, top: 90}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Right} id="11" style={{ left: 80, top: 85 }} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Right} id="12" style={{right: 3, top: 69}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Right} id="13" isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Right} id="14" style={{left: 91, top: 32}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Right} id="15" style={{ left: 80, top: 15}} isConnectable={isConnectable} />
-      <Handle type="source" position={Position.Top} id='16' style={{left: 70, top: 4}} isConnectable={isConnectable} />
+      <Handle type="source" style={{opacity: data.hoveredState ? 1 : .01}} position={Position.Top} id='1' isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Top} id='2' style={{left: 30, top: 4, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Top} id='3' style={{ left: 14, top: 14, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Left} id='4' style ={{left: 3, top: 32, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      {!data.initState && <Handle type="source" style={{opacity: data.hoveredState ? 1 : .01}} position={Position.Left} id='5' isConnectable={isConnectable} />}
+      <Handle type="source" position={Position.Left} id='6' style ={{left: 3, top: 69, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} id="7" style={{ left: 14, top: 80, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} id="8" style={{left: 30, top: 90, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" style={{opacity: data.hoveredState ? 1 : .01}} position={Position.Bottom} id="9" isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Bottom} id="10" style={{left: 71, top: 90, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Right} id="11" style={{ left: 80, top: 85, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Right} id="12" style={{right: 3, top: 69, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" style={{opacity: data.hoveredState ? 1 : .01}} position={Position.Right} id="13" isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Right} id="14" style={{left: 91, top: 32, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Right} id="15" style={{ left: 80, top: 15, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
+      <Handle type="source" position={Position.Top} id='16' style={{left: 70, top: 4, opacity: data.hoveredState ? 1 : .01}} isConnectable={isConnectable} />
       { /* Modal */ }
       <Modal show={show} onHide={handleClose} animation={false} data-testid="state-modal">
           <Modal.Header> 

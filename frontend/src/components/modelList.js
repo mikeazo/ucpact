@@ -209,11 +209,11 @@ function ModelList(props) {
 
     const modelLink = (model) => {
         if (!model['readOnly']) {
-            return <Link to={"/model/" + model['name']}>Edit</Link>;
+            return <Link to={"/model/" + model['name']} data-testid="action-link">Edit</Link>;
         } else if (model['readOnly'] === 'CORRUPTED') {
             return <span className='corruptedText'>CORRUPTED</span>;
         } else {
-            return <Link to={"/model/" + model['name']}>View</Link>;
+            return <Link to={"/model/" + model['name']} data-testid="action-link">View</Link>;
         }
     }
 

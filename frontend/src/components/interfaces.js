@@ -595,7 +595,7 @@ function Interfaces(props) {
                             <Accordion key={"accordion-" + value.id} data-testid="accorBasicHeader" className="accordion-basic-interface">
                                 <Accordion.Item eventKey="0">
                                     <Accordion.Header data-testid="accorBasicHeaderButton">
-                                        <FontAwesomeIcon className="interfaceDel" icon={faTrash} title="Delete Basic Interface" 
+                                        <FontAwesomeIcon id="deleteBasicInter" className="interfaceDel" icon={faTrash} title="Delete Basic Interface" 
                                                         onClick={() => deleteBasicInterface(value.id)} />
                                         { value.name ? DisplayNameSetup(value.name, interfaceDisplayLength) : "Interface Name" }
                                                                                   
@@ -625,7 +625,7 @@ function Interfaces(props) {
                                         </Row>
                                         <Row>
                                             <span className="messageTitle">Messages
-                                            <FontAwesomeIcon className="messageAdd" icon={faPlus} variant="outline-success" 
+                                            <FontAwesomeIcon id="addMessageToInterface" className="messageAdd" icon={faPlus} variant="outline-success" 
                                                             onClick={() => {addMessageToInterface(value.id)}} title="Add Message" />
                                             </span>
                                         </Row>
@@ -633,7 +633,7 @@ function Interfaces(props) {
                                             <Accordion key={"accordion-" + message.id} data-testid="accorHeaderMessage" className="accordion-message">
                                                 <Accordion.Item eventKey="0">
                                                     <Accordion.Header data-testid="accorHeaderMessageButton">
-                                                        <FontAwesomeIcon className="messageDel" icon={faTrash} title="Delete Message" 
+                                                        <FontAwesomeIcon id="deleteMessage" className="messageDel" icon={faTrash} title="Delete Message" 
                                                             onClick={() => deleteMessageFromInterface(value.id, message.id)} />
                                                             { message.name ? DisplayNameSetup(message.name, messageDisplayLength) : "Message Name" }
                                                     </Accordion.Header>
@@ -671,7 +671,7 @@ function Interfaces(props) {
                                                         </Row>
                                                         <Row>
                                                             <span className="parameterTitle">Parameters
-                                                            <FontAwesomeIcon className="parameterAdd" icon={faPlus} variant="outline-success" 
+                                                            <FontAwesomeIcon id="addParameter" className="parameterAdd" icon={faPlus} variant="outline-success" 
                                                                             onClick={() => {addParameterToMessage(message.id)}} title="Add Parameter" />
                                                             </span>
                                                         </Row>
@@ -717,14 +717,14 @@ function Interfaces(props) {
                             <Accordion key={"accordion-" + value.id} data-testid="accorCompHeader" className="accordion-composite-interface">
                                 <Accordion.Item eventKey="0">
                                     <Accordion.Header data-testid="accorCompHeaderButton">
-                                        <FontAwesomeIcon className="interfaceDel" icon={faTrash} title="Delete Composite Interface" 
+                                        <FontAwesomeIcon id="deleteCompInter" className="interfaceDel" icon={faTrash} title="Delete Composite Interface" 
                                                         onClick={() => deleteCompositeInterface(value.id)} />
                                         { value.name ? DisplayNameSetup(value.name, interfaceDisplayLength) : "Interface Name" }
                                     </Accordion.Header>
                                     <Accordion.Body>
                                         <Row>
                                             <Col>
-                                                <Form.Control key={"cmop-interface-name-" + value.id} id={"cmop-interface-name-" + value.id} 
+                                                <Form.Control key={"comp-interface-name-" + value.id} id={"comp-interface-name-" + value.id} 
                                                             defaultValue={value.name || ""}
                                                             ref={e => compInterNameRefs.current[idx] = e} onChange={ e => setNameState([value.id, e.target.value, "compositeName"]) } 
                                                             onBlur={e => finalCall(e) } isInvalid={!upperCheckComp(idx, value.id)}
@@ -745,14 +745,14 @@ function Interfaces(props) {
                                         </Row>
                                         <Row>
                                             <span className="messageTitle">Basic Interfaces
-                                            <FontAwesomeIcon className="messageAdd" icon={faPlus} variant="outline-success" 
+                                            <FontAwesomeIcon id="addBasicToComposite"className="messageAdd" icon={faPlus} variant="outline-success" 
                                                             onClick={() => {addBasicToComposite(value.id)}} title="Add Basic to Composite" />
                                             </span>
                                         </Row>
                                         { value.basicInterfaces.map((inter, index) => (
                                             <Row key={"basic-interface-" + inter.idOfInstance}>
                                                 <Col className="messageDelCol">
-                                                    <FontAwesomeIcon className="messageDel" icon={faTrash} title="Delete Basic Instance" 
+                                                    <FontAwesomeIcon id="deleteBasicInstance" className="messageDel" icon={faTrash} title="Delete Basic Instance" 
                                                                 onClick={() => deleteBasicFromComposite(value.id, index)} />
                                                 </Col>
                                                 <Col>

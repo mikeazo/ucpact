@@ -387,6 +387,7 @@ function Party(props) {
                                 defaultValue={{ value : (partySelector && partySelector.basicDirectInterface) || "",
                                     label : partySelector ? directIntOptions.find(basicInt => basicInt.value === partySelector.basicDirectInterface) ? directIntOptions.find(basicInt => basicInt.value === partySelector.basicDirectInterface).label : "Select a Direct Interface..." : "Select a Direct Interface..."}}
                                 ref={basicDirIntRef}
+                                id="partyBasicDirIntSelect"
                             />
                         </div>
                         <div id="basic-adversary-interfaces">
@@ -398,6 +399,7 @@ function Party(props) {
                                 defaultValue={{ value : (partySelector && partySelector.basicAdversarialInterface) || "",
                                     label : partySelector ? advIntOptions.find(basicInt => basicInt.value === partySelector.basicAdversarialInterface) ? advIntOptions.find(basicInt => basicInt.value === partySelector.basicAdversarialInterface).label : "Select an Adversarial Interface..." : "Select an Adversarial Interface..."}}
                                 ref={basicAdvIntRef}
+                                id="partyBasicAdvIntSelect"
                             />
                         </div>                                      
                     </div>

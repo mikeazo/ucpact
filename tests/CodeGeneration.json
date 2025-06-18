@@ -1,0 +1,426 @@
+{
+  "model": {
+    "interfaces": {
+      "compInters": [
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "e758d0a4-0d79-480c-4051-e11bca05119f",
+              "idOfInstance": "39267f81-3a1a-256f-6cc1-40ffad287f3c",
+              "name": "BasicInt1"
+            }
+          ],
+          "id": "03ff3265-b201-101c-43e8-413c9754b1e6",
+          "name": "Comp1",
+          "type": "direct"
+        },
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "383f79e1-569c-f18d-766d-6a05d3173373",
+              "idOfInstance": "a5163ff8-c77a-7e87-12d9-fd2c8a17b421",
+              "name": "BasicInt2"
+            }
+          ],
+          "id": "8652e648-97eb-5ed6-c000-2cfd38395e25",
+          "name": "CompAdv1",
+          "type": "adversarial"
+        }
+      ],
+      "basicInters": [
+        {
+          "id": "e758d0a4-0d79-480c-4051-e11bca05119f",
+          "messages": [
+            "63d81e5d-5324-76e8-bda8-73d91b4acc92",
+            "1901322c-d756-d387-5ec6-dca37e5bf4c1"
+          ],
+          "name": "Basic1",
+          "type": "direct"
+        },
+        {
+          "id": "383f79e1-569c-f18d-766d-6a05d3173373",
+          "messages": [
+            "9fdad85f-63d2-24b3-fe61-38dcd817cbcc",
+            "dd216af3-1164-743b-1f54-229aba311871"
+          ],
+          "name": "BasicAdv1",
+          "type": "adversarial"
+        },
+        {
+          "id": "03db0e80-44a1-8796-6637-7af16fdce749",
+          "messages": [],
+          "name": "IFAdvInter",
+          "type": "adversarial"
+        },
+        {
+          "id": "976a0aa0-399d-52f8-07cf-5af5a464bd88",
+          "messages": [],
+          "name": "SimAdvInter",
+          "type": "adversarial"
+        }
+      ],
+      "messages": [
+        {
+          "id": "63d81e5d-5324-76e8-bda8-73d91b4acc92",
+          "name": "message1",
+          "parameters": [
+            {
+              "id": "86294b43-d693-3d8c-f761-3ce3c7036c15",
+              "name": "param1",
+              "type": "type1"
+            }
+          ],
+          "port": "pt",
+          "type": "in"
+        },
+        {
+          "id": "1901322c-d756-d387-5ec6-dca37e5bf4c1",
+          "name": "message2",
+          "parameters": [
+            {
+              "id": "9d4a0a9e-a8da-f0f7-73bf-ee8a8b3dbb6b",
+              "name": "param2",
+              "type": "type2"
+            }
+          ],
+          "port": "pt",
+          "type": "out"
+        },
+        {
+          "id": "9fdad85f-63d2-24b3-fe61-38dcd817cbcc",
+          "name": "message3",
+          "parameters": [
+            {
+              "id": "544f8d01-79ce-7be4-bf4f-5d67181e02db",
+              "name": "param3",
+              "type": "type3"
+            }
+          ],
+          "port": "",
+          "type": "in"
+        },
+        {
+          "id": "dd216af3-1164-743b-1f54-229aba311871",
+          "name": "message4",
+          "parameters": [
+            {
+              "id": "ca0a1a05-e21a-89ca-c72e-e32e14775e6e",
+              "name": "param4",
+              "type": "type4"
+            }
+          ],
+          "port": "",
+          "type": "out"
+        }
+      ]
+    },
+    "parties": {
+      "parties": [
+        {
+          "basicAdversarialInterface": "a5163ff8-c77a-7e87-12d9-fd2c8a17b421",
+          "basicDirectInterface": "39267f81-3a1a-256f-6cc1-40ffad287f3c",
+          "color": "#c4dd88",
+          "id": "7aad9a24-ce49-8462-52cd-767d299bd2c7",
+          "left": 580,
+          "name": "Party1",
+          "stateMachine": "299de752-0567-7bf2-7166-6d4d7cf96168",
+          "top": 406
+        }
+      ]
+    },
+    "subfunctionalities": {
+      "subfunctionalities": [
+        {
+          "id": "04659a3f-80e5-638f-626c-43ab5d4ab07d",
+          "name": "Sub1",
+          "idealFunctionalityId": "97e2f6a1-663d-ebc2-4fe3-7f806cf79964",
+          "idealFunctionalityName": "IF",
+          "idealFuncModel": "BasicModel",
+          "color": "#8a6996",
+          "left": 1000,
+          "top": 219
+        }
+      ]
+    },
+    "realFunctionality": {
+      "parties": [
+        "7aad9a24-ce49-8462-52cd-767d299bd2c7"
+      ],
+      "subfunctionalities": [
+        "04659a3f-80e5-638f-626c-43ab5d4ab07d"
+      ],
+      "id": "ce97783a-95ee-61db-249b-1df4a1f316e9",
+      "name": "Real_Functionality",
+      "compositeDirectInterface": "03ff3265-b201-101c-43e8-413c9754b1e6",
+      "compositeAdversarialInterface": "8652e648-97eb-5ed6-c000-2cfd38395e25",
+      "parameterInterfaces": [
+        {
+          "id": "ad77eeda-2217-cadd-9d0d-2ab918ae99d4",
+          "name": "Param1",
+          "idOfInterface": "41e7ea4c-f764-4b92-a27f-902195fef6d1",
+          "compInterName": "CompDir1",
+          "modelName": "BasicModel",
+          "color": "#DE8989",
+          "left": 751,
+          "top": 505
+        }
+      ]
+    },
+    "simulator": {
+      "id": "bb4d847b-0006-4c05-b7f8-4c80da70a2e4",
+      "name": "Sim",
+      "basicAdversarialInterface": "976a0aa0-399d-52f8-07cf-5af5a464bd88",
+      "realFunctionality": "ce97783a-95ee-61db-249b-1df4a1f316e9",
+      "stateMachine": "331638d2-b608-71ec-ee48-d1b4f1aaa497",
+      "color": "#6bb45c",
+      "left": 450,
+      "top": 201
+    },
+    "idealFunctionality": {
+      "id": "44501464-774d-90ce-6e41-50ad2b99c283",
+      "name": "IF",
+      "basicAdversarialInterface": "03db0e80-44a1-8796-6637-7af16fdce749",
+      "compositeDirectInterface": "03ff3265-b201-101c-43e8-413c9754b1e6",
+      "stateMachine": "7180e68c-6e78-e225-fb72-b0549c72e1a4",
+      "color": "#3e88c7",
+      "left": 250,
+      "top": 250
+    },
+    "stateMachines": {
+      "stateMachines": [
+        {
+          "id": "7180e68c-6e78-e225-fb72-b0549c72e1a4",
+          "initState": "ce47aa8d-f5f5-ec61-cbdb-51286fbad33a",
+          "states": [
+            "ce47aa8d-f5f5-ec61-cbdb-51286fbad33a",
+            "4b108920-8c67-3c49-0da9-b96f07fd225a"
+          ],
+          "transitions": [
+            "550c9f6e-cf13-a801-760d-cd4b827698ff"
+          ]
+        },
+        {
+          "id": "331638d2-b608-71ec-ee48-d1b4f1aaa497",
+          "initState": "21041df5-ba4d-20ad-a6ec-3657cfb20e93",
+          "states": [
+            "21041df5-ba4d-20ad-a6ec-3657cfb20e93",
+            "48f33ee6-94f7-4395-480f-c136485195f3"
+          ],
+          "transitions": [
+            "8e6b79d5-0699-4376-d5d2-1d79f5b78c16"
+          ]
+        },
+        {
+          "id": "299de752-0567-7bf2-7166-6d4d7cf96168",
+          "initState": "03efec4e-4390-b4b2-2cb0-597f6f7206fb",
+          "states": [
+            "03efec4e-4390-b4b2-2cb0-597f6f7206fb",
+            "b6646913-e8c4-362b-fc6a-19440c93005f"
+          ],
+          "transitions": [
+            "5931db57-0071-1199-dbee-bb796f5fdaac",
+            "bbfe9b94-6746-92ad-a3b6-a791029ea3dc",
+            "2773ff68-6b64-ca3d-509e-bfbf5efae5c1"
+          ]
+        }
+      ],
+      "states": [
+        {
+          "color": "#e3c85b",
+          "id": "ce47aa8d-f5f5-ec61-cbdb-51286fbad33a",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "id": "21041df5-ba4d-20ad-a6ec-3657cfb20e93",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "id": "03efec4e-4390-b4b2-2cb0-597f6f7206fb",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "id": "b6646913-e8c4-362b-fc6a-19440c93005f",
+          "left": 306,
+          "name": "State1",
+          "parameters": [
+            {
+              "id": "474f07df-6299-e587-14d5-d7d7e61a90da",
+              "name": "param1",
+              "type": "type1"
+            }
+          ],
+          "top": 339
+        },
+        {
+          "color": "#e3c85b",
+          "id": "4b108920-8c67-3c49-0da9-b96f07fd225a",
+          "left": 451,
+          "name": "State2",
+          "parameters": [
+            {
+              "id": "d8c7d156-e1cf-a56c-9d34-ce47a4c0619b",
+              "name": "param2",
+              "type": "type2"
+            }
+          ],
+          "top": 297
+        },
+        {
+          "color": "#e3c85b",
+          "id": "48f33ee6-94f7-4395-480f-c136485195f3",
+          "left": 484,
+          "name": "State1",
+          "parameters": [
+            {
+              "id": "ebac836b-3d32-6d1b-795d-8071edb2d200",
+              "name": "param1",
+              "type": "type1"
+            }
+          ],
+          "top": 303
+        }
+      ],
+      "transitions": [
+        {
+          "fromState": "03efec4e-4390-b4b2-2cb0-597f6f7206fb",
+          "guard": "",
+          "id": "5931db57-0071-1199-dbee-bb796f5fdaac",
+          "inMessage": "63d81e5d-5324-76e8-bda8-73d91b4acc92",
+          "name": "Transition1",
+          "outMessage": "1901322c-d756-d387-5ec6-dca37e5bf4c1",
+          "outMessageArguments": [
+            {
+              "argValue": "val2",
+              "paraID": "9d4a0a9e-a8da-f0f7-73bf-ee8a8b3dbb6b"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt",
+          "toState": "b6646913-e8c4-362b-fc6a-19440c93005f",
+          "toStateArguments": [
+            {
+              "argValue": "val1",
+              "paraID": "474f07df-6299-e587-14d5-d7d7e61a90da"
+            }
+          ]
+        },
+        {
+          "fromState": "ce47aa8d-f5f5-ec61-cbdb-51286fbad33a",
+          "guard": "",
+          "id": "550c9f6e-cf13-a801-760d-cd4b827698ff",
+          "inMessage": "63d81e5d-5324-76e8-bda8-73d91b4acc92",
+          "name": "Transition2",
+          "outMessage": "1901322c-d756-d387-5ec6-dca37e5bf4c1",
+          "outMessageArguments": [
+            {
+              "argValue": "val2",
+              "paraID": "9d4a0a9e-a8da-f0f7-73bf-ee8a8b3dbb6b"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt",
+          "toState": "4b108920-8c67-3c49-0da9-b96f07fd225a",
+          "toStateArguments": [
+            {
+              "argValue": "val2",
+              "paraID": "d8c7d156-e1cf-a56c-9d34-ce47a4c0619b"
+            }
+          ]
+        },
+        {
+          "fromState": "21041df5-ba4d-20ad-a6ec-3657cfb20e93",
+          "guard": "",
+          "id": "8e6b79d5-0699-4376-d5d2-1d79f5b78c16",
+          "inMessage": "9fdad85f-63d2-24b3-fe61-38dcd817cbcc",
+          "name": "Transition3",
+          "outMessage": "dd216af3-1164-743b-1f54-229aba311871",
+          "outMessageArguments": [
+            {
+              "argValue": "val4",
+              "paraID": "ca0a1a05-e21a-89ca-c72e-e32e14775e6e"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "48f33ee6-94f7-4395-480f-c136485195f3",
+          "toStateArguments": [
+            {
+              "argValue": "val1",
+              "paraID": "ebac836b-3d32-6d1b-795d-8071edb2d200"
+            }
+          ]
+        },
+        {
+          "id": "bbfe9b94-6746-92ad-a3b6-a791029ea3dc",
+          "name": "SubTransition",
+          "fromState": "03efec4e-4390-b4b2-2cb0-597f6f7206fb",
+          "toState": "b6646913-e8c4-362b-fc6a-19440c93005f",
+          "sourceHandle": "9",
+          "targetHandle": "9",
+          "toStateArguments": [
+            {
+              "paraID": "474f07df-6299-e587-14d5-d7d7e61a90da",
+              "argValue": "val1"
+            }
+          ],
+          "outMessageArguments": [
+            {
+              "paraID": "dc266896-929b-f94d-6c59-4e878fa03d24",
+              "argValue": "val1"
+            }
+          ],
+          "guard": "",
+          "outMessage": "7b825f16-ba65-e6e1-8b8c-75e8c681ad57/04659a3f-80e5-638f-626c-43ab5d4ab07d",
+          "inMessage": "6e9c41b7-b0ea-91bb-089a-0d4c4f02a0b1/04659a3f-80e5-638f-626c-43ab5d4ab07d",
+          "targetPort": ""
+        },
+        {
+          "id": "2773ff68-6b64-ca3d-509e-bfbf5efae5c1",
+          "name": "ParamTransition",
+          "fromState": "03efec4e-4390-b4b2-2cb0-597f6f7206fb",
+          "toState": "b6646913-e8c4-362b-fc6a-19440c93005f",
+          "sourceHandle": "1",
+          "targetHandle": "1",
+          "toStateArguments": [
+            {
+              "paraID": "474f07df-6299-e587-14d5-d7d7e61a90da",
+              "argValue": "val1"
+            }
+          ],
+          "outMessageArguments": [
+            {
+              "paraID": "dc266896-929b-f94d-6c59-4e878fa03d24",
+              "argValue": "val1"
+            }
+          ],
+          "guard": "",
+          "outMessage": "7b825f16-ba65-e6e1-8b8c-75e8c681ad57/ad77eeda-2217-cadd-9d0d-2ab918ae99d4",
+          "inMessage": "6e9c41b7-b0ea-91bb-089a-0d4c4f02a0b1/ad77eeda-2217-cadd-9d0d-2ab918ae99d4",
+          "targetPort": ""
+        }
+      ]
+    },
+    "id": "76f8964e-65d5-499c-0542-9a26554471a7",
+    "name": "CodeGeneration",
+    "readOnly": false,
+    "modelVersion": "1.2"
+  },
+  "readOnly": "",
+  "lastModified": 1730326842.3525813,
+  "modelVersion": "1.2"
+}

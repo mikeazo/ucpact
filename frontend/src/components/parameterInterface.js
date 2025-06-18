@@ -315,6 +315,7 @@ function ParameterInterface(props) {
                                 defaultValue={{ value : (paramInterSelector && paramInterSelector.idOfInterface) || "",
                                     label : paramInterSelector ? compDirOptions.find(compositeInt => compositeInt.value === paramInterSelector.idOfInterface) ? compDirOptions.find(compositeInt => compositeInt.value === paramInterSelector.idOfInterface).label : "Select a Direct Interface..." : "Select a Direct Interface..."}}
                                 ref={compDirRef}
+                                id="paramInterCompDirSelect"
                             />
                         </div>                                      
                     </div>

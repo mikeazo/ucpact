@@ -816,7 +816,7 @@ function ModelApp(props) {
                     updateXarrow();
                     }}
                 >
-                    <div title={<Link to="/"><img src="/images/favicon.ico" alt="logo" width="30" onClick={e => homeLink(e)}/></Link>}></div>
+                    <div title={<Link to="/"><img src="/images/favicon.ico" alt="logo" width="30" onClick={e => homeLink(e)} data-testid="home-link"/></Link>}></div>
                     <Tab eventKey="rWorld" title="Real World" className="rwTab">
                         <UCCompBox>
                             <SubFunc />

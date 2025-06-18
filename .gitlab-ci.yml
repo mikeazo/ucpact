@@ -34,17 +34,23 @@ after_script:
 #  script:
 #    - docker compose --profile default build
 
-test1:
+frontend-tests:
   stage: test
   script:
     - docker compose --profile tests build
     - docker compose --profile tests up --exit-code-from frontend-tests
 
-test2:
+backend-tests:
   stage: test
   script:
     - docker compose --profile pytest build
     - docker compose --profile pytest up --exit-code-from backend-tests
+
+integration-tests:
+  stage: test
+  script:
+    - docker compose --profile integration-tests build
+    - docker compose --profile integration-tests up --abort-on-container-exit --exit-code-from integration-tests 
 
 #deploy:
 #  stage: deploy

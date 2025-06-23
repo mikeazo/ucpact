@@ -227,11 +227,12 @@ function ReactFlowBox(props) {
     }else{
         let aState = stateSelector.find(thisState => thisState.id === hoveredNodeId) //Need this for keeping the name updated
         setNodes(nodes => nodes.map((nodeInList) => nodeInList.id === hoveredNodeId ? 
-        {id: nodeInList.id, position: nodeInList.position, data: {label: aState.name, id: nodeInList.id, initState: nodeInList.data.initState, color: nodeInList.data.color, hoveredState: true}, type: nodeInList.type} //Change hovered State
+        {id: nodeInList.id, position: nodeInList.position, data: {label: aState.name, id: nodeInList.id, initState: nodeInList.data.initState, color: aState.color, hoveredState: true}, type: nodeInList.type} //Change hovered State
         : nodeInList)); //Otherwise the node should be the same
     }
     
-  }, [stateMachineSelector, stateRender,hoveredNodeId]);
+  }, [stateMachineSelector, stateRender, hoveredNodeId]);
+  
   // Display transitions
   useEffect(() => {
     let newEdges = [];

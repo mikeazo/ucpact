@@ -257,6 +257,14 @@ function CodeGenerator(props) {
       });
 
       thisInitStateInMessageArray.forEach(currentInMessage => {
+        // Determine if single transition guard code is needed
+        // For this message, determine if any transitions include guard code
+        let singleTransitionGuard = false;
+        thisInitStateTransitionArray.forEach(transition => {
+          if (transition.inMessage === currentInMessage && transition.guard !== "") {
+            singleTransitionGuard = true;
+          }
+        });
         // Guard Code
         if (thisInitStateInMessageInfo[currentInMessage].length > 1) {
           // In Message Info
@@ -413,6 +421,204 @@ function CodeGenerator(props) {
           });
           finalString += "      }\r\n\r\n"
 
+        } else if (singleTransitionGuard) { // Guard code for single transitions
+          let transition = thisInitStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
+          // In Message Info
+          let inMessage ="";
+          let inMessageBasic = "";
+          let inMessageComp = "";
+          let inMessageBasicInstance = "";
+          let inMessageTrace = "";
+          if (subFuncMessages.find(element => element.id === currentInMessage)) {
+            inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+            inMessageComp = inMessage.compInter;
+            inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+            let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+            inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+          } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+            inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+            inMessageComp = inMessage.compInter;
+            inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+            let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+            inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+          } else {
+            inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
+
+            interSelector.basicInters.forEach((basic) => {
+              basic.messages.forEach((message) => {
+                if (message === inMessage.id) {
+                  inMessageBasic = basic;
+                }
+              })
+            });
+
+            inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+            if (inMessageComp) {
+              inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+            }  
+            inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+          }
+
+
+          let receiveArguments = "";
+          if (currentInMessage) {
+            let parameters = [];
+            if (subFuncMessages.find(element => element.id === currentInMessage)) {
+              parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+            } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+              parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+            } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+              parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
+            }
+            parameters.forEach((param, idx, arr) => {
+              if (idx === arr.length - 1) {
+                if (arr.length === 1) {
+                  receiveArguments += (
+                    "(" + param.name + ")"
+                  );
+                } else {
+                  receiveArguments += (
+                    param.name + ")"
+                  );
+                }
+              } else if (idx === 0) {
+                receiveArguments += (
+                  "(" + param.name + ", "
+                );
+              } else {
+                receiveArguments += (
+                  param.name + ", "
+                );
+              }
+            })
+          }
+          if (subFuncMessages.find(element => element.id === currentInMessage) || 
+              (paramInterMessages.find(element => element.id === currentInMessage))) {
+            finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+          } else {
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+          }
+          finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+            
+          
+          // Code for the transition
+          let nameComment = genTransitionNameComment(transition, "         ");
+          finalString += nameComment;
+          finalString += (
+            "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+          );
+
+          // Out Message Info
+          let outMessage ="";
+          let outMessageBasic = "";
+          let outMessageComp = "";
+          let outMessageBasicInstance = "";
+          let outMessageTrace = "";
+          if (subFuncMessages.find(element => element.id === transition.outMessage)) {
+            outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
+            outMessageComp = outMessage.compInter;
+            outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+            let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+            outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+          } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
+            outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
+            outMessageComp = outMessage.compInter;
+            outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+            let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
+            outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+          } else {
+            outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
+          
+            outMessageBasic = "";
+            interSelector.basicInters.forEach((basic) => {
+              basic.messages.forEach((message) => {
+                if (message === outMessage.id) {
+                  outMessageBasic = basic;
+                }
+              })
+            })
+
+            outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+            outMessageBasicInstance = "";
+            if (outMessageComp) {
+              outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+            }
+
+            outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+          }
+
+          let toState = "";
+          if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
+            toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
+          }
+
+          let sendArguments = "";
+          if (transition.outMessage) {
+            transition.outMessageArguments.forEach((arg, idx, arr) => {
+              if (idx === arr.length - 1) {
+                if (arr.length === 1) {
+                  sendArguments += (
+                    "(" + arg.argValue + ")"
+                  );
+                } else {
+                  sendArguments += (
+                    arg.argValue + ")"
+                  );
+                }
+              } else if (idx === 0) {
+                sendArguments += (
+                  "(" + arg.argValue + ", "
+                );
+              } else {
+                sendArguments += (
+                  arg.argValue + ", "
+                );
+              }
+            })
+          }
+
+
+          finalString += ( 
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+            "             and transition " + toState           
+          );
+
+          if (toState) {
+            if (transition.toStateArguments.length > 0) {
+
+              transition.toStateArguments.forEach((param, idx, arr) => {
+                if (idx === arr.length - 1) {
+                  if (arr.length === 1) {
+                    finalString += (
+                      "(" + param.argValue + ")"
+                    );
+                  } else {
+                    finalString += (
+                      param.argValue + ")"
+                    );
+                  }
+                  
+                } else if (idx === 0) {
+                  finalString += (
+                    "(" + param.argValue + ", "
+                  );
+                } else {
+                  finalString += (
+                    param.argValue + ", "
+                  );
+                } 
+              })
+            }
+          }
+          finalString += ".\r\n" 
+          finalString += (
+            "          } else {\r\n"
+          );
+          finalString += (
+            "             fail.\r\n          }\r\n"
+          );
+          
+          finalString += "        }\r\n\r\n"
         } else {
           // Normal transition code
           let thisTransition = thisInitStateInMessageInfo[currentInMessage][0];
@@ -609,6 +815,14 @@ function CodeGenerator(props) {
         });
         
         thisStateInMessageArray.forEach(currentInMessage => {
+          // Determine if single transition guard code is needed
+          // For this message, determine if any transitions include guard code
+          let singleTransitionGuard = false;
+          thisStateTransitionArray.forEach(transition => {
+            if (transition.inMessage === currentInMessage && transition.guard !== "") {
+              singleTransitionGuard = true;
+            }
+          });
           // Guard Code
           if (thisStateInMessageInfo[currentInMessage].length > 1) {
             // In Message Info
@@ -764,7 +978,204 @@ function CodeGenerator(props) {
               }
             });
             finalString += "      }\r\n\r\n"
-  
+          
+          } else if (singleTransitionGuard) { // Guard code for single transitions
+              let transition = thisStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
+              // In Message Info
+              let inMessage ="";
+              let inMessageBasic = "";
+              let inMessageComp = "";
+              let inMessageBasicInstance = "";
+              let inMessageTrace = "";
+              if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+                inMessageComp = inMessage.compInter;
+                inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+                let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+                inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+                inMessageComp = inMessage.compInter;
+                inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+                let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+                inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              } else {
+                inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
+
+                interSelector.basicInters.forEach((basic) => {
+                  basic.messages.forEach((message) => {
+                    if (message === inMessage.id) {
+                      inMessageBasic = basic;
+                    }
+                  })
+                });
+
+                inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+                if (inMessageComp) {
+                  inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+                }  
+                inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              }
+    
+    
+              let receiveArguments = "";
+              if (currentInMessage) {
+                let parameters = [];
+                if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                  parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+                } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                  parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+                } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+                  parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
+                }
+                parameters.forEach((param, idx, arr) => {
+                  if (idx === arr.length - 1) {
+                    if (arr.length === 1) {
+                      receiveArguments += (
+                        "(" + param.name + ")"
+                      );
+                    } else {
+                      receiveArguments += (
+                        param.name + ")"
+                      );
+                    }
+                  } else if (idx === 0) {
+                    receiveArguments += (
+                      "(" + param.name + ", "
+                    );
+                  } else {
+                    receiveArguments += (
+                      param.name + ", "
+                    );
+                  }
+                })
+              }
+              if (subFuncMessages.find(element => element.id === currentInMessage) || 
+                  (paramInterMessages.find(element => element.id === currentInMessage))) {
+                finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+              } else {
+                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+              }
+              finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+                
+              
+              // Code for the transition
+              let nameComment = genTransitionNameComment(transition, "         ");
+              finalString += nameComment;
+              finalString += (
+                "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+              );
+
+              // Out Message Info
+              let outMessage ="";
+              let outMessageBasic = "";
+              let outMessageComp = "";
+              let outMessageBasicInstance = "";
+              let outMessageTrace = "";
+              if (subFuncMessages.find(element => element.id === transition.outMessage)) {
+                outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
+                outMessageComp = outMessage.compInter;
+                outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+                let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+                outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
+                outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
+                outMessageComp = outMessage.compInter;
+                outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+                let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
+                outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              } else {
+                outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
+              
+                outMessageBasic = "";
+                interSelector.basicInters.forEach((basic) => {
+                  basic.messages.forEach((message) => {
+                    if (message === outMessage.id) {
+                      outMessageBasic = basic;
+                    }
+                  })
+                })
+    
+                outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+                outMessageBasicInstance = "";
+                if (outMessageComp) {
+                  outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+                }
+    
+                outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              }
+
+              let toState = "";
+              if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
+                toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
+              }
+
+              let sendArguments = "";
+              if (transition.outMessage) {
+                transition.outMessageArguments.forEach((arg, idx, arr) => {
+                  if (idx === arr.length - 1) {
+                    if (arr.length === 1) {
+                      sendArguments += (
+                        "(" + arg.argValue + ")"
+                      );
+                    } else {
+                      sendArguments += (
+                        arg.argValue + ")"
+                      );
+                    }
+                  } else if (idx === 0) {
+                    sendArguments += (
+                      "(" + arg.argValue + ", "
+                    );
+                  } else {
+                    sendArguments += (
+                      arg.argValue + ", "
+                    );
+                  }
+                })
+              }
+
+
+              finalString += ( 
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                "             and transition " + toState           
+              );
+
+              if (toState) {
+                if (transition.toStateArguments.length > 0) {
+
+                  transition.toStateArguments.forEach((param, idx, arr) => {
+                    if (idx === arr.length - 1) {
+                      if (arr.length === 1) {
+                        finalString += (
+                          "(" + param.argValue + ")"
+                        );
+                      } else {
+                        finalString += (
+                          param.argValue + ")"
+                        );
+                      }
+                      
+                    } else if (idx === 0) {
+                      finalString += (
+                        "(" + param.argValue + ", "
+                      );
+                    } else {
+                      finalString += (
+                        param.argValue + ", "
+                      );
+                    } 
+                  })
+                }
+              }
+              finalString += ".\r\n" 
+              finalString += (
+                "          } else {\r\n"
+              );
+              finalString += (
+                "             fail.\r\n          }\r\n"
+              );
+              finalString += "        }\r\n\r\n"
           } else {
             // Normal transition code
             let thisTransition = thisStateInMessageInfo[currentInMessage][0];
@@ -971,6 +1382,14 @@ function CodeGenerator(props) {
       });
 
       thisInitStateInMessageArray.forEach(currentInMessage => {
+        // Determine if single transition guard code is needed
+        // For this message, determine if any transitions include guard code
+        let singleTransitionGuard = false;
+        thisInitStateTransitionArray.forEach(transition => {
+          if (transition.inMessage === currentInMessage && transition.guard !== "") {
+            singleTransitionGuard = true;
+          }
+        });
         // Guard Code
         if (thisInitStateInMessageInfo[currentInMessage].length > 1) {
           // In Message Info
@@ -1175,7 +1594,203 @@ function CodeGenerator(props) {
             }
           });
           finalString += "      }\r\n\r\n"
+        } else if (singleTransitionGuard) { // Guard code for single transitions
+          let transition = thisInitStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
+          // In Message Info
+          let inMessage ="";
+          let inMessageBasic = "";
+          let inMessageComp = "";
+          let inMessageBasicInstance = "";
+          let inMessageTrace = "";
+          if (subFuncMessages.find(element => element.id === currentInMessage)) {
+            inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+            inMessageComp = inMessage.compInter;
+            inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+            let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+            inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+          } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+            inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+            inMessageComp = inMessage.compInter;
+            inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+            let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+            inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+          } else {
+            inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
 
+            interSelector.basicInters.forEach((basic) => {
+              basic.messages.forEach((message) => {
+                if (message === inMessage.id) {
+                  inMessageBasic = basic;
+                }
+              })
+            });
+
+            inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+            if (inMessageComp) {
+              inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+            }  
+            inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+          }
+
+
+          let receiveArguments = "";
+          if (currentInMessage) {
+            let parameters = [];
+            if (subFuncMessages.find(element => element.id === currentInMessage)) {
+              parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+            } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+              parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+            } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+              parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
+            }
+            parameters.forEach((param, idx, arr) => {
+              if (idx === arr.length - 1) {
+                if (arr.length === 1) {
+                  receiveArguments += (
+                    "(" + param.name + ")"
+                  );
+                } else {
+                  receiveArguments += (
+                    param.name + ")"
+                  );
+                }
+              } else if (idx === 0) {
+                receiveArguments += (
+                  "(" + param.name + ", "
+                );
+              } else {
+                receiveArguments += (
+                  param.name + ", "
+                );
+              }
+            })
+          }
+          if (subFuncMessages.find(element => element.id === currentInMessage) || 
+              (paramInterMessages.find(element => element.id === currentInMessage))) {
+            finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+          } else {
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+          }
+          finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+            
+          
+          // Code for the transition
+          let nameComment = genTransitionNameComment(transition, "         ");
+          finalString += nameComment;
+          finalString += (
+            "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+          );
+
+          // Out Message Info
+          let outMessage ="";
+          let outMessageBasic = "";
+          let outMessageComp = "";
+          let outMessageBasicInstance = "";
+          let outMessageTrace = "";
+          if (subFuncMessages.find(element => element.id === transition.outMessage)) {
+            outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
+            outMessageComp = outMessage.compInter;
+            outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+            let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+            outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+          } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
+            outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
+            outMessageComp = outMessage.compInter;
+            outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+            let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
+            outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+          } else {
+            outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
+          
+            outMessageBasic = "";
+            interSelector.basicInters.forEach((basic) => {
+              basic.messages.forEach((message) => {
+                if (message === outMessage.id) {
+                  outMessageBasic = basic;
+                }
+              })
+            })
+
+            outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+            outMessageBasicInstance = "";
+            if (outMessageComp) {
+              outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+            }
+
+            outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+          }
+
+          let toState = "";
+          if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
+            toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
+          }
+
+          let sendArguments = "";
+          if (transition.outMessage) {
+            transition.outMessageArguments.forEach((arg, idx, arr) => {
+              if (idx === arr.length - 1) {
+                if (arr.length === 1) {
+                  sendArguments += (
+                    "(" + arg.argValue + ")"
+                  );
+                } else {
+                  sendArguments += (
+                    arg.argValue + ")"
+                  );
+                }
+              } else if (idx === 0) {
+                sendArguments += (
+                  "(" + arg.argValue + ", "
+                );
+              } else {
+                sendArguments += (
+                  arg.argValue + ", "
+                );
+              }
+            })
+          }
+
+
+          finalString += ( 
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+            "             and transition " + toState           
+          );
+
+          if (toState) {
+            if (transition.toStateArguments.length > 0) {
+
+              transition.toStateArguments.forEach((param, idx, arr) => {
+                if (idx === arr.length - 1) {
+                  if (arr.length === 1) {
+                    finalString += (
+                      "(" + param.argValue + ")"
+                    );
+                  } else {
+                    finalString += (
+                      param.argValue + ")"
+                    );
+                  }
+                  
+                } else if (idx === 0) {
+                  finalString += (
+                    "(" + param.argValue + ", "
+                  );
+                } else {
+                  finalString += (
+                    param.argValue + ", "
+                  );
+                } 
+              })
+            }
+          }
+          finalString += ".\r\n" 
+          finalString += (
+            "          } else {\r\n"
+          );
+          finalString += (
+            "             fail.\r\n          }\r\n"
+          );
+          finalString += "        }\r\n\r\n"
         } else {
           // Normal transition code
           let thisTransition = thisInitStateInMessageInfo[currentInMessage][0];
@@ -1421,6 +2036,14 @@ function CodeGenerator(props) {
         });
         
         thisStateInMessageArray.forEach(currentInMessage => {
+          // Determine if single transition guard code is needed
+          // For this message, determine if any transitions include guard code
+          let singleTransitionGuard = false;
+          thisStateTransitionArray.forEach(transition => {
+            if (transition.inMessage === currentInMessage && transition.guard !== "") {
+              singleTransitionGuard = true;
+            }
+          });
           // Guard Code
           if (thisStateInMessageInfo[currentInMessage].length > 1) {
             // In Message Info
@@ -1627,6 +2250,203 @@ function CodeGenerator(props) {
             });
             finalString += "      }\r\n\r\n"
   
+          } else if (singleTransitionGuard) { // Guard code for single transitions
+            let transition = thisStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
+            // In Message Info
+            let inMessage ="";
+            let inMessageBasic = "";
+            let inMessageComp = "";
+            let inMessageBasicInstance = "";
+            let inMessageTrace = "";
+            if (subFuncMessages.find(element => element.id === currentInMessage)) {
+              inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+              inMessageComp = inMessage.compInter;
+              inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+              let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+              inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+              inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+              inMessageComp = inMessage.compInter;
+              inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+              let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+              inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            } else {
+              inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
+
+              interSelector.basicInters.forEach((basic) => {
+                basic.messages.forEach((message) => {
+                  if (message === inMessage.id) {
+                    inMessageBasic = basic;
+                  }
+                })
+              });
+
+              inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+              if (inMessageComp) {
+                inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+              }  
+              inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            }
+  
+  
+            let receiveArguments = "";
+            if (currentInMessage) {
+              let parameters = [];
+              if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+              } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+              } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+                parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
+              }
+              parameters.forEach((param, idx, arr) => {
+                if (idx === arr.length - 1) {
+                  if (arr.length === 1) {
+                    receiveArguments += (
+                      "(" + param.name + ")"
+                    );
+                  } else {
+                    receiveArguments += (
+                      param.name + ")"
+                    );
+                  }
+                } else if (idx === 0) {
+                  receiveArguments += (
+                    "(" + param.name + ", "
+                  );
+                } else {
+                  receiveArguments += (
+                    param.name + ", "
+                  );
+                }
+              })
+            }
+            if (subFuncMessages.find(element => element.id === currentInMessage) || 
+                (paramInterMessages.find(element => element.id === currentInMessage))) {
+              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+            } else {
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            }
+            finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+              
+            
+            // Code for the transition
+            let nameComment = genTransitionNameComment(transition, "         ");
+            finalString += nameComment;
+            finalString += (
+              "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+            );
+
+            // Out Message Info
+            let outMessage ="";
+            let outMessageBasic = "";
+            let outMessageComp = "";
+            let outMessageBasicInstance = "";
+            let outMessageTrace = "";
+            if (subFuncMessages.find(element => element.id === transition.outMessage)) {
+              outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
+              outMessageComp = outMessage.compInter;
+              outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+              let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+              outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
+              outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
+              outMessageComp = outMessage.compInter;
+              outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+              let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
+              outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            } else {
+              outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
+            
+              outMessageBasic = "";
+              interSelector.basicInters.forEach((basic) => {
+                basic.messages.forEach((message) => {
+                  if (message === outMessage.id) {
+                    outMessageBasic = basic;
+                  }
+                })
+              })
+  
+              outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+              outMessageBasicInstance = "";
+              if (outMessageComp) {
+                outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+              }
+  
+              outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            }
+
+            let toState = "";
+            if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
+              toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
+            }
+
+            let sendArguments = "";
+            if (transition.outMessage) {
+              transition.outMessageArguments.forEach((arg, idx, arr) => {
+                if (idx === arr.length - 1) {
+                  if (arr.length === 1) {
+                    sendArguments += (
+                      "(" + arg.argValue + ")"
+                    );
+                  } else {
+                    sendArguments += (
+                      arg.argValue + ")"
+                    );
+                  }
+                } else if (idx === 0) {
+                  sendArguments += (
+                    "(" + arg.argValue + ", "
+                  );
+                } else {
+                  sendArguments += (
+                    arg.argValue + ", "
+                  );
+                }
+              })
+            }
+
+
+            finalString += ( 
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "             and transition " + toState           
+            );
+
+            if (toState) {
+              if (transition.toStateArguments.length > 0) {
+
+                transition.toStateArguments.forEach((param, idx, arr) => {
+                  if (idx === arr.length - 1) {
+                    if (arr.length === 1) {
+                      finalString += (
+                        "(" + param.argValue + ")"
+                      );
+                    } else {
+                      finalString += (
+                        param.argValue + ")"
+                      );
+                    }
+                    
+                  } else if (idx === 0) {
+                    finalString += (
+                      "(" + param.argValue + ", "
+                    );
+                  } else {
+                    finalString += (
+                      param.argValue + ", "
+                    );
+                  } 
+                })
+              }
+            }
+            finalString += ".\r\n" 
+            finalString += (
+              "          } else {\r\n"
+            );
+            finalString += (
+              "             fail.\r\n          }\r\n"
+            );
+            finalString += "        }\r\n\r\n"
           } else {
             // Normal transition code
             let thisTransition = thisStateInMessageInfo[currentInMessage][0];
@@ -1908,6 +2728,14 @@ function CodeGenerator(props) {
         });
   
         thisInitStateInMessageArray.forEach(currentInMessage => {
+          // Determine if single transition guard code is needed
+          // For this message, determine if any transitions include guard code
+          let singleTransitionGuard = false;
+          thisInitStateTransitionArray.forEach(transition => {
+            if (transition.inMessage === currentInMessage && transition.guard !== "") {
+              singleTransitionGuard = true;
+            }
+          });
           // Guard Code
           if (thisInitStateInMessageInfo[currentInMessage].length > 1) {
             // In Message Info
@@ -2114,6 +2942,203 @@ function CodeGenerator(props) {
             });
             finalString += "        }\r\n\r\n"
   
+          } else if (singleTransitionGuard) { // Guard code for single transitions
+            let transition = thisInitStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
+            // In Message Info
+            let inMessage ="";
+            let inMessageBasic = "";
+            let inMessageComp = "";
+            let inMessageBasicInstance = "";
+            let inMessageTrace = "";
+            if (subFuncMessages.find(element => element.id === currentInMessage)) {
+              inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+              inMessageComp = inMessage.compInter;
+              inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+              let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+              inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+              inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+              inMessageComp = inMessage.compInter;
+              inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+              let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+              inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            } else {
+              inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
+
+              interSelector.basicInters.forEach((basic) => {
+                basic.messages.forEach((message) => {
+                  if (message === inMessage.id) {
+                    inMessageBasic = basic;
+                  }
+                })
+              });
+
+              inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+              if (inMessageComp) {
+                inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+              }  
+              inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            }
+  
+  
+            let receiveArguments = "";
+            if (currentInMessage) {
+              let parameters = [];
+              if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+              } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+              } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+                parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
+              }
+              parameters.forEach((param, idx, arr) => {
+                if (idx === arr.length - 1) {
+                  if (arr.length === 1) {
+                    receiveArguments += (
+                      "(" + param.name + ")"
+                    );
+                  } else {
+                    receiveArguments += (
+                      param.name + ")"
+                    );
+                  }
+                } else if (idx === 0) {
+                  receiveArguments += (
+                    "(" + param.name + ", "
+                  );
+                } else {
+                  receiveArguments += (
+                    param.name + ", "
+                  );
+                }
+              })
+            }
+            if (subFuncMessages.find(element => element.id === currentInMessage) || 
+                (paramInterMessages.find(element => element.id === currentInMessage))) {
+              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+            } else {
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            }
+            finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+              
+            
+            // Code for the transition
+            let nameComment = genTransitionNameComment(transition, "         ");
+            finalString += nameComment;
+            finalString += (
+              "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+            );
+
+            // Out Message Info
+            let outMessage ="";
+            let outMessageBasic = "";
+            let outMessageComp = "";
+            let outMessageBasicInstance = "";
+            let outMessageTrace = "";
+            if (subFuncMessages.find(element => element.id === transition.outMessage)) {
+              outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
+              outMessageComp = outMessage.compInter;
+              outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+              let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+              outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
+              outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
+              outMessageComp = outMessage.compInter;
+              outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+              let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
+              outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            } else {
+              outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
+            
+              outMessageBasic = "";
+              interSelector.basicInters.forEach((basic) => {
+                basic.messages.forEach((message) => {
+                  if (message === outMessage.id) {
+                    outMessageBasic = basic;
+                  }
+                })
+              })
+  
+              outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+              outMessageBasicInstance = "";
+              if (outMessageComp) {
+                outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+              }
+  
+              outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            }
+
+            let toState = "";
+            if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
+              toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
+            }
+
+            let sendArguments = "";
+            if (transition.outMessage) {
+              transition.outMessageArguments.forEach((arg, idx, arr) => {
+                if (idx === arr.length - 1) {
+                  if (arr.length === 1) {
+                    sendArguments += (
+                      "(" + arg.argValue + ")"
+                    );
+                  } else {
+                    sendArguments += (
+                      arg.argValue + ")"
+                    );
+                  }
+                } else if (idx === 0) {
+                  sendArguments += (
+                    "(" + arg.argValue + ", "
+                  );
+                } else {
+                  sendArguments += (
+                    arg.argValue + ", "
+                  );
+                }
+              })
+            }
+
+
+            finalString += ( 
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "             and transition " + toState           
+            );
+
+            if (toState) {
+              if (transition.toStateArguments.length > 0) {
+
+                transition.toStateArguments.forEach((param, idx, arr) => {
+                  if (idx === arr.length - 1) {
+                    if (arr.length === 1) {
+                      finalString += (
+                        "(" + param.argValue + ")"
+                      );
+                    } else {
+                      finalString += (
+                        param.argValue + ")"
+                      );
+                    }
+                    
+                  } else if (idx === 0) {
+                    finalString += (
+                      "(" + param.argValue + ", "
+                    );
+                  } else {
+                    finalString += (
+                      param.argValue + ", "
+                    );
+                  } 
+                })
+              }
+            }
+            finalString += ".\r\n" 
+            finalString += (
+              "          } else {\r\n"
+            );
+            finalString += (
+              "             fail.\r\n          }\r\n"
+            );
+            finalString += "        }\r\n\r\n"
           } else {
             // Normal transition code
             let thisTransition = thisInitStateInMessageInfo[currentInMessage][0];
@@ -2365,99 +3390,306 @@ function CodeGenerator(props) {
           });
           
           thisStateInMessageArray.forEach(currentInMessage => {
+            // Determine if single transition guard code is needed
+            // For this message, determine if any transitions include guard code
+            let singleTransitionGuard = false;
+            thisStateTransitionArray.forEach(transition => {
+              if (transition.inMessage === currentInMessage && transition.guard !== "") {
+                singleTransitionGuard = true;
+              }
+            });
             // Guard Code
             if (thisStateInMessageInfo[currentInMessage].length > 1) {
               // In Message Info
-            let inMessage = "";
-            let inMessageBasic = "";
-            let inMessageComp = "";
-            let inMessageBasicInstance = "";
-            let inMessageTrace = "";
-            if (subFuncMessages.find(element => element.id === currentInMessage)) {
-              inMessage = subFuncMessages.find(element => element.id === currentInMessage);
-              inMessageComp = inMessage.compInter;
-              inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
-              let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
-              inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
-            } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
-              inMessage = paramInterMessages.find(element => element.id === currentInMessage);
-              inMessageComp = inMessage.compInter;
-              inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
-              let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
-              inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
-            } else {
-              inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
+              let inMessage = "";
+              let inMessageBasic = "";
+              let inMessageComp = "";
+              let inMessageBasicInstance = "";
+              let inMessageTrace = "";
+              if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+                inMessageComp = inMessage.compInter;
+                inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+                let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+                inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+                inMessageComp = inMessage.compInter;
+                inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+                let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+                inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              } else {
+                inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
 
-              interSelector.basicInters.forEach((basic) => {
-                basic.messages.forEach((message) => {
-                  if (message === inMessage.id) {
-                    inMessageBasic = basic;
+                interSelector.basicInters.forEach((basic) => {
+                  basic.messages.forEach((message) => {
+                    if (message === inMessage.id) {
+                      inMessageBasic = basic;
+                    }
+                  })
+                });
+
+                inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+                if (inMessageComp) {
+                  inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+                }  
+                inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              }
+      
+                let receiveArguments = "";
+                if (currentInMessage) {
+                  let parameters = [];
+                  if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                    parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+                  } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                    parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+                  } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+                    parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
                   }
-                })
-              });
-
-              inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
-              if (inMessageComp) {
-                inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
-              }  
-              inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
-            }
-    
-              let receiveArguments = "";
-              if (currentInMessage) {
-                let parameters = [];
-                if (subFuncMessages.find(element => element.id === currentInMessage)) {
-                  parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
-                } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
-                  parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
-                } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
-                  parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
-                }
-                parameters.forEach((param, idx, arr) => {
-                  if (idx === arr.length - 1) {
-                    if (arr.length === 1) {
+                  parameters.forEach((param, idx, arr) => {
+                    if (idx === arr.length - 1) {
+                      if (arr.length === 1) {
+                        receiveArguments += (
+                          "(" + param.name + ")"
+                        );
+                      } else {
+                        receiveArguments += (
+                          param.name + ")"
+                        );
+                      }
+                    } else if (idx === 0) {
                       receiveArguments += (
-                        "(" + param.name + ")"
+                        "(" + param.name + ", "
                       );
                     } else {
                       receiveArguments += (
-                        param.name + ")"
+                        param.name + ", "
                       );
                     }
-                  } else if (idx === 0) {
-                    receiveArguments += (
-                      "(" + param.name + ", "
+                  })
+                }
+                if (subFuncMessages.find(element => element.id === currentInMessage) || 
+                    (paramInterMessages.find(element => element.id === currentInMessage))) {
+                  finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+                } else {
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+                }
+                finalString += (
+                  "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
+                  "         * Guards are used to differentiate transitions that may have\r\n" +
+                  "         * identical 'from' states and 'in' messages *)\r\n"
+                )
+                // Code for each transition
+                thisStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
+                  if (idx === 0) {
+                    finalString += (
+                      "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
                     );
                   } else {
-                    receiveArguments += (
-                      param.name + ", "
-                    );
+                    finalString += (
+                      " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                    )
                   }
-                })
-              }
-              if (subFuncMessages.find(element => element.id === currentInMessage) || 
-                  (paramInterMessages.find(element => element.id === currentInMessage))) {
-                finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
-              } else {
-                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
-              }
-              finalString += (
-                "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-                "         * Guards are used to differentiate transitions that may have\r\n" +
-                "         * identical 'from' states and 'in' messages *)\r\n"
-              )
-              // Code for each transition
-              thisStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
-                if (idx === 0) {
-                  finalString += (
-                    "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+      
+                  // Out Message Info
+                  let outMessage ="";
+                  let outMessageBasic = "";
+                  let outMessageComp = "";
+                  let outMessageBasicInstance = "";
+                  let outMessageTrace = "";
+                  if (subFuncMessages.find(element => element.id === transition.outMessage)) {
+                    outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
+                    outMessageComp = outMessage.compInter;
+                    outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+                    let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+                    outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
+                    outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
+                    outMessageComp = outMessage.compInter;
+                    outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
+                    let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
+                    outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  } else {
+                    outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
+                  
+                    outMessageBasic = "";
+                    interSelector.basicInters.forEach((basic) => {
+                      basic.messages.forEach((message) => {
+                        if (message === outMessage.id) {
+                          outMessageBasic = basic;
+                        }
+                      })
+                    })
+        
+                    outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+                    outMessageBasicInstance = "";
+                    if (outMessageComp) {
+                      outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+                    }
+        
+                    outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  }
+      
+                  let toState = "";
+                  if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
+                    toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
+                  }
+      
+                  let sendArguments = "";
+                  if (transition.outMessage) {
+                    transition.outMessageArguments.forEach((arg, idx, arr) => {
+                      if (idx === arr.length - 1) {
+                        if (arr.length === 1) {
+                          sendArguments += (
+                            "(" + arg.argValue + ")"
+                          );
+                        } else {
+                          sendArguments += (
+                            arg.argValue + ")"
+                          );
+                        }
+                      } else if (idx === 0) {
+                        sendArguments += (
+                          "(" + arg.argValue + ", "
+                        );
+                      } else {
+                        sendArguments += (
+                          arg.argValue + ", "
+                        );
+                      }
+                    })
+                  }
+
+                  let nameComment = genTransitionNameComment(transition, "             ");
+      
+                  finalString += ( 
+                    nameComment +
+                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                    "             and transition " + toState           
                   );
+      
+                  if (toState) {
+                    if (transition.toStateArguments.length > 0) {
+      
+                      transition.toStateArguments.forEach((param, idx, arr) => {
+                        if (idx === arr.length - 1) {
+                          if (arr.length === 1) {
+                            finalString += (
+                              "(" + param.argValue + ")"
+                            );
+                          } else {
+                            finalString += (
+                              param.argValue + ")" 
+                            );
+                          }
+                          
+                        } else if (idx === 0) {
+                          finalString += (
+                            "(" + param.argValue + ", "
+                          );
+                        } else {
+                          finalString += (
+                            param.argValue + ", "
+                          );
+                        } 
+                      })
+                    }
+                  }
+                  finalString += ".\r\n          }" 
+                  
+                  if (idx === arr.length - 1) {
+                    finalString += " else { fail. }\r\n"
+                  }
+                });
+                finalString += "        }\r\n\r\n"
+                
+              } else if (singleTransitionGuard) { // Guard code for single transitions
+                let transition = thisStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
+                // In Message Info
+                let inMessage ="";
+                let inMessageBasic = "";
+                let inMessageComp = "";
+                let inMessageBasicInstance = "";
+                let inMessageTrace = "";
+                if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                  inMessage = subFuncMessages.find(element => element.id === currentInMessage);
+                  inMessageComp = inMessage.compInter;
+                  inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+                  let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
+                  inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+                } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                  inMessage = paramInterMessages.find(element => element.id === currentInMessage);
+                  inMessageComp = inMessage.compInter;
+                  inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
+                  let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === currentInMessage).paramInterId) || { "name" : "" };
+                  inMessageTrace = thisParamInter.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
                 } else {
-                  finalString += (
-                    " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
-                  )
+                  inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
+
+                  interSelector.basicInters.forEach((basic) => {
+                    basic.messages.forEach((message) => {
+                      if (message === inMessage.id) {
+                        inMessageBasic = basic;
+                      }
+                    })
+                  });
+
+                  inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+                  if (inMessageComp) {
+                    inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
+                  }  
+                  inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
                 }
-    
+      
+      
+                let receiveArguments = "";
+                if (currentInMessage) {
+                  let parameters = [];
+                  if (subFuncMessages.find(element => element.id === currentInMessage)) {
+                    parameters = subFuncMessages.find(element => element.id === currentInMessage).parameters;
+                  } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
+                    parameters = paramInterMessages.find(element => element.id === currentInMessage).parameters;
+                  } else if (interSelector.messages.find(element => element.id === currentInMessage)) {
+                    parameters = interSelector.messages.find(element => element.id === currentInMessage).parameters;
+                  }
+                  parameters.forEach((param, idx, arr) => {
+                    if (idx === arr.length - 1) {
+                      if (arr.length === 1) {
+                        receiveArguments += (
+                          "(" + param.name + ")"
+                        );
+                      } else {
+                        receiveArguments += (
+                          param.name + ")"
+                        );
+                      }
+                    } else if (idx === 0) {
+                      receiveArguments += (
+                        "(" + param.name + ", "
+                      );
+                    } else {
+                      receiveArguments += (
+                        param.name + ", "
+                      );
+                    }
+                  })
+                }
+                if (subFuncMessages.find(element => element.id === currentInMessage) || 
+                    (paramInterMessages.find(element => element.id === currentInMessage))) {
+                  finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+                } else {
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+                }
+                finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+                  
+                
+                // Code for the transition
+                let nameComment = genTransitionNameComment(transition, "         ");
+                finalString += nameComment;
+                finalString += (
+                  "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                );
+
                 // Out Message Info
                 let outMessage ="";
                 let outMessageBasic = "";
@@ -2496,12 +3728,12 @@ function CodeGenerator(props) {
       
                   outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
                 }
-    
+
                 let toState = "";
                 if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
                   toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
                 }
-    
+
                 let sendArguments = "";
                 if (transition.outMessage) {
                   transition.outMessageArguments.forEach((arg, idx, arr) => {
@@ -2527,17 +3759,15 @@ function CodeGenerator(props) {
                   })
                 }
 
-                let nameComment = genTransitionNameComment(transition, "             ");
-    
+
                 finalString += ( 
-                  nameComment +
                   "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
                   "             and transition " + toState           
                 );
-    
+
                 if (toState) {
                   if (transition.toStateArguments.length > 0) {
-    
+
                     transition.toStateArguments.forEach((param, idx, arr) => {
                       if (idx === arr.length - 1) {
                         if (arr.length === 1) {
@@ -2546,7 +3776,7 @@ function CodeGenerator(props) {
                           );
                         } else {
                           finalString += (
-                            param.argValue + ")" 
+                            param.argValue + ")"
                           );
                         }
                         
@@ -2562,14 +3792,14 @@ function CodeGenerator(props) {
                     })
                   }
                 }
-                finalString += ".\r\n          }" 
-                
-                if (idx === arr.length - 1) {
-                  finalString += " else { fail. }\r\n"
-                }
-              });
-              finalString += "        }\r\n\r\n"
-    
+                finalString += ".\r\n" 
+                finalString += (
+                  "          } else {\r\n"
+                );
+                finalString += (
+                  "             fail.\r\n          }\r\n"
+                );
+                finalString += "        }\r\n\r\n"
             } else {
               // Normal transition code
               let thisTransition = thisStateInMessageInfo[currentInMessage][0];

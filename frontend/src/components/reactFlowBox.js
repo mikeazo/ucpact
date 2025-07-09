@@ -414,15 +414,19 @@ function ReactFlowBox(props) {
         paramInterPath = realFuncSelector.parameterInterfaces.find(element => element.id === mes.paramInterId).name + ".";
         let flag = false;
 
-        paramInterMessages.some((paramInterMessage) => {
-            paramInterMessage.compInter.basicInterfaces.forEach((basicInComp) => {
-                if (basicInComp.idOfBasic === mes.basicInter.id && paramInterMessage.paramInterId === mes.paramInterId) {
-                    paramInterPath += basicInComp.name + "." + mes.name;
-                    flag = true;
-                }
+        if (mes.basicInter.type === "direct") {
+            paramInterMessages.some((paramInterMessage) => {
+                paramInterMessage.compInter.basicInterfaces.forEach((basicInComp) => {
+                    if (basicInComp.idOfBasic === mes.basicInter.id && paramInterMessage.paramInterId === mes.paramInterId) {
+                        paramInterPath += basicInComp.name + "." + mes.name;
+                        flag = true;
+                    }
+                });
+                return flag;
             });
-            return flag;
-        });
+        } else {
+            paramInterPath += mes.basicInter.name + "." + mes.name;
+        }
 
         return (paramInterPath)
     }

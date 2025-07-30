@@ -1607,7 +1607,12 @@ function CodeGenerator(props) {
             inMessageComp = inMessage.compInter;
             inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
             let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
-            inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            if(inMessageBasicInstance){      
+              inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            }else{
+              inMessageBasicInstance = inMessage.basicInter;
+              inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+            }
           } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
             inMessage = paramInterMessages.find(element => element.id === currentInMessage);
             inMessageComp = inMessage.compInter;
@@ -1692,7 +1697,13 @@ function CodeGenerator(props) {
             outMessageComp = outMessage.compInter;
             outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
             let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
-            outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            if(outMessageBasicInstance){      
+                outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              }else{
+                outMessageBasicInstance = outMessage.basicInter;
+                outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              }
+            
           } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
             outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
             outMessageComp = outMessage.compInter;
@@ -2263,7 +2274,13 @@ function CodeGenerator(props) {
               inMessageComp = inMessage.compInter;
               inMessageBasicInstance = inMessage.compInter.basicInterfaces.find(element => element.idOfBasic === inMessage.basicInter.id);
               let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === currentInMessage).subfuncId) || { "name" : "" };
-              inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              if(inMessageBasicInstance){      
+                inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              }else{
+                inMessageBasicInstance = inMessage.basicInter;
+                inMessageTrace = thisSubFunc.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              }
+              
             } else if (paramInterMessages.find(element => element.id === currentInMessage)) {
               inMessage = paramInterMessages.find(element => element.id === currentInMessage);
               inMessageComp = inMessage.compInter;
@@ -2348,6 +2365,12 @@ function CodeGenerator(props) {
               outMessageComp = outMessage.compInter;
               outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
               let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
+              if(outMessageBasicInstance){      
+                outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              }else{
+                outMessageBasicInstance = outMessage.basicInter;
+                outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              }
               outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
             } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
               outMessage = paramInterMessages.find(element => element.id === transition.outMessage);

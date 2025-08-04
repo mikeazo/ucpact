@@ -27,6 +27,9 @@ import { setCompInterfaceNameDispatch,
          setMessageNameDispatch,
          setBasicInterfaceTypeDispatch,
          deleteBasicInterfaceDispatch,
+         setBasicInterfaceCommentDispatch,
+         setCompInterfaceCommentDispatch,
+         setMessageCommentDispatch,
          addMessageToInterfaceDispatch,
          deleteMessageFromInterfaceDispatch,
          setMessageTypeDispatch,
@@ -41,7 +44,7 @@ import { removeInterFromIFDispatch } from '../features/idealFunctionalities/idea
 import { removeInterFromRealFuncDispatch } from '../features/realFunctionalities/realFuncSlice';
 import { removeOutArgumentFromTransitionsDispatch,
          addOutArgumentToTransitionDispatch } from '../features/stateMachines/stateMachineSlice';
-import { DisplayNameSetup, upperCaseValidation, lowerCaseValidation} from "./helperFunctions";
+import { DisplayNameSetup, upperCaseValidation, lowerCaseValidation, commentValidation} from "./helperFunctions";
 
 
 
@@ -113,6 +116,21 @@ function Interfaces(props) {
                 case "parameterType":
                     setParameterType(nameState[0], nameState[1], nameState[2]);
                     break;
+                case "basicInterComment":
+                    if(commentValidation(nameState[1])){
+                        setBasicInterComment(nameState[0], nameState[1]);
+                    }
+                    break;
+                case "compInterComment":
+                    if(commentValidation(nameState[1])){
+                        setCompInterComment(nameState[0], nameState[1]);
+                    }
+                    break;
+                case "messageComment":
+                    if(commentValidation(nameState[1])){
+                        setMessageComment(nameState[0], nameState[1]);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -156,6 +174,21 @@ function Interfaces(props) {
                 break;
             case "parameterType":
                 setParameterType(nameState[0], nameState[1], nameState[2]);
+                break;
+            case "basicInterComment":
+                if(commentValidation(nameState[1])){
+                    setBasicInterComment(nameState[0], nameState[1]);
+                }
+                break;
+            case "compInterComment":
+                if(commentValidation(nameState[1])){
+                    setCompInterComment(nameState[0], nameState[1]);
+                }
+                break;
+            case "messageComment":
+                if(commentValidation(nameState[1])){
+                    setMessageComment(nameState[0], nameState[1]);
+                }
                 break;
             default:
                 break;
@@ -235,6 +268,27 @@ function Interfaces(props) {
         dispatch(setParameterTypeDispatch([msgID, paraID, value]))
     };
 
+    /*
+      This function sets the basic interface comment into the Redux messages state
+    */
+      const setBasicInterComment = (interID, value) => {
+        dispatch(setBasicInterfaceCommentDispatch([interID, value]))
+      }
+
+    /*
+      This function sets the composite interface comment into the Redux messages state
+    */
+      const setCompInterComment = (interID, value) => {
+        dispatch(setCompInterfaceCommentDispatch([interID, value]))
+      }
+
+    /*
+      This function sets the message comment into the Redux messages state
+    */
+      const setMessageComment = (msgID, value) => {
+        dispatch(setMessageCommentDispatch([msgID, value]))
+      }
+
     /* 
       This function sets the type of a composite interface into the Redux compInters state
       Types can be "direct" or "adversarial"
@@ -283,7 +337,7 @@ function Interfaces(props) {
     */
     const addCompositeInterface = () => {
         let interId = uuid();
-        let inter = {id: interId, name: "", type: "direct", basicInterfaces:[]};
+        let inter = {id: interId, name: "", type: "direct", basicInterfaces:[], interfaceComment: ""};
         dispatch(addCompositeInterfaceDispatch(inter))
     };
 
@@ -292,7 +346,7 @@ function Interfaces(props) {
     */
     const addBasicInterface = () => {
         let interId = uuid();
-        let inter = {id: interId, name: "", type: "direct", messages: []};
+        let inter = {id: interId, name: "", type: "direct", messages: [], interfaceComment: ""};
         dispatch(addBasicInterfaceDispatch(inter))
     };
 
@@ -610,7 +664,7 @@ function Interfaces(props) {
                                                     type="text" autoComplete='off' placeholder='Interface Name'
                                                     onKeyDown={handleKeyDown}/>
                                             </Col>
-                                            <Col>
+                                            <Col className="d-flex justify-content-end">
                                                 <ToggleButtonGroup name={"radio-" + value.id} type="radio" value={value.type} className={'pushback'}
                                                                 
                                                                 onChange={ (v,e) => setBasicInterfaceType(value.id, v) }>
@@ -621,6 +675,15 @@ function Interfaces(props) {
                                                         Adversarial
                                                     </ToggleButton>
                                                 </ToggleButtonGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control className="interComment" as="textarea" rows={2} key={"interface-comment-name-" + value.id} 
+                                                    id={"interface-comment-name-" + value.id}
+                                                    onChange={e=>setNameState([value.id, e.target.value, "basicInterComment"])}
+                                                    defaultValue={value.interfaceComment || ""}
+                                                    type="text" autoComplete='off' placeholder='Interface Comment'/>
                                             </Col>
                                         </Row>
                                         <Row>
@@ -667,6 +730,15 @@ function Interfaces(props) {
                                                                         Out 
                                                                     </ToggleButton>
                                                                 </ToggleButtonGroup>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col>
+                                                                <Form.Control className="messageComment" as="textarea" rows={2} key={"message-comment-name-" + value.id}
+                                                                    id={"message-comment-name-" + value.id}
+                                                                    onChange={e=>setNameState([message.id, e.target.value, "messageComment"])}
+                                                                    defaultValue={message.messageComment||""}
+                                                                    type="text" autoComplete='off' placeholder='Message Comment'/>
                                                             </Col>
                                                         </Row>
                                                         <Row>
@@ -730,7 +802,7 @@ function Interfaces(props) {
                                                             onBlur={e => finalCall(e) } isInvalid={!upperCheckComp(idx, value.id)}
                                                             type="text" autoComplete='off' placeholder='Interface Name' onKeyDown={handleKeyDown}/>
                                             </Col>
-                                            <Col>
+                                            <Col className="d-flex justify-content-end">
                                                 <ToggleButtonGroup name={"radio-" + value.id} type="radio" value={value.type} 
                                                                 
                                                                 onChange={ (v,e) => setCompInterfaceType(value.id, v) }>
@@ -741,6 +813,15 @@ function Interfaces(props) {
                                                         Adversarial
                                                     </ToggleButton>
                                                 </ToggleButtonGroup>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <Form.Control className="interComment" as="textarea" rows={2} key={"interface-comment-name-" + value.id} 
+                                                    id={"interface-comment-name-" + value.id}
+                                                    onChange={e=>setNameState([value.id, e.target.value, "compInterComment"])}
+                                                    defaultValue={value.interfaceComment || ""}
+                                                    type="text" autoComplete='off' placeholder='Interface Comment'/>
                                             </Col>
                                         </Row>
                                         <Row>

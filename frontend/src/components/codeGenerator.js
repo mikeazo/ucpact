@@ -16,6 +16,7 @@ import './codeGenerator.css'
 import { useParams } from 'react-router';
 import axios from 'axios';
 import { useAuth } from "react-oidc-context";
+import { commentBreaker } from './helperFunctions.js';
 
 function CodeGenerator(props) {
   const interSelector = useSelector((state) => state.interfaces) // Redux selector for interfaces
@@ -109,15 +110,21 @@ function CodeGenerator(props) {
     interSelector.basicInters.forEach((element) => {
       // do stuff for each basic inter here
       if (element.type === "direct") {
-        finalString += (
-          "(* Basic direct interface *)\r\n" +
-          "direct " + element.name + " {\r\n"
-        );
+        finalString +=  "(* Basic direct interface *)\r\n"
+        if(element.interfaceComment.length>0){
+          if(element.interfaceComment.length >= 80){
+            finalString += "(* "+commentBreaker(element.interfaceComment, 80, 0) + "\r\n *)\r\n"
+          }else{finalString+= "(* "+element.interfaceComment +" *)\r\n"}
+        }
+        finalString += "direct " + element.name + " {\r\n";
       } else if (element.type === "adversarial") {
-        finalString += (
-          "(* Basic adversarial interface *)\r\n" +
-          "adversarial " + element.name + " {\r\n"
-        );
+          finalString += "(* Basic adversarial interface *)\r\n"
+          if(element.interfaceComment.length>0){
+            if(element.interfaceComment.length>= 80){
+              finalString += "(* "+commentBreaker(element.interfaceComment, 80, 0) + "\r\n *)\r\n"
+            }else{finalString+= "(* "+element.interfaceComment +" *)\r\n"}
+        }
+        finalString += "adversarial " + element.name + " {\r\n"
       }
 
       element.messages.forEach((message) => {
@@ -126,6 +133,11 @@ function CodeGenerator(props) {
 
         if (theMessageState) {
           if (theMessageState.type === "in") {
+            if(theMessageState.messageComment.length > 0){
+              if(theMessageState.messageComment.length >= 65){
+                finalString += "   (* " +commentBreaker(theMessageState.messageComment, 65, 1) +"\r    *)\r"
+              }else{finalString += "   (* "+theMessageState.messageComment +" *)\r"}
+            }
             finalString += (
               "   " + theMessageState.type + " " + ((element.type === "direct") ? (theMessageState.port || "undefined") + "@" + (theMessageState.name || "undefined") : (theMessageState.name || "undefined"))
             );
@@ -152,6 +164,11 @@ function CodeGenerator(props) {
             }
             
           } else if (theMessageState.type === "out") {
+            if(theMessageState.messageComment.length > 0){
+              if(theMessageState.messageComment.length >= 65){
+                finalString += "   (* " + commentBreaker(+theMessageState.messageComment, 65, 1) +"\r    *)\r"
+              }else{finalString += "   (* " +theMessageState.messageComment +" *)\r"}
+            }
             finalString += (
               "   " + theMessageState.type + " " + (theMessageState.name || "undefined")
             );
@@ -188,15 +205,22 @@ function CodeGenerator(props) {
     interSelector.compInters.forEach((element) => {
       // do stuff for each composite inter here
       if (element.type === "direct") {
-        finalString += (
-          "(* Composite direct interface *)\r\n" +
-          "direct " + element.name + " {\r\n"
-        );
+        finalString += "(* Composite direct interface *)\r\n"
+        if(element.interfaceComment.length > 0){
+          if(element.interfaceComment.length >= 80){
+            finalString += "(* " +commentBreaker(element.interfaceComment,80,0) +"\r *)\r\n"
+          }else{finalString += "(* "  + element.interfaceComment+" *)\r\n"}
+        }
+        finalString += "direct " + element.name + " {\r\n";
       } else if (element.type === "adversarial") {
-        finalString += (
-          "(* Composite adversarial interface *)\r\n" +
-          "adversarial " + element.name + " {\r\n"
-        );
+        finalString += "(* Composite adversarial interface *)\r\n"
+        if(element.interfaceComment.length > 0){
+          if(element.interfaceComment.length >= 80){
+            finalString += "(* " +commentBreaker(element.interfaceComment,80,0) +"\r *)\r\n"
+          }else{finalString += "(* "  + element.interfaceComment+" *)\r\n"}
+        }
+        
+          finalString += "adversarial " + element.name + " {\r\n"
       }
 
       element.basicInterfaces.forEach((basicInt) => {
@@ -236,6 +260,15 @@ function CodeGenerator(props) {
     let initState = (stateMachineSelector.states[stateMachineSelector.states.findIndex(element => element.id === thisStateMachine.initState)]) || "";
     let thisStateMachineTransitionArray = stateMachineSelector.transitions.filter(element => thisStateMachine.transitions.includes(element.id));
     let thisInitStateTransitionArray = thisStateMachineTransitionArray.filter(element => element.fromState === initState.id);
+
+    if('comment' in initState){
+      if(initState.comment.length > 70){
+        finalString += "  (* " +commentBreaker(initState.comment, 70, 2) + "\n   *)\n"
+      }
+      else if(initState.comment.length >0){
+        finalString += "  (* " +initState.comment + " *)\n"
+      }
+    }
 
     finalString += (
       "  initial state " + initState.name + " {\r\n" +
@@ -779,6 +812,14 @@ function CodeGenerator(props) {
         let thisStateInMessageInfo = {};
 
         if (thisState) {
+        if('comment' in thisState){
+          if(thisState.comment.length > 70){
+            finalString += "  (* " +commentBreaker(thisState.comment, 70, 2) + "\n   *)\n"
+          }
+          else if(thisState.comment.length >0){
+            finalString += "  (* " +thisState.comment + " *)\n"
+          }
+        }
         finalString += (
           "  state " + thisState.name 
         );
@@ -1376,6 +1417,15 @@ function CodeGenerator(props) {
     let initState = (stateMachineSelector.states[stateMachineSelector.states.findIndex(element => element.id === thisStateMachine.initState)]) || "";
     let thisStateMachineTransitionArray = stateMachineSelector.transitions.filter(element => thisStateMachine.transitions.includes(element.id));
     let thisInitStateTransitionArray = thisStateMachineTransitionArray.filter(element => element.fromState === initState.id);
+
+    if('comment' in initState){
+      if(initState.comment.length > 70){
+        finalString += "  (* " +commentBreaker(initState.comment, 70, 2) + "\n   *)\n"
+      }
+      else if(initState.comment.length >0){
+        finalString += "  (* " +initState.comment + " *)\n"
+      }
+    }
 
     finalString += (
       "  initial state " + initState.name + " {\r\n" +
@@ -2023,6 +2073,14 @@ function CodeGenerator(props) {
         let thisStateInMessageArray = [];
         let thisStateInMessageInfo = {};
 
+        if('comment' in thisState){
+          if(thisState.comment.length > 70){
+            finalString += "  (* " +commentBreaker(thisState.comment, 70, 2) + "\n   *)\n"
+          }
+          else if(thisState.comment.length >0){
+            finalString += "  (* " +thisState.comment + " *)\n"
+          }
+        }
         finalString += (
           "  state " + thisState.name 
         );
@@ -2747,10 +2805,17 @@ function CodeGenerator(props) {
         thisPartyAdvInter = (compAdv.basicInterfaces[compAdv.basicInterfaces.findIndex(t => t.idOfInstance === thisParty.basicAdversarialInterface)]) || "";
       }
       
-      finalString += (
-        "\r\n  (* Party *)\r\n" +
-        "  party " + thisParty.name + " serves" + (thisPartyDirectInter.name ? (" " + compDir.name + "." + thisPartyDirectInter.name) : "") + ((thisPartyAdvInter.name && thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + ((thisPartyAdvInter.name && !thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + " {\r\n"
-      );
+      finalString += "\r\n  (* Party *)\r\n"
+      if('comment' in thisParty){
+        if(thisParty.comment.length > 75){
+          finalString += "  (* " +commentBreaker(thisParty.comment, 75, 2) + "\n   *)\n"
+        }
+        else if(thisParty.comment.length > 0){
+          finalString += "  (* " +thisParty.comment + " *)\n"
+        }
+      }
+      finalString += "  party " + thisParty.name + " serves" + (thisPartyDirectInter.name ? (" " + compDir.name + "." + thisPartyDirectInter.name) : "") + ((thisPartyAdvInter.name && thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + ((thisPartyAdvInter.name && !thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + " {\r\n"
+    
 
       // initial state code
       let thisStateMachine = (stateMachineSelector.stateMachines[stateMachineSelector.stateMachines.findIndex(element => element.id === thisParty.stateMachine)]) || "";
@@ -2758,6 +2823,14 @@ function CodeGenerator(props) {
       let thisStateMachineTransitionArray = stateMachineSelector.transitions.filter(element => thisStateMachine.transitions.includes(element.id));
       let thisInitStateTransitionArray = thisStateMachineTransitionArray.filter(element => element.fromState === initState.id);
 
+      if('comment' in initState){
+        if(initState.comment.length > 70){
+          finalString += "    (* " +commentBreaker(initState.comment, 70, 3) + "\n     *)\n"
+        }
+        else if(initState.comment.length >0){
+          finalString += "    (* " +initState.comment + " *)\n"
+        }
+      }
       finalString += (
         "    initial state " + initState.name + " {\r\n" +
         "      match message with \r\n"
@@ -3398,6 +3471,14 @@ function CodeGenerator(props) {
           let thisStateInMessageArray = [];
           let thisStateInMessageInfo = {};
   
+          if('comment' in thisState){
+            if(thisState.comment.length > 70){
+              finalString += "    (* " +commentBreaker(thisState.comment, 70, 3) + "\n     *)\n"
+            }
+            else if(thisState.comment.length >0){
+              finalString += "    (* " +thisState.comment + " *)\n"
+            }
+          }
           finalString += (
             "    state " + thisState.name 
           );

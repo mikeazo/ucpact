@@ -99,6 +99,43 @@ export function lowerCaseValidation(checkString, printNoti=true){
        return theCheck
     }
 }
+export function commentValidation(checkString, printNoti=true, messageConcat=" COMMENT DID NOT SAVE"){
+    if(checkString === "" || checkString === null){
+        return true
+    }
+    let notiTitle = checkString.concat(" Comment Check Failure")
+    let notiMessage = "Message: "
+    let notiType = 'danger'
+    let theCheck = false
+    if (!checkString.includes('*)') && !checkString.includes('(*')){theCheck = true}
+    if(theCheck){
+        return theCheck
+        
+    }  else {
+        if(printNoti){
+            notiMessage += "Comment cannot have (* or *) with no white space between the characters."
+            notiMessage = notiMessage.concat(messageConcat)
+            
+            let notification = {
+                title:   notiTitle,
+                message: notiMessage,
+                type:    notiType,
+                insert:  "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true
+                }
+            }
+            Store.addNotification(notification)
+        }
+       return theCheck
+    }
+    
+
+}
 export function upperCaseInvalidMessage(checkString){
     let notiMessage = "Message: "
     const regexCheckUCLead = /^(?!UC_)/
@@ -185,4 +222,72 @@ export function reservedWordCheck(checkString){
         }
     }
     return isInvalid
+}
+/*
+* splits input string into multiline string, with each line other than 1st starting with *. breaks will be inbetween words
+* input=string, limit=int(max length of each line), type=bool(whether its inside or outside a interface)
+*/
+export function commentBreaker(input, limit, type){
+    const maxLength = limit;
+    const words = input.split(/\s+/);
+    const result = [];
+
+    let currentLine = '';
+    if(type === 0){
+        for (const word of words) {
+        if ((currentLine + ' ' + word).trim().length <= maxLength) {
+            currentLine += (currentLine ? ' ' : '') + word;
+        } else {
+            result.push(currentLine);
+            currentLine = word;
+        }
+    }
+
+    if (currentLine) {
+        result.push(currentLine);
+    }
+
+    return result.map((line, index) => index === 0 ? line : ` * ${line}`).join('\n');
+    }else if(type ===1){ //extra tabs for when comment is inside of interface(ie. basic instances or message comments)
+        for (const word of words) {
+        if ((currentLine + ' ' + word).trim().length <= maxLength) {
+            currentLine += (currentLine ? ' ' : '') + word;
+        } else {
+            result.push(currentLine);
+            currentLine = word;
+        }
+    }
+
+    if (currentLine) {
+        result.push(currentLine);
+    }
+
+    return result.map((line, index) => index === 0 ? line :`    * ${line}`).join('\n');
+    }else if(type ===2){//different formatting for party comments, also for ideal functionality states
+        for (const word of words) {
+        if ((currentLine + ' ' + word).trim().length <= maxLength) {
+            currentLine += (currentLine ? ' ' : '') + word;
+        } else {
+            result.push(currentLine);
+            currentLine = word;
+        }
+    }
+    if (currentLine) {
+        result.push(currentLine);
+    }
+    return result.map((line, index) => index === 0 ? line :`   * ${line}`).join('\n');
+    }else if(type ===3){//different formatting for state comments
+        for (const word of words) {
+        if ((currentLine + ' ' + word).trim().length <= maxLength) {
+            currentLine += (currentLine ? ' ' : '') + word;
+        } else {
+            result.push(currentLine);
+            currentLine = word;
+        }
+    }
+    if (currentLine) {
+        result.push(currentLine);
+    }
+    return result.map((line, index) => index === 0 ? line :`     * ${line}`).join('\n');
+    }
 }

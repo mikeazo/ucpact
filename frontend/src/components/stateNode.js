@@ -21,7 +21,7 @@ import { changeStateDispatch,
          removeParameterFromStateDispatch,
          removeInArgumentFromTransitionsDispatch,
          addInArgumentToTransitionDispatch } from '../features/stateMachines/stateMachineSlice';
-import { DisplayNameSetup, lowerCaseValidation, upperCaseValidation } from './helperFunctions';
+import { DisplayNameSetup, lowerCaseValidation, upperCaseValidation, commentValidation } from './helperFunctions';
 
 var paraNameRefArray = [];
 var paraTypeRefArray = [];
@@ -71,6 +71,7 @@ function StateNode(props) {
   };
 
   const nameRef = React.createRef();
+  const commentRef = React.createRef();
 
   const handleShow = () => {
     thisStateSelector.parameters.forEach(nameRef => {
@@ -130,7 +131,8 @@ function StateNode(props) {
         let newParameter = {
             "name": paraNameRefArray[idx].current.value,
             "type": paraTypeRefArray[idx].current.value,
-            "id": thisStateSelector.parameters[idx].id
+            "id": thisStateSelector.parameters[idx].id,
+            "comment": ""
         }
         parameters.push(newParameter);
         if(!lowerCaseValidation(paraNameRefArray[idx].current.value)){
@@ -147,12 +149,13 @@ function StateNode(props) {
         "color": state.colorTemp,
         "left": props.positionAbsoluteX, 
         "top": props.positionAbsoluteY,
-        "parameters": parameters
+        "parameters": parameters,
+        "comment": commentRef.current.value
     };
     let updatedTempColor = {
         "color": state.colorTemp,
     };
-    if(upperCaseValidation(nameRef.current.value) && parametersAreGood && checkOtherStateNamesInSharedStateMachine(nameRef.current.value)){
+    if(upperCaseValidation(nameRef.current.value) && parametersAreGood && checkOtherStateNamesInSharedStateMachine(nameRef.current.value) && commentValidation(commentRef.current.value)){
         setState(prevState => ({
             ...prevState,
             ...updatedTempColor
@@ -327,6 +330,11 @@ function StateNode(props) {
                           </div>
                       </div> 
                   </div>
+              </div>
+              <div style={{paddingBottom:'15px'}}>
+                <Form.Control className="comment" as="textarea" rows={2} onSubmit={saveComponentInfo}
+                    defaultValue={thisStateSelector && thisStateSelector.comment } ref={commentRef} 
+                    type="text" autoComplete='off' placeholder='State Comment' style={{width: '469px'}}/>
               </div>
               {!data.initState &&
               <div id="parameter-container">

@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from helperFunctions import createNewModel, deleteAllModels 
+from helperFunctions import createNewModel, deleteAllModels, createModelWUBI, loadModelWUBI 
 
 @pytest.fixture
 def driver():
@@ -133,3 +133,17 @@ def test_createTransition(driver):
     transitionArray = data['model']['stateMachines']['transitions']
 
     assert transitionArray[0]['name'] == "Transition1", "Transition name is not 'Transition1' in JSON file"
+
+def test_check_undefined_basic_instance_for_state_machine(driver):
+    createModelWUBI()
+    loadModelWUBI(driver)
+    driver.maximize_window()
+    action = ActionChains(driver)
+    wait = WebDriverWait(driver, 10)
+
+    wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '[data-rr-ui-event-key="stateMachines"]'))).click()
+    assert wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "smTitle"))) is not None, "State Machine title not found"
+
+    wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '[data-rr-ui-event-key="b63dfde0-ec80-9b80-3d55-3de54a10fe66"]'))).click()
+    assert "IS" in driver.page_source, "Transition to tab failed"
+    

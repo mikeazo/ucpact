@@ -67,6 +67,16 @@ def createCodeGenerationModel():
     with open(newFilename, 'w') as newFile:
         json.dump(data, newFile, indent=2)
 
+# Add a model for checking a basic instance not being set in a state.
+def createModelWUBI():
+    with open('ModelWUBI.json', 'r') as file:
+        data = json.load(file)
+
+    newFilename = os.path.join('models', 'ModelWUBI') + '.json'
+    with open(newFilename, 'w') as newFile:
+        json.dump(data, newFile, indent=2)
+
+    time.sleep(3)
 def waitForExists(fp, timeout=30):
     start_time = time.time()
     while time.time() - start_time < timeout:
@@ -83,3 +93,9 @@ def loadBasicModel(driver):
     # wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='All Models...']"))).click()
     # wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Edit"))).click()
     wait.until(EC.title_contains("BasicModel"))
+
+def loadModelWUBI(driver):
+    driver.get(BASE_URL + "/model/ModelWUBI")
+    time.sleep(5)
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.title_contains("ModelWUBI"))

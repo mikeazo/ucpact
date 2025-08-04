@@ -502,13 +502,13 @@ function ReactFlowBox(props) {
             compInter.basicInterfaces.forEach((basicInter) => {
                 if (basicInter.idOfInstance === props.component.basicAdversarialInterface) {
                     partyInterAdv = interSelector.basicInters.find(element => element.id === basicInter.idOfBasic);
-                    if (partyInterAdv.messages.includes(mes.id)) {
+                    if (partyInterAdv && partyInterAdv.messages.includes(mes.id)) {
                         partyPath = compInter.name + "." + basicInter.name;
                     }         
                 }
                 if (basicInter.idOfInstance === props.component.basicDirectInterface) {
                     partyInterDir = interSelector.basicInters.find(element => element.id === basicInter.idOfBasic);
-                    if (partyInterDir.messages.includes(mes.id)) {
+                    if (partyInterDir && partyInterDir.messages.includes(mes.id)) {
                         partyPath = compInter.name + "." + basicInter.name;
                     }
                 }
@@ -679,12 +679,12 @@ function ReactFlowBox(props) {
         });
 
         if (mes.type === 'in') {
-            if (partyInterAdv.messages) { // check existence
+            if (partyInterAdv && partyInterAdv.messages) { // check existence
                 if (partyInterAdv.messages.includes(mes.id)) {
                     return (mes)
                 }
             }
-            if (partyInterDir.messages) { // check existence
+            if (partyInterDir && partyInterDir.messages) { // check existence
                 if (partyInterDir.messages.includes(mes.id)) {
                     return (mes)
                 }
@@ -755,7 +755,7 @@ function ReactFlowBox(props) {
         });
 
         if (mes.type === 'out') {
-            if (idealFuncInterAdv) { // check existence
+            if (idealFuncInterAdv && idealFuncInterAdv.messages) { // check existence
                 if (idealFuncInterAdv.messages.includes(mes.id)) {
                     return (mes)
                 }
@@ -793,12 +793,12 @@ function ReactFlowBox(props) {
         });
         
         if (mes.type === 'out') {
-            if (partyInterAdv.messages) { // check existence
+            if (partyInterAdv && partyInterAdv.messages) { // check existence
                 if (partyInterAdv.messages.includes(mes.id)) {
                     return (mes)
                 }
             }
-            if (partyInterDir.messages) { // check existence
+            if (partyInterDir && partyInterDir.messages) { // check existence
                 if (partyInterDir.messages.includes(mes.id)) {
                     return (mes)
                 }

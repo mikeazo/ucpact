@@ -520,6 +520,7 @@ function CodeGenerator(props) {
             outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
             let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
             outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            
           } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
             outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
             outMessageComp = outMessage.compInter;
@@ -538,13 +539,17 @@ function CodeGenerator(props) {
               })
             })
 
-            outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
-            outMessageBasicInstance = "";
-            if (outMessageComp) {
-              outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
-            }
+            if (outMessageBasic.type === 'direct') {
+              outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+              outMessageBasicInstance = "";
+              if (outMessageComp) {
+                outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+              }
 
-            outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            } else {
+              outMessageTrace =  outMessageBasic.name + "." + outMessage.name;
+            }
           }
 
           let toState = "";
@@ -1010,12 +1015,18 @@ function CodeGenerator(props) {
                   })
                 });
 
+              if (inMessageBasic.type === 'direct') {
                 inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+                inMessageBasicInstance = "";
                 if (inMessageComp) {
-                  inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
-                }  
+                  inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";
+                }
+    
                 inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              } else {
+                inMessageTrace = inMessageBasic.name + "." + inMessage.name;
               }
+            }
     
     
               let receiveArguments = "";
@@ -1096,13 +1107,17 @@ function CodeGenerator(props) {
                   })
                 })
     
-                outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
-                outMessageBasicInstance = "";
-                if (outMessageComp) {
-                  outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
-                }
+                if (outMessageBasic.type === 'direct') {
+                  outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+                  outMessageBasicInstance = "";
+                  if (outMessageComp) {
+                    outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+                  }
     
-                outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                } else {
+                  outMessageTrace = outMessageBasic.name + "." + outMessage.name;
+                }
               }
 
               let toState = "";
@@ -1426,7 +1441,7 @@ function CodeGenerator(props) {
               }
               inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
             } else {
-              inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
+              inMessageTrace = inMessageBasic.name + "." + inMessage.name;
             }
             
           }       
@@ -1518,7 +1533,7 @@ function CodeGenerator(props) {
   
                 outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
               } else {
-                outMessageTrace = realFuncSelector.name + "." + outMessageBasic.name + "." + outMessage.name;
+                outMessageTrace = outMessageBasic.name + "." + outMessage.name;
               }     
             }       
 
@@ -1702,8 +1717,7 @@ function CodeGenerator(props) {
               }else{
                 outMessageBasicInstance = outMessage.basicInter;
                 outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
-              }
-            
+              }   
           } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
             outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
             outMessageComp = outMessage.compInter;
@@ -1726,9 +1740,14 @@ function CodeGenerator(props) {
             outMessageBasicInstance = "";
             if (outMessageComp) {
               outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+              outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            }else{
+              outMessageBasicInstance = interSelector.basicInters.find(element => element.id === outMessageBasic.id) || "";
+              outMessageTrace = outMessageBasicInstance.name + "." + outMessage.name;
             }
+            
 
-            outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            
           }
 
           let toState = "";
@@ -1760,8 +1779,6 @@ function CodeGenerator(props) {
               }
             })
           }
-
-
           finalString += ( 
             "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
             "             and transition " + toState           
@@ -1841,7 +1858,7 @@ function CodeGenerator(props) {
 
               inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
             } else {
-              inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
+              inMessageTrace = inMessageBasic.name + "." + inMessage.name;
             }
             
           }
@@ -1881,7 +1898,7 @@ function CodeGenerator(props) {
 
               outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
             } else {
-              outMessageTrace = realFuncSelector.name + "." + outMessageBasic.name + "." + outMessage.name;
+              outMessageTrace = outMessageBasic.name + "." + outMessage.name;
             }
           }
 
@@ -2092,7 +2109,7 @@ function CodeGenerator(props) {
   
                 inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
               } else {
-                inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
+                inMessageTrace = inMessageBasic.name + "." + inMessage.name;
               }
               
             }
@@ -2184,7 +2201,7 @@ function CodeGenerator(props) {
     
                   outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
                 } else {
-                  outMessageTrace = realFuncSelector.name + "." + outMessageBasic + "." + outMessage.name;
+                  outMessageTrace = outMessageBasic.name + "." + outMessage.name;
                 }
               }
               
@@ -2298,11 +2315,17 @@ function CodeGenerator(props) {
                 })
               });
 
-              inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
-              if (inMessageComp) {
-                inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";  
-              }  
-              inMessageTrace = inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              if (inMessageBasic.type === 'direct') {
+                inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
+                inMessageBasicInstance = "";
+                if (inMessageComp) {
+                  inMessageBasicInstance = inMessageComp.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id) || "";
+                }
+  
+                inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
+              } else {
+                inMessageTrace = inMessageBasic.name + "." + inMessage.name;
+              }
             }
   
   
@@ -2390,15 +2413,18 @@ function CodeGenerator(props) {
                 })
               })
   
-              outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
-              outMessageBasicInstance = "";
-              if (outMessageComp) {
-                outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+              if(outMessageBasic.type === 'direct') {
+                outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
+                outMessageBasicInstance = "";
+                if (outMessageComp) {
+                  outMessageBasicInstance = outMessageComp.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id) || "";
+                }
+    
+                outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              }else{
+                outMessageTrace = outMessageBasic.name + "." + outMessage.name;
               }
-  
-              outMessageTrace = outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
             }
-
             let toState = "";
             if (stateMachineSelector.states.find(element => element.id === transition.toState)) {
               toState = stateMachineSelector.states.find(element => element.id === transition.toState).name
@@ -2509,7 +2535,7 @@ function CodeGenerator(props) {
     
                 inMessageTrace = realFuncSelector.name + "." + inMessageComp.name + "." + inMessageBasicInstance.name + "." + inMessage.name;
               } else {
-                inMessageTrace = realFuncSelector.name + "." + inMessageBasic.name + "." + inMessage.name;
+                inMessageTrace = inMessageBasic.name + "." + inMessage.name;
               }
             }
   
@@ -2548,7 +2574,7 @@ function CodeGenerator(props) {
   
                 outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
               } else {
-                outMessageTrace = realFuncSelector.name + "." + outMessageBasic.name + "." + outMessage.name;
+                outMessageTrace = outMessageBasic.name + "." + outMessage.name;
               }
             }
 

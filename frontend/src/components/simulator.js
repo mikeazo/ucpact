@@ -43,7 +43,6 @@ function Simulator(props) {
     const realFunctRef = React.createRef();
     
     const saveComponentInfo = (e) => {
-        console.log(basicAdvIntRef.current.getValue()[0].value)
         e.preventDefault();
         let updatedValue = {
             "name": nameRef.current.value,

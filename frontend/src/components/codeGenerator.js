@@ -310,7 +310,7 @@ function CodeGenerator(props) {
             })
           }
 
-          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
           
           finalString += (
             "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -382,7 +382,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
               "           and transition " + toState           
             );
 
@@ -496,7 +496,7 @@ function CodeGenerator(props) {
               (paramInterMessages.find(element => element.id === currentInMessage))) {
             finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
           } else {
-            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
           }
           finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
             
@@ -579,7 +579,7 @@ function CodeGenerator(props) {
 
 
           finalString += ( 
-            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
             "             and transition " + toState           
           );
 
@@ -718,9 +718,9 @@ function CodeGenerator(props) {
           let nameComment = genTransitionNameComment(thisTransition, "          ");
 
           finalString += ( 
-            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
             "          and transition " + toState           
           );
 
@@ -868,7 +868,7 @@ function CodeGenerator(props) {
               })
             }
   
-            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             
             finalString += (
               "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -940,7 +940,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
                 "           and transition " + toState           
               );
   
@@ -1054,7 +1054,7 @@ function CodeGenerator(props) {
                   (paramInterMessages.find(element => element.id === currentInMessage))) {
                 finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
               } else {
-                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
               }
               finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
                 
@@ -1137,7 +1137,7 @@ function CodeGenerator(props) {
 
 
               finalString += ( 
-                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
                 "             and transition " + toState           
               );
 
@@ -1275,9 +1275,9 @@ function CodeGenerator(props) {
             let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
-              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
               "          and transition " + toState           
             );
   
@@ -1464,7 +1464,7 @@ function CodeGenerator(props) {
             })
           }
 
-          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
           
           finalString += (
             "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -1556,7 +1556,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
               "           and transition " + toState           
             );
 
@@ -1674,7 +1674,7 @@ function CodeGenerator(props) {
               (paramInterMessages.find(element => element.id === currentInMessage))) {
             finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
           } else {
-            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
           }
           finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
             
@@ -1763,7 +1763,7 @@ function CodeGenerator(props) {
 
 
           finalString += ( 
-            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
             "             and transition " + toState           
           );
 
@@ -1951,9 +1951,9 @@ function CodeGenerator(props) {
           let nameComment = genTransitionNameComment(thisTransition, "          ");
 
           finalString += ( 
-            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
             "          and transition " + toState           
           );
 
@@ -2130,7 +2130,7 @@ function CodeGenerator(props) {
               })
             }
   
-            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             
             finalString += (
               "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -2222,7 +2222,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
                 "           and transition " + toState           
               );
   
@@ -2342,7 +2342,7 @@ function CodeGenerator(props) {
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             }
             finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
               
@@ -2431,7 +2431,7 @@ function CodeGenerator(props) {
 
 
             finalString += ( 
-              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
               "             and transition " + toState           
             );
 
@@ -2610,9 +2610,9 @@ function CodeGenerator(props) {
             let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
-              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
               "          and transition " + toState           
             );
   
@@ -2834,7 +2834,7 @@ function CodeGenerator(props) {
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             }
             finalString += (
               "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -2926,7 +2926,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
                 "             and transition " + toState           
               );
   
@@ -3040,7 +3040,7 @@ function CodeGenerator(props) {
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             }
             finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
               
@@ -3123,7 +3123,7 @@ function CodeGenerator(props) {
 
 
             finalString += ( 
-              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
               "             and transition " + toState           
             );
 
@@ -3311,14 +3311,14 @@ function CodeGenerator(props) {
               finalString += (
                 "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
                 nameComment +
-                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
                 "            and transition " + toState
               );
             } else {
               finalString += (
-                "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+                "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
                 nameComment +
-                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
                 "            and transition " + toState
               );
             }
@@ -3495,7 +3495,7 @@ function CodeGenerator(props) {
                     (paramInterMessages.find(element => element.id === currentInMessage))) {
                   finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
                 } else {
-                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
                 }
                 finalString += (
                   "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -3587,7 +3587,7 @@ function CodeGenerator(props) {
       
                   finalString += ( 
                     nameComment +
-                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
                     "             and transition " + toState           
                   );
       
@@ -3701,7 +3701,7 @@ function CodeGenerator(props) {
                     (paramInterMessages.find(element => element.id === currentInMessage))) {
                   finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
                 } else {
-                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
                 }
                 finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
                   
@@ -3784,7 +3784,7 @@ function CodeGenerator(props) {
 
 
                 finalString += ( 
-                  "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                  "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
                   "             and transition " + toState           
                 );
 
@@ -3972,14 +3972,14 @@ function CodeGenerator(props) {
                 finalString += (
                   "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
                   nameComment +
-                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
                   "            and transition " + toState
                 );
               } else {
                 finalString += (
-                  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+                  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
                   nameComment +
-                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
                   "            and transition " + toState
                 );
               }

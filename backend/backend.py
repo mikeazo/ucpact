@@ -14,7 +14,9 @@ from jwt.exceptions import InvalidTokenError
 import requests
 import time
 import datetime
+from pathlib import Path
 from io import BytesIO
+from reconciliationScript import convert_files
 
 app = Flask(__name__)
 CORS(app)
@@ -213,10 +215,11 @@ def get_model(id):
     except AuthenticationError as e:
         return str(e), status.HTTP_401_UNAUTHORIZED
     fileName = os.path.join('models', id) + '.json'
-
+    path_to_file = [Path(fileName)]
     if not os.path.exists(fileName):
         return 'No file of that name exists', status.HTTP_404_NOT_FOUND
     try:
+        convert_files(path_to_file)
         with locked_open(fileName, 'r', fcntl.LOCK_EX) as fp:
             full_data = json.load(fp)
     except json.JSONDecodeError:

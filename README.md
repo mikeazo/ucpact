@@ -134,7 +134,7 @@ The primary benefit of single-user mode is a much quicker startup (especially if
 
 To launch UC-PACT in single-user mode, first run `cd single_user_config` before using the same `docker compose` commands, or simply run `./launch_single_user.sh` in the top-level repo folder for an equivalent interactive experience.
 
-After launching with either the `default` or `dev` profiles, navigate to [http://localhost/](http://localhost/). However, if you are running in WSL2 on a IT-managed Windows PC, you might need to use [http://localhost:3000/](http://localhost:3000/) instead, and the `default` profile will not work in this case.
+After launching with either the `default` or `dev` profiles, navigate to [http://localhost/](http://localhost/). However, depending on your system set up you may need to use [http://localhost:3000/](http://localhost:3000/).
 
 ## How to access Keycloak's admin UI (multi-user mode only) {#keycloak}
 

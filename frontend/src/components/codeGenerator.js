@@ -528,7 +528,7 @@ function CodeGenerator(props) {
               (paramInterMessages.find(element => element.id === currentInMessage))) {
             finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
           } else {
-            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
           }
           finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
             
@@ -1120,7 +1120,7 @@ function CodeGenerator(props) {
                   (paramInterMessages.find(element => element.id === currentInMessage))) {
                 finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
               } else {
-                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
               }
               finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
                 
@@ -2957,7 +2957,7 @@ function CodeGenerator(props) {
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             }
             finalString += (
               "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -3166,7 +3166,7 @@ function CodeGenerator(props) {
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             }
             finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
               
@@ -3448,7 +3448,7 @@ function CodeGenerator(props) {
               );
             } else {
               finalString += (
-                "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+                "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
                 nameComment +
                 "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                 "            and transition " + toState
@@ -3635,7 +3635,7 @@ function CodeGenerator(props) {
                     (paramInterMessages.find(element => element.id === currentInMessage))) {
                   finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
                 } else {
-                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
                 }
                 finalString += (
                   "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -3844,7 +3844,7 @@ function CodeGenerator(props) {
                     (paramInterMessages.find(element => element.id === currentInMessage))) {
                   finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
                 } else {
-                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
                 }
                 finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
                   

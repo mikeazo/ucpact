@@ -343,7 +343,7 @@ function CodeGenerator(props) {
             })
           }
 
-          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
           
           finalString += (
             "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -372,7 +372,6 @@ function CodeGenerator(props) {
                 }
               })
             })
-
             let outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
             let outMessageBasicInstance = "";
             if (outMessageComp) {
@@ -415,7 +414,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
               "           and transition " + toState           
             );
 
@@ -547,19 +546,21 @@ function CodeGenerator(props) {
           let outMessageComp = "";
           let outMessageBasicInstance = "";
           let outMessageTrace = "";
+          let outMessageIsNotDirect = false;
           if (subFuncMessages.find(element => element.id === transition.outMessage)) {
             outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
             outMessageComp = outMessage.compInter;
             outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
             let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
             outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
-            
+            outMessageIsNotDirect = true;
           } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
             outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
             outMessageComp = outMessage.compInter;
             outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
             let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
             outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+            outMessageIsNotDirect = true;
           } else {
             outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
           
@@ -582,6 +583,7 @@ function CodeGenerator(props) {
               outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
             } else {
               outMessageTrace =  outMessageBasic.name + "." + outMessage.name;
+              outMessageIsNotDirect = true
             }
           }
 
@@ -617,7 +619,7 @@ function CodeGenerator(props) {
 
 
           finalString += ( 
-            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsNotDirect) ? "" : "@undefined") + "\r\n" +
             "             and transition " + toState           
           );
 
@@ -664,6 +666,7 @@ function CodeGenerator(props) {
           // In Message Info
           let inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
           let inMessageBasic = "";
+          let inMessageIsAdv =  false;
           interSelector.basicInters.forEach((basic) => {
             basic.messages.forEach((message) => {
               if (message === inMessage.id) {
@@ -671,7 +674,9 @@ function CodeGenerator(props) {
               }
             })
           })
-
+        if(inMessageBasic.type === "adversarial"){
+          inMessageIsAdv = true;
+        }
           let inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
           let inMessageBasicInstance = "";
           if (inMessageComp) {
@@ -682,6 +687,7 @@ function CodeGenerator(props) {
           // Out Message Info
           let outMessage = interSelector.messages.find(element => element.id === thisTransition.outMessage) || "";
           let outMessageBasic = "";
+          let outMessageIsAdv = false
           interSelector.basicInters.forEach((basic) => {
             basic.messages.forEach((message) => {
               if (message === outMessage.id) {
@@ -689,7 +695,9 @@ function CodeGenerator(props) {
               }
             })
           })
-
+          if(outMessageBasic.type === "adversarial"){
+            outMessageIsAdv = true;
+          }
           let outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
           let outMessageBasicInstance = "";
           if (outMessageComp) {
@@ -756,9 +764,9 @@ function CodeGenerator(props) {
           let nameComment = genTransitionNameComment(thisTransition, "          ");
 
           finalString += ( 
-            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+            "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsAdv) ?  "" : "@undefined") + "\r\n" +
             "          and transition " + toState           
           );
 
@@ -874,6 +882,7 @@ function CodeGenerator(props) {
             // In Message Info
             let inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
             let inMessageBasic = "";
+            let inMessageIsAdv = false;
             interSelector.basicInters.forEach((basic) => {
               basic.messages.forEach((message) => {
                 if (message === inMessage.id) {
@@ -881,7 +890,9 @@ function CodeGenerator(props) {
                 }
               })
             });
-  
+            if(inMessageBasic.type === "adversarial"){
+              inMessageIsAdv = true;
+            }
             let inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
             let inMessageBasicInstance = "";
             if (inMessageComp) {
@@ -914,7 +925,7 @@ function CodeGenerator(props) {
               })
             }
   
-            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
             
             finalString += (
               "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -936,6 +947,7 @@ function CodeGenerator(props) {
               // Out Message Info
               let outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
               let outMessageBasic = "";
+              let outMessageIsAdv = false;
               interSelector.basicInters.forEach((basic) => {
                 basic.messages.forEach((message) => {
                   if (message === outMessage.id) {
@@ -943,7 +955,9 @@ function CodeGenerator(props) {
                   }
                 })
               })
-  
+              if(outMessageBasic.type === "adversarial"){
+                outMessageIsAdv = true;
+              }
               let outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
               let outMessageBasicInstance = "";
               if (outMessageComp) {
@@ -986,7 +1000,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsAdv) ? "" : "@undefined") + "\r\n" +
                 "           and transition " + toState           
               );
   
@@ -1124,18 +1138,21 @@ function CodeGenerator(props) {
               let outMessageComp = "";
               let outMessageBasicInstance = "";
               let outMessageTrace = "";
+              let outMessageIsSubOrPara = false;
               if (subFuncMessages.find(element => element.id === transition.outMessage)) {
                 outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
                 outMessageComp = outMessage.compInter;
                 outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                 let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
                 outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageIsSubOrPara = true;
               } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
                 outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
                 outMessageComp = outMessage.compInter;
                 outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                 let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
                 outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageIsSubOrPara = true;
               } else {
                 outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
               
@@ -1157,6 +1174,7 @@ function CodeGenerator(props) {
     
                   outMessageTrace = realFuncSelector.name + "." + outMessageComp.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
                 } else {
+                  
                   outMessageTrace = outMessageBasic.name + "." + outMessage.name;
                 }
               }
@@ -1193,7 +1211,7 @@ function CodeGenerator(props) {
 
 
               finalString += ( 
-                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                 "             and transition " + toState           
               );
 
@@ -1239,6 +1257,7 @@ function CodeGenerator(props) {
             // In Message Info
             let inMessage = interSelector.messages.find(element => element.id === currentInMessage) || "";
             let inMessageBasic = "";
+            let inMessageIsAdv = false;
             interSelector.basicInters.forEach((basic) => {
               basic.messages.forEach((message) => {
                 if (message === inMessage.id) {
@@ -1246,7 +1265,9 @@ function CodeGenerator(props) {
                 }
               })
             })
-  
+            if(inMessageBasic.type === "adversarial"){
+              inMessageIsAdv = true;
+            }
             let inMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === inMessageBasic.id)) || "";
             let inMessageBasicInstance = "";
             if (inMessageComp) {
@@ -1255,6 +1276,7 @@ function CodeGenerator(props) {
             let inMessageTrace = ((inMessageComp.name) ? (inMessageComp.name + ".") : "") + ((inMessageComp.name) ? inMessageBasicInstance.name : inMessageBasic.name) + "." + inMessage.name;
   
             // Out Message Info
+            let outMessageIsAdv = false;
             let outMessage = interSelector.messages.find(element => element.id === thisTransition.outMessage) || "";
             let outMessageBasic = "";
             interSelector.basicInters.forEach((basic) => {
@@ -1264,7 +1286,9 @@ function CodeGenerator(props) {
                 }
               })
             })
-  
+            if (outMessageBasic.type === "adversarial"){
+              outMessageIsAdv = true;
+            }
             let outMessageComp = interSelector.compInters.find(element => element.basicInterfaces.find(element => element.idOfBasic === outMessageBasic.id)) || "";
             let outMessageBasicInstance = "";
             if (outMessageComp) {
@@ -1331,9 +1355,9 @@ function CodeGenerator(props) {
             let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
-              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+              "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsAdv) ? "" : "@undefined") + "\r\n" +
               "          and transition " + toState           
             );
   
@@ -1529,7 +1553,7 @@ function CodeGenerator(props) {
             })
           }
 
-          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
           
           finalString += (
             "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -1621,7 +1645,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
               "           and transition " + toState           
             );
 
@@ -1739,7 +1763,7 @@ function CodeGenerator(props) {
               (paramInterMessages.find(element => element.id === currentInMessage))) {
             finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
           } else {
-            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
           }
           finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
             
@@ -1830,7 +1854,7 @@ function CodeGenerator(props) {
             })
           }
           finalString += ( 
-            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
             "             and transition " + toState           
           );
 
@@ -2018,9 +2042,9 @@ function CodeGenerator(props) {
           let nameComment = genTransitionNameComment(thisTransition, "          ");
 
           finalString += ( 
-            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
             "          and transition " + toState           
           );
 
@@ -2205,7 +2229,7 @@ function CodeGenerator(props) {
               })
             }
   
-            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
             
             finalString += (
               "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
@@ -2297,7 +2321,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
                 "           and transition " + toState           
               );
   
@@ -2423,7 +2447,7 @@ function CodeGenerator(props) {
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
             }
             finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
               
@@ -2515,7 +2539,7 @@ function CodeGenerator(props) {
 
 
             finalString += ( 
-              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
               "             and transition " + toState           
             );
 
@@ -2694,9 +2718,9 @@ function CodeGenerator(props) {
             let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
-              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
               "          and transition " + toState           
             );
   
@@ -2958,18 +2982,21 @@ function CodeGenerator(props) {
               let outMessageComp = "";
               let outMessageBasicInstance = "";
               let outMessageTrace = "";
+              let outMessageIsSubOrPara = false;
               if (subFuncMessages.find(element => element.id === transition.outMessage)) {
                 outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
                 outMessageComp = outMessage.compInter;
                 outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                 let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
                 outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageIsSubOrPara = true;
               } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
                 outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
                 outMessageComp = outMessage.compInter;
                 outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                 let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
                 outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageIsSubOrPara = true;
               } else {
                 outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
               
@@ -3022,10 +3049,10 @@ function CodeGenerator(props) {
               }
 
               let nameComment = genTransitionNameComment(transition, "             ");
-  
+              
               finalString += ( 
                 nameComment +
-                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                 "             and transition " + toState           
               );
   
@@ -3157,18 +3184,21 @@ function CodeGenerator(props) {
             let outMessageComp = "";
             let outMessageBasicInstance = "";
             let outMessageTrace = "";
+            let outMessageIsSubOrPara = false
             if (subFuncMessages.find(element => element.id === transition.outMessage)) {
               outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
               outMessageComp = outMessage.compInter;
               outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
               let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
               outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              outMessageIsSubOrPara = true;
             } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
               outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
               outMessageComp = outMessage.compInter;
               outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
               let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
               outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              outMessageIsSubOrPara = true;
             } else {
               outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
             
@@ -3222,7 +3252,7 @@ function CodeGenerator(props) {
 
 
             finalString += ( 
-              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
               "             and transition " + toState           
             );
 
@@ -3307,18 +3337,21 @@ function CodeGenerator(props) {
             let outMessageComp = "";
             let outMessageBasicInstance = "";
             let outMessageTrace = "";
+            let outMessageIsSubOrPara = false;
             if (subFuncMessages.find(element => element.id === thisTransition.outMessage)) {
               outMessage = subFuncMessages.find(element => element.id === thisTransition.outMessage);
               outMessageComp = outMessage.compInter;
               outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
               let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === thisTransition.outMessage).subfuncId) || { "name" : "" };
               outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              outMessageIsSubOrPara = true;
             } else if (paramInterMessages.find(element => element.id === thisTransition.outMessage)) {
               outMessage = paramInterMessages.find(element => element.id === thisTransition.outMessage);
               outMessageComp = outMessage.compInter;
               outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
               let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === thisTransition.outMessage).paramInterId) || { "name" : "" };
               outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+              outMessageIsSubOrPara = true;
             } else {
               outMessage = interSelector.messages.find(element => element.id === thisTransition.outMessage) || "";
             
@@ -3410,14 +3443,14 @@ function CodeGenerator(props) {
               finalString += (
                 "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
                 nameComment +
-                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                 "            and transition " + toState
               );
             } else {
               finalString += (
                 "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
                 nameComment +
-                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                 "            and transition " + toState
               );
             }
@@ -3627,18 +3660,21 @@ function CodeGenerator(props) {
                   let outMessageComp = "";
                   let outMessageBasicInstance = "";
                   let outMessageTrace = "";
+                  let outMessageIsSubOrPara = false;
                   if (subFuncMessages.find(element => element.id === transition.outMessage)) {
                     outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
                     outMessageComp = outMessage.compInter;
                     outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                     let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
                     outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                    outMessageIsSubOrPara = true;
                   } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
                     outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
                     outMessageComp = outMessage.compInter;
                     outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                     let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
                     outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                    outMessageIsSubOrPara = true;
                   } else {
                     outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
                   
@@ -3694,7 +3730,7 @@ function CodeGenerator(props) {
       
                   finalString += ( 
                     nameComment +
-                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                     "             and transition " + toState           
                   );
       
@@ -3826,18 +3862,21 @@ function CodeGenerator(props) {
                 let outMessageComp = "";
                 let outMessageBasicInstance = "";
                 let outMessageTrace = "";
+                let outMessageIsSubOrPara = false;
                 if (subFuncMessages.find(element => element.id === transition.outMessage)) {
                   outMessage = subFuncMessages.find(element => element.id === transition.outMessage);
                   outMessageComp = outMessage.compInter;
                   outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                   let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === transition.outMessage).subfuncId) || { "name" : "" };
                   outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  outMessageIsSubOrPara = true;
                 } else if (paramInterMessages.find(element => element.id === transition.outMessage)) {
                   outMessage = paramInterMessages.find(element => element.id === transition.outMessage);
                   outMessageComp = outMessage.compInter;
                   outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                   let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === transition.outMessage).paramInterId) || { "name" : "" };
                   outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                  outMessageIsSubOrPara = true;
                 } else {
                   outMessage = interSelector.messages.find(element => element.id === transition.outMessage) || "";
                 
@@ -3891,7 +3930,7 @@ function CodeGenerator(props) {
 
 
                 finalString += ( 
-                  "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "@undefined") + "\r\n" +
+                  "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                   "             and transition " + toState           
                 );
 
@@ -3976,18 +4015,21 @@ function CodeGenerator(props) {
               let outMessageComp = "";
               let outMessageBasicInstance = "";
               let outMessageTrace = "";
+              let outMessageIsSubOrPara = false;
               if (subFuncMessages.find(element => element.id === thisTransition.outMessage)) {
                 outMessage = subFuncMessages.find(element => element.id === thisTransition.outMessage);
                 outMessageComp = outMessage.compInter;
                 outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                 let thisSubFunc = subfuncSelector.subfunctionalities.find(element => element.id === subFuncMessages.find(element => element.id === thisTransition.outMessage).subfuncId) || { "name" : "" };
                 outMessageTrace = thisSubFunc.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageIsSubOrPara = true;
               } else if (paramInterMessages.find(element => element.id === thisTransition.outMessage)) {
                 outMessage = paramInterMessages.find(element => element.id === thisTransition.outMessage);
                 outMessageComp = outMessage.compInter;
                 outMessageBasicInstance = outMessage.compInter.basicInterfaces.find(element => element.idOfBasic === outMessage.basicInter.id);
                 let thisParamInter = realFuncSelector.parameterInterfaces.find(element => element.id === paramInterMessages.find(element => element.id === thisTransition.outMessage).paramInterId) || { "name" : "" };
                 outMessageTrace = thisParamInter.name + "." + outMessageBasicInstance.name + "." + outMessage.name;
+                outMessageIsSubOrPara = true;
               } else {
                 outMessage = interSelector.messages.find(element => element.id === thisTransition.outMessage) || "";
               
@@ -4079,14 +4121,14 @@ function CodeGenerator(props) {
                 finalString += (
                   "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
                   nameComment +
-                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                   "            and transition " + toState
                 );
               } else {
                 finalString += (
-                  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+                  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
                   nameComment +
-                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "@undefined") + "\r\n" +
+                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
                   "            and transition " + toState
                 );
               }

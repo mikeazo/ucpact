@@ -186,7 +186,9 @@ def index():
     for file in os.listdir('./models'):
         if file.endswith('.json'):
             fileName = os.path.join('models', file)
+            path_to_file = [Path(fileName)]
             try:
+                convert_files(path_to_file)
                 with locked_open(fileName, 'r', fcntl.LOCK_SH) as fp:
                     full_data = json.load(fp)
             except json.JSONDecodeError:
@@ -215,11 +217,9 @@ def get_model(id):
     except AuthenticationError as e:
         return str(e), status.HTTP_401_UNAUTHORIZED
     fileName = os.path.join('models', id) + '.json'
-    path_to_file = [Path(fileName)]
     if not os.path.exists(fileName):
         return 'No file of that name exists', status.HTTP_404_NOT_FOUND
     try:
-        convert_files(path_to_file)
         with locked_open(fileName, 'r', fcntl.LOCK_EX) as fp:
             full_data = json.load(fp)
     except json.JSONDecodeError:

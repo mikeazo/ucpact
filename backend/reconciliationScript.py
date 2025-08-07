@@ -20,6 +20,7 @@ def convert_files(filenames: list[Path]):
             add_comment_to_states(full_data)
             # Change model version
             full_data['modelVersion'] = '1.3'
+            full_data['model']['modelVersion'] = '1.3'
 
             with open(fileName, 'w') as fp:
                 json.dump(full_data, fp, indent=2)
@@ -85,6 +86,7 @@ def convert_files(filenames: list[Path]):
         
         # Change model version
         full_data['modelVersion'] = '1.3'
+        full_data['model']['modelVersion'] = '1.3'
 
         with open(fileName, 'w') as fp:
             json.dump(full_data, fp, indent=2)

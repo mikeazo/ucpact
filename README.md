@@ -173,6 +173,10 @@ Run `./reset_docker.sh` in `bash` and confirm when prompted by entering `y`.
 
 **Be sure to change Keycloak's `admin` password within `docker-compose.yml` before deployment!**
 
+## Additional Information
+
+For additional information on the Web Application or for understanding EasyUC. Check out the `docs` folder for additional information on both of these topics.
+
 ## Contact
 
 You can contact the UC-PACT team by reaching out to [harden@riversideresearch.org](mailto://harden@riversideresearch.org)

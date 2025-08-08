@@ -110,21 +110,21 @@ function CodeGenerator(props) {
     interSelector.basicInters.forEach((element) => {
       // do stuff for each basic inter here
       if (element.type === "direct") {
-        finalString +=  "(* Basic direct interface *)\r\n"
+        finalString +=  "(* Basic direct interface *)\n"
         if(element.interfaceComment.length>0){
           if(element.interfaceComment.length >= 80){
-            finalString += "(* "+commentBreaker(element.interfaceComment, 80, 0) + "\r\n *)\r\n"
-          }else{finalString+= "(* "+element.interfaceComment +" *)\r\n"}
+            finalString += "(* "+commentBreaker(element.interfaceComment, 80, 0) + "\n *)\n"
+          }else{finalString+= "(* "+element.interfaceComment +" *)\n"}
         }
-        finalString += "direct " + element.name + " {\r\n";
+        finalString += "direct " + element.name + " {\n";
       } else if (element.type === "adversarial") {
-          finalString += "(* Basic adversarial interface *)\r\n"
+          finalString += "(* Basic adversarial interface *)\n"
           if(element.interfaceComment.length>0){
             if(element.interfaceComment.length>= 80){
-              finalString += "(* "+commentBreaker(element.interfaceComment, 80, 0) + "\r\n *)\r\n"
-            }else{finalString+= "(* "+element.interfaceComment +" *)\r\n"}
+              finalString += "(* "+commentBreaker(element.interfaceComment, 80, 0) + "\n *)\n"
+            }else{finalString+= "(* "+element.interfaceComment +" *)\n"}
         }
-        finalString += "adversarial " + element.name + " {\r\n"
+        finalString += "adversarial " + element.name + " {\n"
       }
 
       element.messages.forEach((message) => {
@@ -135,8 +135,8 @@ function CodeGenerator(props) {
           if (theMessageState.type === "in") {
             if(theMessageState.messageComment.length > 0){
               if(theMessageState.messageComment.length >= 65){
-                finalString += "   (* " +commentBreaker(theMessageState.messageComment, 65, 1) +"\r    *)\r"
-              }else{finalString += "   (* "+theMessageState.messageComment +" *)\r"}
+                finalString += "   (* " +commentBreaker(theMessageState.messageComment, 65, 1) +"\n    *)\n"
+              }else{finalString += "   (* "+theMessageState.messageComment +" *)\n"}
             }
             finalString += (
               "   " + theMessageState.type + " " + ((element.type === "direct") ? (theMessageState.port || "undefined") + "@" + (theMessageState.name || "undefined") : (theMessageState.name || "undefined"))
@@ -156,18 +156,18 @@ function CodeGenerator(props) {
               }
             })
             if ((message !== element.messages[element.messages.length - 1]) && (theMessageState.parameters.length > 0)) {
-              finalString += ")\r";
+              finalString += ")\n";
             } else if (theMessageState.parameters.length > 0) {
               finalString += ")";
             } else if (message !== element.messages[element.messages.length - 1]) {
-              finalString += "\r";
+              finalString += "\n";
             }
             
           } else if (theMessageState.type === "out") {
             if(theMessageState.messageComment.length > 0){
               if(theMessageState.messageComment.length >= 65){
-                finalString += "   (* " + commentBreaker(+theMessageState.messageComment, 65, 1) +"\r    *)\r"
-              }else{finalString += "   (* " +theMessageState.messageComment +" *)\r"}
+                finalString += "   (* " + commentBreaker(+theMessageState.messageComment, 65, 1) +"\n    *)\n"
+              }else{finalString += "   (* " +theMessageState.messageComment +" *)\n"}
             }
             finalString += (
               "   " + theMessageState.type + " " + (theMessageState.name || "undefined")
@@ -192,35 +192,35 @@ function CodeGenerator(props) {
               );
             }
             if (message !== element.messages[element.messages.length - 1]) {
-              finalString += "\r";
+              finalString += "\n";
             }
           }
         }
       })
 
-      finalString += "\r\n}"
-      finalString += "\r\n\r\n"
+      finalString += "\n}"
+      finalString += "\n\n"
     });
 
     interSelector.compInters.forEach((element) => {
       // do stuff for each composite inter here
       if (element.type === "direct") {
-        finalString += "(* Composite direct interface *)\r\n"
+        finalString += "(* Composite direct interface *)\n"
         if(element.interfaceComment.length > 0){
           if(element.interfaceComment.length >= 80){
-            finalString += "(* " +commentBreaker(element.interfaceComment,80,0) +"\r *)\r\n"
-          }else{finalString += "(* "  + element.interfaceComment+" *)\r\n"}
+            finalString += "(* " +commentBreaker(element.interfaceComment,80,0) +"\n *)\n"
+          }else{finalString += "(* "  + element.interfaceComment+" *)\n"}
         }
-        finalString += "direct " + element.name + " {\r\n";
+        finalString += "direct " + element.name + " {\n";
       } else if (element.type === "adversarial") {
-        finalString += "(* Composite adversarial interface *)\r\n"
+        finalString += "(* Composite adversarial interface *)\n"
         if(element.interfaceComment.length > 0){
           if(element.interfaceComment.length >= 80){
-            finalString += "(* " +commentBreaker(element.interfaceComment,80,0) +"\r *)\r\n"
-          }else{finalString += "(* "  + element.interfaceComment+" *)\r\n"}
+            finalString += "(* " +commentBreaker(element.interfaceComment,80,0) +"\n *)\n"
+          }else{finalString += "(* "  + element.interfaceComment+" *)\n"}
         }
         
-          finalString += "adversarial " + element.name + " {\r\n"
+          finalString += "adversarial " + element.name + " {\n"
       }
 
       element.basicInterfaces.forEach((basicInt) => {
@@ -228,19 +228,19 @@ function CodeGenerator(props) {
         if (theInterfaceIndex !== -1) {
           let theInterfaceState = interSelector.basicInters[theInterfaceIndex];
           finalString += (
-            "   " + basicInt.name + " : " + theInterfaceState.name + "\r\n"
+            "   " + basicInt.name + " : " + theInterfaceState.name + "\n"
           );
         }
       })
       finalString += "}"
-      finalString += "\r\n\r\n"
+      finalString += "\n\n"
     });
 
     return finalString;
   }
 
   const genTransitionNameComment = (transition, preSpaces) => {
-    return transition.name ? `${preSpaces}(* Transition Name: ${transition.name} *) \r\n` : "";
+    return transition.name ? `${preSpaces}(* Transition Name: ${transition.name} *) \n` : "";
   }
 
   // generate the code for the Ideal Functionality
@@ -251,8 +251,8 @@ function CodeGenerator(props) {
     let basicAdv = (interSelector.basicInters[interSelector.basicInters.findIndex(inter => inter.id === idealFuncSelector.basicAdversarialInterface)]) || {name: ""};
 
     finalString += (
-      "(* Ideal functionality *)\r\n" +
-      "functionality " + idealFuncSelector.name + " implements " + compDir.name + " " + basicAdv.name + "{\r\n\r\n"
+      "(* Ideal functionality *)\n" +
+      "functionality " + idealFuncSelector.name + " implements " + compDir.name + " " + basicAdv.name + "{\n\n"
     );
 
     // add the initial state code
@@ -271,8 +271,8 @@ function CodeGenerator(props) {
     }
 
     finalString += (
-      "  initial state " + initState.name + " {\r\n" +
-      "    match message with\r\n"
+      "  initial state " + initState.name + " {\n" +
+      "    match message with\n"
     );
 
     let thisInitStateInMessageArray = [];
@@ -343,22 +343,22 @@ function CodeGenerator(props) {
             })
           }
 
-          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
           
           finalString += (
-            "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-            "         * Guards are used to differentiate transitions that may have\r\n" +
-            "         * identical 'from' states and 'in' messages *)\r\n"
+            "        (* The below 'if else' branches represent Guards in the UCDSL\n" + 
+            "         * Guards are used to differentiate transitions that may have\n" +
+            "         * identical 'from' states and 'in' messages *)\n"
           )
           // Code for each transition
           thisInitStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
             if (idx === 0) {
               finalString += (
-                "        if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                "        if () { (* " + (transition.guard || "Guard Description") + " *)\n"
               );
             } else {
               finalString += (
-                " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                " elif () { (* " + (transition.guard || "Guard Description") + " *)\n"
               )
             }
 
@@ -414,7 +414,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
               "           and transition " + toState           
             );
 
@@ -445,13 +445,13 @@ function CodeGenerator(props) {
                 })
               }
             }
-            finalString += ".\r\n        }" 
+            finalString += ".\n        }" 
             
             if (idx === arr.length - 1) {
-              finalString += " else { fail. }\r\n"
+              finalString += " else { fail. }\n"
             }
           });
-          finalString += "      }\r\n\r\n"
+          finalString += "      }\n\n"
 
         } else if (singleTransitionGuard) { // Guard code for single transitions
           let transition = thisInitStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
@@ -526,18 +526,18 @@ function CodeGenerator(props) {
           }
           if (subFuncMessages.find(element => element.id === currentInMessage) || 
               (paramInterMessages.find(element => element.id === currentInMessage))) {
-            finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
           } else {
-            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
           }
-          finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+          finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\n"
             
           
           // Code for the transition
           let nameComment = genTransitionNameComment(transition, "         ");
           finalString += nameComment;
           finalString += (
-            "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+            "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
           );
 
           // Out Message Info
@@ -619,7 +619,7 @@ function CodeGenerator(props) {
 
 
           finalString += ( 
-            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsNotDirect) ? "" : "@undefined") + "\r\n" +
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsNotDirect) ? "" : "@undefined") + "\n" +
             "             and transition " + toState           
           );
 
@@ -650,15 +650,15 @@ function CodeGenerator(props) {
               })
             }
           }
-          finalString += ".\r\n" 
+          finalString += ".\n" 
           finalString += (
-            "          } else {\r\n"
+            "          } else {\n"
           );
           finalString += (
-            "             fail.\r\n          }\r\n"
+            "             fail.\n          }\n"
           );
           
-          finalString += "        }\r\n\r\n"
+          finalString += "        }\n\n"
         } else {
           // Normal transition code
           let thisTransition = thisInitStateInMessageInfo[currentInMessage][0];
@@ -764,9 +764,9 @@ function CodeGenerator(props) {
           let nameComment = genTransitionNameComment(thisTransition, "          ");
 
           finalString += ( 
-            "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+            "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsAdv) ?  "" : "@undefined") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsAdv) ?  "" : "@undefined") + "\n" +
             "          and transition " + toState           
           );
 
@@ -777,13 +777,13 @@ function CodeGenerator(props) {
                 if (idx === arr.length - 1) {
                   if (arr.length === 1) {
                     finalString += (
-                      "(" + param.argValue + ").\r\n" +
-                      "      }\r\n\r\n" 
+                      "(" + param.argValue + ").\n" +
+                      "      }\n\n" 
                     );
                   } else {
                     finalString += (
-                      param.argValue + ").\r\n" +
-                      "      }\r\n\r\n" 
+                      param.argValue + ").\n" +
+                      "      }\n\n" 
                     );
                   }
                   
@@ -798,16 +798,16 @@ function CodeGenerator(props) {
                 } 
               })
             } else {
-              finalString += ".\r\n      }\r\n\r\n"
+              finalString += ".\n      }\n\n"
             }
           } 
         }
       });
 
       finalString += (
-        "\r\n      | * => { fail. }\r\n" +
-        "    end\r\n" +
-        "  }\r\n\r\n"
+        "\n      | * => { fail. }\n" +
+        "    end\n" +
+        "  }\n\n"
         );
     }
     
@@ -855,8 +855,8 @@ function CodeGenerator(props) {
         });
 
         finalString += (
-          " {\r\n" +
-          "    match message with\r\n"
+          " {\n" +
+          "    match message with\n"
         );
 
         thisStateTransitionArray.forEach(transition => {
@@ -925,22 +925,22 @@ function CodeGenerator(props) {
               })
             }
   
-            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
             
             finalString += (
-              "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-              "         * Guards are used to differentiate transitions that may have\r\n" +
-              "         * identical 'from' states and 'in' messages *)\r\n"
+              "        (* The below 'if else' branches represent Guards in the UCDSL\n" + 
+              "         * Guards are used to differentiate transitions that may have\n" +
+              "         * identical 'from' states and 'in' messages *)\n"
             )
             // Code for each transition
             thisStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
               if (idx === 0) {
                 finalString += (
-                  "        if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  "        if () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 );
               } else {
                 finalString += (
-                  " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  " elif () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 )
               }
   
@@ -1000,7 +1000,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsAdv) ? "" : "@undefined") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsAdv) ? "" : "@undefined") + "\n" +
                 "           and transition " + toState           
               );
   
@@ -1031,13 +1031,13 @@ function CodeGenerator(props) {
                   })
                 }
               }
-              finalString += ".\r\n        }" 
+              finalString += ".\n        }" 
               
               if (idx === arr.length - 1) {
-                finalString += " else { fail. }\r\n"
+                finalString += " else { fail. }\n"
               }
             });
-            finalString += "      }\r\n\r\n"
+            finalString += "      }\n\n"
           
           } else if (singleTransitionGuard) { // Guard code for single transitions
               let transition = thisStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
@@ -1118,18 +1118,18 @@ function CodeGenerator(props) {
               }
               if (subFuncMessages.find(element => element.id === currentInMessage) || 
                   (paramInterMessages.find(element => element.id === currentInMessage))) {
-                finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+                finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
               } else {
-                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+                finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
               }
-              finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+              finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\n"
                 
               
               // Code for the transition
               let nameComment = genTransitionNameComment(transition, "         ");
               finalString += nameComment;
               finalString += (
-                "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
               );
 
               // Out Message Info
@@ -1211,7 +1211,7 @@ function CodeGenerator(props) {
 
 
               finalString += ( 
-                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                 "             and transition " + toState           
               );
 
@@ -1242,14 +1242,14 @@ function CodeGenerator(props) {
                   })
                 }
               }
-              finalString += ".\r\n" 
+              finalString += ".\n" 
               finalString += (
-                "          } else {\r\n"
+                "          } else {\n"
               );
               finalString += (
-                "             fail.\r\n          }\r\n"
+                "             fail.\n          }\n"
               );
-              finalString += "        }\r\n\r\n"
+              finalString += "        }\n\n"
           } else {
             // Normal transition code
             let thisTransition = thisStateInMessageInfo[currentInMessage][0];
@@ -1355,9 +1355,9 @@ function CodeGenerator(props) {
             let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
-              "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+              "      | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageIsAdv) ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsAdv) ? "" : "@undefined") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsAdv) ? "" : "@undefined") + "\n" +
               "          and transition " + toState           
             );
   
@@ -1368,13 +1368,13 @@ function CodeGenerator(props) {
                   if (idx === arr.length - 1) {
                     if (arr.length === 1) {
                       finalString += (
-                        "(" + param.argValue + ").\r\n" +
-                        "      }\r\n" 
+                        "(" + param.argValue + ").\n" +
+                        "      }\n" 
                       );
                     } else {
                       finalString += (
-                        param.argValue + ").\r\n" +
-                        "      }\r\n\r\n" 
+                        param.argValue + ").\n" +
+                        "      }\n\n" 
                       );
                     }
                     
@@ -1389,22 +1389,22 @@ function CodeGenerator(props) {
                   } 
                 })
               } else {
-                finalString += ".\r\n      }\r\n\r\n"
+                finalString += ".\n      }\n\n"
               }
             } 
           }
         });
   
         finalString += (
-          "\r\n      | * => { fail. }\r\n" +
-          "    end\r\n" +
-          "  }\r\n\r\n"
+          "\n      | * => { fail. }\n" +
+          "    end\n" +
+          "  }\n\n"
           );
         }
       });
     } 
 
-    finalString += "}\r\n\r\n";
+    finalString += "}\n\n";
     
     return finalString;
   }
@@ -1432,8 +1432,8 @@ function CodeGenerator(props) {
     }
 
     finalString += (
-      "(* Simulator *)\r\n" +
-      "simulator " + simSelector.name + " uses " + basicAdv.name + " simulates " + (simSelector.realFunctionality ? realFuncSelector.name : "undefined") + paramInterCode + " {\r\n\r\n"
+      "(* Simulator *)\n" +
+      "simulator " + simSelector.name + " uses " + basicAdv.name + " simulates " + (simSelector.realFunctionality ? realFuncSelector.name : "undefined") + paramInterCode + " {\n\n"
     );
 
     // add the initial state code
@@ -1452,8 +1452,8 @@ function CodeGenerator(props) {
     }
 
     finalString += (
-      "  initial state " + initState.name + " {\r\n" +
-      "    match message with\r\n"
+      "  initial state " + initState.name + " {\n" +
+      "    match message with\n"
     );
 
     let thisInitStateInMessageArray = [];
@@ -1553,22 +1553,22 @@ function CodeGenerator(props) {
             })
           }
 
-          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+          finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\n"
           
           finalString += (
-            "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-            "         * Guards are used to differentiate transitions that may have\r\n" +
-            "         * identical 'from' states and 'in' messages *)\r\n"
+            "        (* The below 'if else' branches represent Guards in the UCDSL\n" + 
+            "         * Guards are used to differentiate transitions that may have\n" +
+            "         * identical 'from' states and 'in' messages *)\n"
           )
           // Code for each transition
           thisInitStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
             if (idx === 0) {
               finalString += (
-                "        if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                "        if () { (* " + (transition.guard || "Guard Description") + " *)\n"
               );
             } else {
               finalString += (
-                " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                " elif () { (* " + (transition.guard || "Guard Description") + " *)\n"
               )
             }
 
@@ -1645,7 +1645,7 @@ function CodeGenerator(props) {
 
             finalString += ( 
               nameComment +
-              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\n" +
               "           and transition " + toState           
             );
 
@@ -1676,13 +1676,13 @@ function CodeGenerator(props) {
                 })
               }
             }
-            finalString += ".\r\n        }" 
+            finalString += ".\n        }" 
             
             if (idx === arr.length - 1) {
-              finalString += " else { fail. }\r\n"
+              finalString += " else { fail. }\n"
             }
           });
-          finalString += "      }\r\n\r\n"
+          finalString += "      }\n\n"
         } else if (singleTransitionGuard) { // Guard code for single transitions
           let transition = thisInitStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
           // In Message Info
@@ -1761,18 +1761,18 @@ function CodeGenerator(props) {
           }
           if (subFuncMessages.find(element => element.id === currentInMessage) || 
               (paramInterMessages.find(element => element.id === currentInMessage))) {
-            finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
           } else {
-            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\n"
           }
-          finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+          finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\n"
             
           
           // Code for the transition
           let nameComment = genTransitionNameComment(transition, "         ");
           finalString += nameComment;
           finalString += (
-            "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+            "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
           );
 
           // Out Message Info
@@ -1854,7 +1854,7 @@ function CodeGenerator(props) {
             })
           }
           finalString += ( 
-            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+            "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\n" +
             "             and transition " + toState           
           );
 
@@ -1885,14 +1885,14 @@ function CodeGenerator(props) {
               })
             }
           }
-          finalString += ".\r\n" 
+          finalString += ".\n" 
           finalString += (
-            "          } else {\r\n"
+            "          } else {\n"
           );
           finalString += (
-            "             fail.\r\n          }\r\n"
+            "             fail.\n          }\n"
           );
-          finalString += "        }\r\n\r\n"
+          finalString += "        }\n\n"
         } else {
           // Normal transition code
           let thisTransition = thisInitStateInMessageInfo[currentInMessage][0];
@@ -2042,9 +2042,9 @@ function CodeGenerator(props) {
           let nameComment = genTransitionNameComment(thisTransition, "          ");
 
           finalString += ( 
-            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+            "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\n" +
             nameComment +
-            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+            "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\n" +
             "          and transition " + toState           
           );
 
@@ -2055,13 +2055,13 @@ function CodeGenerator(props) {
                 if (idx === arr.length - 1) {
                   if (arr.length === 1) {
                     finalString += (
-                      "(" + param.argValue + ").\r\n" +
-                      "      }\r\n" 
+                      "(" + param.argValue + ").\n" +
+                      "      }\n" 
                     );
                   } else {
                     finalString += (
-                      param.argValue + ").\r\n" +
-                      "      }\r\n\r\n" 
+                      param.argValue + ").\n" +
+                      "      }\n\n" 
                     );
                   }
                   
@@ -2076,16 +2076,16 @@ function CodeGenerator(props) {
                 } 
               })
             } else {
-              finalString += ".\r\n      }\r\n\r\n"
+              finalString += ".\n      }\n\n"
             }
           } 
         }
       });
 
       finalString += (
-        "\r\n      | * => { fail. }\r\n" +
-        "    end\r\n" +
-        "  }\r\n\r\n"
+        "\n      | * => { fail. }\n" +
+        "    end\n" +
+        "  }\n\n"
         );
     }
 
@@ -2132,8 +2132,8 @@ function CodeGenerator(props) {
         });
 
         finalString += (
-          " {\r\n" +
-          "    match message with\r\n"
+          " {\n" +
+          "    match message with\n"
         );
 
         thisStateTransitionArray.forEach(transition => {
@@ -2229,22 +2229,22 @@ function CodeGenerator(props) {
               })
             }
   
-            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+            finalString +=  "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\n"
             
             finalString += (
-              "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-              "         * Guards are used to differentiate transitions that may have\r\n" +
-              "         * identical 'from' states and 'in' messages *)\r\n"
+              "        (* The below 'if else' branches represent Guards in the UCDSL\n" + 
+              "         * Guards are used to differentiate transitions that may have\n" +
+              "         * identical 'from' states and 'in' messages *)\n"
             )
             // Code for each transition
             thisStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
               if (idx === 0) {
                 finalString += (
-                  "        if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  "        if () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 );
               } else {
                 finalString += (
-                  " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  " elif () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 )
               }
   
@@ -2321,7 +2321,7 @@ function CodeGenerator(props) {
   
               finalString += ( 
                 nameComment +
-                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+                "           send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\n" +
                 "           and transition " + toState           
               );
   
@@ -2352,13 +2352,13 @@ function CodeGenerator(props) {
                   })
                 }
               }
-              finalString += ".\r\n        }" 
+              finalString += ".\n        }" 
               
               if (idx === arr.length - 1) {
-                finalString += " else { fail. }\r\n"
+                finalString += " else { fail. }\n"
               }
             });
-            finalString += "      }\r\n\r\n"
+            finalString += "      }\n\n"
   
           } else if (singleTransitionGuard) { // Guard code for single transitions
             let transition = thisStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
@@ -2445,18 +2445,18 @@ function CodeGenerator(props) {
             }
             if (subFuncMessages.find(element => element.id === currentInMessage) || 
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
-              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\n"
             }
-            finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+            finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\n"
               
             
             // Code for the transition
             let nameComment = genTransitionNameComment(transition, "         ");
             finalString += nameComment;
             finalString += (
-              "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+              "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
             );
 
             // Out Message Info
@@ -2539,7 +2539,7 @@ function CodeGenerator(props) {
 
 
             finalString += ( 
-              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\r\n" +
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : "") + "\n" +
               "             and transition " + toState           
             );
 
@@ -2570,14 +2570,14 @@ function CodeGenerator(props) {
                 })
               }
             }
-            finalString += ".\r\n" 
+            finalString += ".\n" 
             finalString += (
-              "          } else {\r\n"
+              "          } else {\n"
             );
             finalString += (
-              "             fail.\r\n          }\r\n"
+              "             fail.\n          }\n"
             );
-            finalString += "        }\r\n\r\n"
+            finalString += "        }\n\n"
           } else {
             // Normal transition code
             let thisTransition = thisStateInMessageInfo[currentInMessage][0];
@@ -2718,9 +2718,9 @@ function CodeGenerator(props) {
             let nameComment = genTransitionNameComment(thisTransition, "          ");
   
             finalString += ( 
-              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\r\n" +
+              "      | " + ((inMessage.port) ? (inMessage.port + "@") : "") + inMessageTrace + receiveArguments + " => {\n" +
               nameComment +
-              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\r\n" +
+              "          send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : "") + "\n" +
               "          and transition " + toState           
             );
   
@@ -2731,13 +2731,13 @@ function CodeGenerator(props) {
                   if (idx === arr.length - 1) {
                     if (arr.length === 1) {
                       finalString += (
-                        "(" + param.argValue + ").\r\n" +
-                        "      }\r\n" 
+                        "(" + param.argValue + ").\n" +
+                        "      }\n" 
                       );
                     } else {
                       finalString += (
-                        param.argValue + ").\r\n" +
-                        "      }\r\n\r\n" 
+                        param.argValue + ").\n" +
+                        "      }\n\n" 
                       );
                     }
                     
@@ -2752,22 +2752,22 @@ function CodeGenerator(props) {
                   } 
                 })
               } else {
-                finalString += ".\r\n      }\r\n\r\n"
+                finalString += ".\n      }\n\n"
               }
             } 
           }
         });
   
         finalString += (
-          "\r\n      | * => { fail. }\r\n" +
-          "    end\r\n" +
-          "  }\r\n\r\n"
+          "\n      | * => { fail. }\n" +
+          "    end\n" +
+          "  }\n\n"
           );
 
       });
     }
 
-    finalString += "}\r\n\r\n";
+    finalString += "}\n\n";
 
     return finalString;
   }
@@ -2793,15 +2793,15 @@ function CodeGenerator(props) {
     
 
     finalString += (
-        "(* Real Functionality *)\r\n" +
-        "functionality " + realFuncSelector.name + paramInterCode + " implements " + compDir.name + " " + (compAdv.name ? (compAdv.name + " {") : "{") + "\r\n\r\n"
+        "(* Real Functionality *)\n" +
+        "functionality " + realFuncSelector.name + paramInterCode + " implements " + compDir.name + " " + (compAdv.name ? (compAdv.name + " {") : "{") + "\n\n"
     );
 
 
     if (subfuncSelector.subfunctionalities.length > 0) {
       // Subfunctionality code generation
       finalString += (
-        "  (* Subfunctionalites *)\r\n"
+        "  (* Subfunctionalites *)\n"
       );
       
       subfuncSelector.subfunctionalities.forEach(subfunc => {
@@ -2809,7 +2809,7 @@ function CodeGenerator(props) {
         let idealFuncName = subfunc.idealFunctionalityName ? subfunc.idealFunctionalityName : "";
         let idealFuncModelName = subfunc.idealFuncModel ? subfunc.idealFuncModel : "";
         finalString += (
-          "  subfun " + name + " = " + idealFuncModelName + "." + idealFuncName + "\r\n"
+          "  subfun " + name + " = " + idealFuncModelName + "." + idealFuncName + "\n"
         );
       });
     }
@@ -2829,7 +2829,7 @@ function CodeGenerator(props) {
         thisPartyAdvInter = (compAdv.basicInterfaces[compAdv.basicInterfaces.findIndex(t => t.idOfInstance === thisParty.basicAdversarialInterface)]) || "";
       }
       
-      finalString += "\r\n  (* Party *)\r\n"
+      finalString += "\n  (* Party *)\n"
       if('comment' in thisParty){
         if(thisParty.comment.length > 75){
           finalString += "  (* " +commentBreaker(thisParty.comment, 75, 2) + "\n   *)\n"
@@ -2838,7 +2838,7 @@ function CodeGenerator(props) {
           finalString += "  (* " +thisParty.comment + " *)\n"
         }
       }
-      finalString += "  party " + thisParty.name + " serves" + (thisPartyDirectInter.name ? (" " + compDir.name + "." + thisPartyDirectInter.name) : "") + ((thisPartyAdvInter.name && thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + ((thisPartyAdvInter.name && !thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + " {\r\n"
+      finalString += "  party " + thisParty.name + " serves" + (thisPartyDirectInter.name ? (" " + compDir.name + "." + thisPartyDirectInter.name) : "") + ((thisPartyAdvInter.name && thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + ((thisPartyAdvInter.name && !thisPartyDirectInter.name) ? (" " + compAdv.name + "." + thisPartyAdvInter.name) : "") + " {\n"
     
 
       // initial state code
@@ -2856,8 +2856,8 @@ function CodeGenerator(props) {
         }
       }
       finalString += (
-        "    initial state " + initState.name + " {\r\n" +
-        "      match message with \r\n"
+        "    initial state " + initState.name + " {\n" +
+        "      match message with \n"
       );
 
       let thisInitStateInMessageArray = [];
@@ -2955,24 +2955,24 @@ function CodeGenerator(props) {
             }
             if (subFuncMessages.find(element => element.id === currentInMessage) || 
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
-              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
             }
             finalString += (
-              "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-              "         * Guards are used to differentiate transitions that may have\r\n" +
-              "         * identical 'from' states and 'in' messages *)\r\n"
+              "        (* The below 'if else' branches represent Guards in the UCDSL\n" + 
+              "         * Guards are used to differentiate transitions that may have\n" +
+              "         * identical 'from' states and 'in' messages *)\n"
             )
             // Code for each transition
             thisInitStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
               if (idx === 0) {
                 finalString += (
-                  "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 );
               } else {
                 finalString += (
-                  " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  " elif () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 )
               }
   
@@ -3052,7 +3052,7 @@ function CodeGenerator(props) {
               
               finalString += ( 
                 nameComment +
-                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                 "             and transition " + toState           
               );
   
@@ -3083,13 +3083,13 @@ function CodeGenerator(props) {
                   })
                 }
               }
-              finalString += ".\r\n          }" 
+              finalString += ".\n          }" 
               
               if (idx === arr.length - 1) {
-                finalString += " else { fail. }\r\n"
+                finalString += " else { fail. }\n"
               }
             });
-            finalString += "        }\r\n\r\n"
+            finalString += "        }\n\n"
   
           } else if (singleTransitionGuard) { // Guard code for single transitions
             let transition = thisInitStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
@@ -3164,18 +3164,18 @@ function CodeGenerator(props) {
             }
             if (subFuncMessages.find(element => element.id === currentInMessage) || 
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
-              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
             } else {
-              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+              finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
             }
-            finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+            finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\n"
               
             
             // Code for the transition
             let nameComment = genTransitionNameComment(transition, "         ");
             finalString += nameComment;
             finalString += (
-              "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+              "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
             );
 
             // Out Message Info
@@ -3252,7 +3252,7 @@ function CodeGenerator(props) {
 
 
             finalString += ( 
-              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+              "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
               "             and transition " + toState           
             );
 
@@ -3283,14 +3283,14 @@ function CodeGenerator(props) {
                 })
               }
             }
-            finalString += ".\r\n" 
+            finalString += ".\n" 
             finalString += (
-              "          } else {\r\n"
+              "          } else {\n"
             );
             finalString += (
-              "             fail.\r\n          }\r\n"
+              "             fail.\n          }\n"
             );
-            finalString += "        }\r\n\r\n"
+            finalString += "        }\n\n"
           } else {
             // Normal transition code
             let thisTransition = thisInitStateInMessageInfo[currentInMessage][0];
@@ -3441,16 +3441,16 @@ function CodeGenerator(props) {
             if (subFuncMessages.find(element => element.id === currentInMessage) || 
                 (paramInterMessages.find(element => element.id === currentInMessage))) {
               finalString += (
-                "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
+                "        | " + inMessageTrace + receiveArguments + " => {\n" +
                 nameComment +
-                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                 "            and transition " + toState
               );
             } else {
               finalString += (
-                "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+                "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n" +
                 nameComment +
-                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                 "            and transition " + toState
               );
             }
@@ -3462,13 +3462,13 @@ function CodeGenerator(props) {
                   if (idx === arr.length - 1) {
                     if (arr.length === 1) {
                       finalString += (
-                        "(" + param.argValue + ").\r\n" +
-                        "        }\r\n" 
+                        "(" + param.argValue + ").\n" +
+                        "        }\n" 
                       );
                     } else {
                       finalString += (
-                        param.argValue + ").\r\n" +
-                        "        }\r\n\r\n" 
+                        param.argValue + ").\n" +
+                        "        }\n\n" 
                       );
                     }
                     
@@ -3483,16 +3483,16 @@ function CodeGenerator(props) {
                   } 
                 })
               } else {
-                finalString += ".\r\n        }\r\n\r\n"
+                finalString += ".\n        }\n\n"
               }
             } 
           }
         });
   
         finalString += (
-          "\r\n        | * => { fail. }\r\n" +
-          "      end\r\n" +
-          "    }\r\n\r\n"
+          "\n        | * => { fail. }\n" +
+          "      end\n" +
+          "    }\n\n"
           );
       }
 
@@ -3539,8 +3539,8 @@ function CodeGenerator(props) {
           });
   
           finalString += (
-            " {\r\n" +
-            "      match message with\r\n"
+            " {\n" +
+            "      match message with\n"
           );
   
           thisStateTransitionArray.forEach(transition => {
@@ -3633,24 +3633,24 @@ function CodeGenerator(props) {
                 }
                 if (subFuncMessages.find(element => element.id === currentInMessage) || 
                     (paramInterMessages.find(element => element.id === currentInMessage))) {
-                  finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
                 } else {
-                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
                 }
                 finalString += (
-                  "        (* The below 'if else' branches represent Guards in the UCDSL\r\n" + 
-                  "         * Guards are used to differentiate transitions that may have\r\n" +
-                  "         * identical 'from' states and 'in' messages *)\r\n"
+                  "        (* The below 'if else' branches represent Guards in the UCDSL\n" + 
+                  "         * Guards are used to differentiate transitions that may have\n" +
+                  "         * identical 'from' states and 'in' messages *)\n"
                 )
                 // Code for each transition
                 thisStateInMessageInfo[currentInMessage].forEach((transition, idx, arr) => {
                   if (idx === 0) {
                     finalString += (
-                      "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                      "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
                     );
                   } else {
                     finalString += (
-                      " elif () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                      " elif () { (* " + (transition.guard || "Guard Description") + " *)\n"
                     )
                   }
       
@@ -3730,7 +3730,7 @@ function CodeGenerator(props) {
       
                   finalString += ( 
                     nameComment +
-                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                    "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                     "             and transition " + toState           
                   );
       
@@ -3761,13 +3761,13 @@ function CodeGenerator(props) {
                       })
                     }
                   }
-                  finalString += ".\r\n          }" 
+                  finalString += ".\n          }" 
                   
                   if (idx === arr.length - 1) {
-                    finalString += " else { fail. }\r\n"
+                    finalString += " else { fail. }\n"
                   }
                 });
-                finalString += "        }\r\n\r\n"
+                finalString += "        }\n\n"
                 
               } else if (singleTransitionGuard) { // Guard code for single transitions
                 let transition = thisStateTransitionArray.find(transition => transition.inMessage === currentInMessage)
@@ -3842,18 +3842,18 @@ function CodeGenerator(props) {
                 }
                 if (subFuncMessages.find(element => element.id === currentInMessage) || 
                     (paramInterMessages.find(element => element.id === currentInMessage))) {
-                  finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + inMessageTrace + receiveArguments + " => {\n"
                 } else {
-                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n"
+                  finalString +=  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n"
                 }
-                finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\r\n"
+                finalString += "        (* The below 'if else' branches represent Guards in the UCDSL *)\n"
                   
                 
                 // Code for the transition
                 let nameComment = genTransitionNameComment(transition, "         ");
                 finalString += nameComment;
                 finalString += (
-                  "          if () { (* " + (transition.guard || "Guard Description") + " *)\r\n"
+                  "          if () { (* " + (transition.guard || "Guard Description") + " *)\n"
                 );
 
                 // Out Message Info
@@ -3930,7 +3930,7 @@ function CodeGenerator(props) {
 
 
                 finalString += ( 
-                  "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                  "             send " + outMessageTrace + sendArguments + ((transition.targetPort) ? ("@" + transition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                   "             and transition " + toState           
                 );
 
@@ -3961,14 +3961,14 @@ function CodeGenerator(props) {
                     })
                   }
                 }
-                finalString += ".\r\n" 
+                finalString += ".\n" 
                 finalString += (
-                  "          } else {\r\n"
+                  "          } else {\n"
                 );
                 finalString += (
-                  "             fail.\r\n          }\r\n"
+                  "             fail.\n          }\n"
                 );
-                finalString += "        }\r\n\r\n"
+                finalString += "        }\n\n"
             } else {
               // Normal transition code
               let thisTransition = thisStateInMessageInfo[currentInMessage][0];
@@ -4119,16 +4119,16 @@ function CodeGenerator(props) {
               if (subFuncMessages.find(element => element.id === currentInMessage) || 
                   (paramInterMessages.find(element => element.id === currentInMessage))) {
                 finalString += (
-                  "        | " + inMessageTrace + receiveArguments + " => {\r\n" +
+                  "        | " + inMessageTrace + receiveArguments + " => {\n" +
                   nameComment +
-                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                   "            and transition " + toState
                 );
               } else {
                 finalString += (
-                  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\r\n" +
+                  "        | " + ((inMessage.port) ? (inMessage.port + "@") : (inMessageBasic.type === "adversarial") ? "" : "undefined@") + inMessageTrace + receiveArguments + " => {\n" +
                   nameComment +
-                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\r\n" +
+                  "            send " + outMessageTrace + sendArguments + ((thisTransition.targetPort) ? ("@" + thisTransition.targetPort) : (outMessageIsSubOrPara || outMessageBasic.type === "adversarial") ? "" : "@undefined") + "\n" +
                   "            and transition " + toState
                 );
               }
@@ -4140,13 +4140,13 @@ function CodeGenerator(props) {
                     if (idx === arr.length - 1) {
                       if (arr.length === 1) {
                         finalString += (
-                          "(" + param.argValue + ").\r\n" +
-                          "        }\r\n" 
+                          "(" + param.argValue + ").\n" +
+                          "        }\n" 
                         );
                       } else {
                         finalString += (
-                          param.argValue + ").\r\n" +
-                          "        }\r\n\r\n" 
+                          param.argValue + ").\n" +
+                          "        }\n\n" 
                         );
                       }
                       
@@ -4161,16 +4161,16 @@ function CodeGenerator(props) {
                     } 
                   })
                 } else {
-                  finalString += ".\r\n        }\r\n\r\n"
+                  finalString += ".\n        }\n\n"
                 }
               } 
             }
           });
     
           finalString += (
-            "\r\n        | * => { fail. }\r\n" +
-            "      end\r\n" +
-            "    }\r\n\r\n"
+            "\n        | * => { fail. }\n" +
+            "      end\n" +
+            "    }\n\n"
             );
   
   
@@ -4178,10 +4178,10 @@ function CodeGenerator(props) {
         });
       }
       
-      finalString +=  "  }\r\n\r\n"
+      finalString +=  "  }\n\n"
     });
 
-    finalString += "}\r\n\r\n";
+    finalString += "}\n\n";
 
     return finalString;
   }
@@ -4189,7 +4189,7 @@ function CodeGenerator(props) {
   const requiresCodeConstructor = () => {
     let finalString = "";
     if (subfuncSelector.subfunctionalities.length > 0) {
-      finalString += ("(* You have made use of other models in this model. You must include the following:\r\n" +
+      finalString += ("(* You have made use of other models in this model. You must include the following:\n" +
         " * uc_requires "
         );
 
@@ -4208,9 +4208,9 @@ function CodeGenerator(props) {
           }
       });
       
-      finalString += ".\r\n *)\r\n\r\n";
+      finalString += ".\n *)\n\n";
     } else if (realFuncSelector.parameterInterfaces && realFuncSelector.parameterInterfaces.length > 0) {
-      finalString += ("(* You have made use of other models in this model. You must include the following:\r\n" +
+      finalString += ("(* You have made use of other models in this model. You must include the following:\n" +
         " * uc_requires "
         );
       
@@ -4223,7 +4223,7 @@ function CodeGenerator(props) {
           }
         });
       
-      finalString += ".\r\n *)\r\n\r\n";
+      finalString += ".\n *)\n\n";
     }    
     
     return finalString;

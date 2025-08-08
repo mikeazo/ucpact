@@ -166,7 +166,7 @@ function CodeGenerator(props) {
           } else if (theMessageState.type === "out") {
             if(theMessageState.messageComment.length > 0){
               if(theMessageState.messageComment.length >= 65){
-                finalString += "   (* " + commentBreaker(+theMessageState.messageComment, 65, 1) +"\n    *)\n"
+                finalString += "   (* " + commentBreaker(theMessageState.messageComment, 65, 1) +"\n    *)\n"
               }else{finalString += "   (* " +theMessageState.messageComment +" *)\n"}
             }
             finalString += (

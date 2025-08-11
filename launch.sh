@@ -3,7 +3,7 @@
 if [[ "$1" == "" ]] ; then echo "Multi-user mode enabled." ; else cd "$1" ; fi
 
 echo "Launch Dockerized UC-PACT Tool"
-echo "Available profiles: default, dev, tests, pytest"
+echo "Available profiles: default, dev, tests, pytest, integration-tests"
 echo -n "Select a profile: "
 
 read -r profile

@@ -27,6 +27,9 @@ import { setCompInterfaceNameDispatch,
          setMessageNameDispatch,
          setBasicInterfaceTypeDispatch,
          deleteBasicInterfaceDispatch,
+         setBasicInterfaceCommentDispatch,
+         setCompInterfaceCommentDispatch,
+         setMessageCommentDispatch,
          addMessageToInterfaceDispatch,
          deleteMessageFromInterfaceDispatch,
          setMessageTypeDispatch,
@@ -41,7 +44,7 @@ import { removeInterFromIFDispatch } from '../features/idealFunctionalities/idea
 import { removeInterFromRealFuncDispatch } from '../features/realFunctionalities/realFuncSlice';
 import { removeOutArgumentFromTransitionsDispatch,
          addOutArgumentToTransitionDispatch } from '../features/stateMachines/stateMachineSlice';
-import { DisplayNameSetup, upperCaseValidation, lowerCaseValidation} from "./helperFunctions";
+import { DisplayNameSetup, upperCaseValidation, lowerCaseValidation, commentValidation} from "./helperFunctions";
 
 
 
@@ -113,6 +116,21 @@ function Interfaces(props) {
                 case "parameterType":
                     setParameterType(nameState[0], nameState[1], nameState[2]);
                     break;
+                case "basicInterComment":
+                    if(commentValidation(nameState[1])){
+                        setBasicInterComment(nameState[0], nameState[1]);
+                    }
+                    break;
+                case "compInterComment":
+                    if(commentValidation(nameState[1])){
+                        setCompInterComment(nameState[0], nameState[1]);
+                    }
+                    break;
+                case "messageComment":
+                    if(commentValidation(nameState[1])){
+                        setMessageComment(nameState[0], nameState[1]);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -156,6 +174,21 @@ function Interfaces(props) {
                 break;
             case "parameterType":
                 setParameterType(nameState[0], nameState[1], nameState[2]);
+                break;
+            case "basicInterComment":
+                if(commentValidation(nameState[1])){
+                    setBasicInterComment(nameState[0], nameState[1]);
+                }
+                break;
+            case "compInterComment":
+                if(commentValidation(nameState[1])){
+                    setCompInterComment(nameState[0], nameState[1]);
+                }
+                break;
+            case "messageComment":
+                if(commentValidation(nameState[1])){
+                    setMessageComment(nameState[0], nameState[1]);
+                }
                 break;
             default:
                 break;
@@ -235,6 +268,27 @@ function Interfaces(props) {
         dispatch(setParameterTypeDispatch([msgID, paraID, value]))
     };
 
+    /*
+      This function sets the basic interface comment into the Redux messages state
+    */
+      const setBasicInterComment = (interID, value) => {
+        dispatch(setBasicInterfaceCommentDispatch([interID, value]))
+      }
+
+    /*
+      This function sets the composite interface comment into the Redux messages state
+    */
+      const setCompInterComment = (interID, value) => {
+        dispatch(setCompInterfaceCommentDispatch([interID, value]))
+      }
+
+    /*
+      This function sets the message comment into the Redux messages state
+    */
+      const setMessageComment = (msgID, value) => {
+        dispatch(setMessageCommentDispatch([msgID, value]))
+      }
+
     /* 
       This function sets the type of a composite interface into the Redux compInters state
       Types can be "direct" or "adversarial"
@@ -283,7 +337,7 @@ function Interfaces(props) {
     */
     const addCompositeInterface = () => {
         let interId = uuid();
-        let inter = {id: interId, name: "", type: "direct", basicInterfaces:[]};
+        let inter = {id: interId, name: "", type: "direct", basicInterfaces:[], interfaceComment: ""};
         dispatch(addCompositeInterfaceDispatch(inter))
     };
 
@@ -292,7 +346,7 @@ function Interfaces(props) {
     */
     const addBasicInterface = () => {
         let interId = uuid();
-        let inter = {id: interId, name: "", type: "direct", messages: []};
+        let inter = {id: interId, name: "", type: "direct", messages: [], interfaceComment: ""};
         dispatch(addBasicInterfaceDispatch(inter))
     };
 
@@ -595,7 +649,7 @@ function Interfaces(props) {
                             <Accordion key={"accordion-" + value.id} data-testid="accorBasicHeader" className="accordion-basic-interface">
                                 <Accordion.Item eventKey="0">
                                     <Accordion.Header data-testid="accorBasicHeaderButton">
-                                        <FontAwesomeIcon className="interfaceDel" icon={faTrash} title="Delete Basic Interface" 
+                                        <FontAwesomeIcon id="deleteBasicInter" className="interfaceDel" icon={faTrash} title="Delete Basic Interface" 
                                                         onClick={() => deleteBasicInterface(value.id)} />
                                         { value.name ? DisplayNameSetup(value.name, interfaceDisplayLength) : "Interface Name" }
                                                                                   
@@ -610,7 +664,7 @@ function Interfaces(props) {
                                                     type="text" autoComplete='off' placeholder='Interface Name'
                                                     onKeyDown={handleKeyDown}/>
                                             </Col>
-                                            <Col>
+                                            <Col className="d-flex justify-content-end">
                                                 <ToggleButtonGroup name={"radio-" + value.id} type="radio" value={value.type} className={'pushback'}
                                                                 
                                                                 onChange={ (v,e) => setBasicInterfaceType(value.id, v) }>
@@ -624,8 +678,17 @@ function Interfaces(props) {
                                             </Col>
                                         </Row>
                                         <Row>
+                                            <Col>
+                                                <Form.Control className="interComment" as="textarea" rows={2} key={"interface-comment-name-" + value.id} 
+                                                    id={"interface-comment-name-" + value.id}
+                                                    onChange={e=>setNameState([value.id, e.target.value, "basicInterComment"])}
+                                                    defaultValue={value.interfaceComment || ""}
+                                                    type="text" autoComplete='off' placeholder='Interface Comment'/>
+                                            </Col>
+                                        </Row>
+                                        <Row>
                                             <span className="messageTitle">Messages
-                                            <FontAwesomeIcon className="messageAdd" icon={faPlus} variant="outline-success" 
+                                            <FontAwesomeIcon id="addMessageToInterface" className="messageAdd" icon={faPlus} variant="outline-success" 
                                                             onClick={() => {addMessageToInterface(value.id)}} title="Add Message" />
                                             </span>
                                         </Row>
@@ -633,7 +696,7 @@ function Interfaces(props) {
                                             <Accordion key={"accordion-" + message.id} data-testid="accorHeaderMessage" className="accordion-message">
                                                 <Accordion.Item eventKey="0">
                                                     <Accordion.Header data-testid="accorHeaderMessageButton">
-                                                        <FontAwesomeIcon className="messageDel" icon={faTrash} title="Delete Message" 
+                                                        <FontAwesomeIcon id="deleteMessage" className="messageDel" icon={faTrash} title="Delete Message" 
                                                             onClick={() => deleteMessageFromInterface(value.id, message.id)} />
                                                             { message.name ? DisplayNameSetup(message.name, messageDisplayLength) : "Message Name" }
                                                     </Accordion.Header>
@@ -670,8 +733,17 @@ function Interfaces(props) {
                                                             </Col>
                                                         </Row>
                                                         <Row>
+                                                            <Col>
+                                                                <Form.Control className="messageComment" as="textarea" rows={2} key={"message-comment-name-" + value.id}
+                                                                    id={"message-comment-name-" + value.id}
+                                                                    onChange={e=>setNameState([message.id, e.target.value, "messageComment"])}
+                                                                    defaultValue={message.messageComment||""}
+                                                                    type="text" autoComplete='off' placeholder='Message Comment'/>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
                                                             <span className="parameterTitle">Parameters
-                                                            <FontAwesomeIcon className="parameterAdd" icon={faPlus} variant="outline-success" 
+                                                            <FontAwesomeIcon id="addParameter" className="parameterAdd" icon={faPlus} variant="outline-success" 
                                                                             onClick={() => {addParameterToMessage(message.id)}} title="Add Parameter" />
                                                             </span>
                                                         </Row>
@@ -717,20 +789,20 @@ function Interfaces(props) {
                             <Accordion key={"accordion-" + value.id} data-testid="accorCompHeader" className="accordion-composite-interface">
                                 <Accordion.Item eventKey="0">
                                     <Accordion.Header data-testid="accorCompHeaderButton">
-                                        <FontAwesomeIcon className="interfaceDel" icon={faTrash} title="Delete Composite Interface" 
+                                        <FontAwesomeIcon id="deleteCompInter" className="interfaceDel" icon={faTrash} title="Delete Composite Interface" 
                                                         onClick={() => deleteCompositeInterface(value.id)} />
                                         { value.name ? DisplayNameSetup(value.name, interfaceDisplayLength) : "Interface Name" }
                                     </Accordion.Header>
                                     <Accordion.Body>
                                         <Row>
                                             <Col>
-                                                <Form.Control key={"cmop-interface-name-" + value.id} id={"cmop-interface-name-" + value.id} 
+                                                <Form.Control key={"comp-interface-name-" + value.id} id={"comp-interface-name-" + value.id} 
                                                             defaultValue={value.name || ""}
                                                             ref={e => compInterNameRefs.current[idx] = e} onChange={ e => setNameState([value.id, e.target.value, "compositeName"]) } 
                                                             onBlur={e => finalCall(e) } isInvalid={!upperCheckComp(idx, value.id)}
                                                             type="text" autoComplete='off' placeholder='Interface Name' onKeyDown={handleKeyDown}/>
                                             </Col>
-                                            <Col>
+                                            <Col className="d-flex justify-content-end">
                                                 <ToggleButtonGroup name={"radio-" + value.id} type="radio" value={value.type} 
                                                                 
                                                                 onChange={ (v,e) => setCompInterfaceType(value.id, v) }>
@@ -744,15 +816,24 @@ function Interfaces(props) {
                                             </Col>
                                         </Row>
                                         <Row>
+                                            <Col>
+                                                <Form.Control className="interComment" as="textarea" rows={2} key={"interface-comment-name-" + value.id} 
+                                                    id={"interface-comment-name-" + value.id}
+                                                    onChange={e=>setNameState([value.id, e.target.value, "compInterComment"])}
+                                                    defaultValue={value.interfaceComment || ""}
+                                                    type="text" autoComplete='off' placeholder='Interface Comment'/>
+                                            </Col>
+                                        </Row>
+                                        <Row>
                                             <span className="messageTitle">Basic Interfaces
-                                            <FontAwesomeIcon className="messageAdd" icon={faPlus} variant="outline-success" 
+                                            <FontAwesomeIcon id="addBasicToComposite"className="messageAdd" icon={faPlus} variant="outline-success" 
                                                             onClick={() => {addBasicToComposite(value.id)}} title="Add Basic to Composite" />
                                             </span>
                                         </Row>
                                         { value.basicInterfaces.map((inter, index) => (
                                             <Row key={"basic-interface-" + inter.idOfInstance}>
                                                 <Col className="messageDelCol">
-                                                    <FontAwesomeIcon className="messageDel" icon={faTrash} title="Delete Basic Instance" 
+                                                    <FontAwesomeIcon id="deleteBasicInstance" className="messageDel" icon={faTrash} title="Delete Basic Instance" 
                                                                 onClick={() => deleteBasicFromComposite(value.id, index)} />
                                                 </Col>
                                                 <Col>

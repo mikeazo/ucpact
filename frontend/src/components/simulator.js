@@ -177,6 +177,7 @@ function Simulator(props) {
                                 defaultValue={{ value : (simSelector.realFunctionality) || "",
                                 label : realFuncOptions && realFuncOptions.find(realFunc => realFunc.value === simSelector.realFunctionality) ? realFuncOptions.find(realFunc => realFunc.value === simSelector.realFunctionality).label : "Select a Real Functionality..."}}
                                 ref={realFunctRef}
+                                id="simRealFuncSelect"
                             />
                         </div>
                         <div id="basic-adversarial-interfaces">
@@ -185,9 +186,10 @@ function Simulator(props) {
                                 options={advIntOptions}
                                 getOptionValue ={(option)=>option.label}
                                 placeholder="Select an Adversarial Interface..."
-                                defaultValue={{ value : (simSelector.realFunctionality) || "",
+                                defaultValue={{ value : (simSelector.basicAdversarialInterface) || "",
                                 label : advIntOptions && advIntOptions.find(basicInt => basicInt.value === simSelector.basicAdversarialInterface) ? advIntOptions.find(basicInt => basicInt.value === simSelector.basicAdversarialInterface).label : "Select an Adversarial Interface..."}}
                                 ref={basicAdvIntRef}
+                                id="simBasicAdvIntSelect"
                             />
                         </div>                                      
                     </div>

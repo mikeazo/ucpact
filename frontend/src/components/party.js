@@ -13,7 +13,7 @@ import { CirclePicker } from 'react-color'
 import { useSelector, useDispatch } from 'react-redux'
 import { changePartyDispatch,
          removePartyDispatch } from '../features/parties/partiesSlice'
-import { DisplayNameSetup, upperCaseValidation } from "./helperFunctions";
+import { DisplayNameSetup, upperCaseValidation, commentValidation } from "./helperFunctions";
 import { removeStateMachineDispatch } from "../features/stateMachines/stateMachineSlice";
 import { useAuth } from "react-oidc-context";
 import { Store } from "react-notifications-component";
@@ -83,6 +83,7 @@ function Party(props) {
     const nameRef = React.createRef();
     const basicAdvIntRef = React.createRef();
     const basicDirIntRef = React.createRef();
+    const commentRef = React.createRef();
 
     //Deletes the component of the modal and closes the modal
     const handleDeleteComponent = () => {
@@ -114,11 +115,12 @@ function Party(props) {
             "color": state.colorTemp,
             "left": props.disp.left,
             "top": props.disp.top,
+            "comment": commentRef.current.value,
         };
         let updatedTempColor = {
             "color" : state.colorTemp,
         };
-        if(upperCaseValidation(nameRef.current.value) && checkPartyName(nameRef.current.value)){
+        if(upperCaseValidation(nameRef.current.value) && checkPartyName(nameRef.current.value) && commentValidation(commentRef.current.value)){
             setState(prevState => ({
                 ...prevState,
                 ...updatedTempColor
@@ -376,7 +378,11 @@ function Party(props) {
                             </div> 
                         </div>
                     </div>
-                    
+                    <div>
+                        <Form.Control className="comment" as="textarea" rows={2} onSubmit={saveComponentInfo}
+                            defaultValue={partySelector && partySelector.comment } ref={commentRef} 
+                            type="text" autoComplete='off' placeholder='Party Comment' style={{width: '465px'}}/>
+                    </div>
                     <div id="dropdown-container">
                         <div id="basic-direct-interfaces">
                             <h6>Basic Direct Interface</h6>
@@ -387,6 +393,7 @@ function Party(props) {
                                 defaultValue={{ value : (partySelector && partySelector.basicDirectInterface) || "",
                                     label : partySelector ? directIntOptions.find(basicInt => basicInt.value === partySelector.basicDirectInterface) ? directIntOptions.find(basicInt => basicInt.value === partySelector.basicDirectInterface).label : "Select a Direct Interface..." : "Select a Direct Interface..."}}
                                 ref={basicDirIntRef}
+                                id="partyBasicDirIntSelect"
                             />
                         </div>
                         <div id="basic-adversary-interfaces">
@@ -398,6 +405,7 @@ function Party(props) {
                                 defaultValue={{ value : (partySelector && partySelector.basicAdversarialInterface) || "",
                                     label : partySelector ? advIntOptions.find(basicInt => basicInt.value === partySelector.basicAdversarialInterface) ? advIntOptions.find(basicInt => basicInt.value === partySelector.basicAdversarialInterface).label : "Select an Adversarial Interface..." : "Select an Adversarial Interface..."}}
                                 ref={basicAdvIntRef}
+                                id="partyBasicAdvIntSelect"
                             />
                         </div>                                      
                     </div>

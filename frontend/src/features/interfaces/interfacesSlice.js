@@ -93,6 +93,18 @@ export const interfacesSlice = createSlice ({
             let theMessageIndex = state.messages.findIndex(element => element.id === action.payload[0]);
             state.messages[theMessageIndex].type = action.payload[1];
         },
+        setBasicInterfaceCommentDispatch:(state, action) => {
+            let theInterfaceIndex = state.basicInters.findIndex(element => element.id === action.payload[0]);
+            state.basicInters[theInterfaceIndex].interfaceComment = action.payload[1];
+        },
+        setCompInterfaceCommentDispatch:(state, action) => {
+            let theInterfaceIndex = state.compInters.findIndex(element => element.id === action.payload[0]);
+            state.compInters[theInterfaceIndex].interfaceComment = action.payload[1];
+        },
+        setMessageCommentDispatch: (state, action)=>{
+            let theMessageIndex = state.messages.findIndex(element => element.id === action.payload[0]);
+            state.messages[theMessageIndex].messageComment = action.payload[1];
+        },
         addMessageToInterfaceDispatch: (state, action) => {
             let msgID = uuid();
 
@@ -103,6 +115,7 @@ export const interfacesSlice = createSlice ({
                 name: "", 
                 type: "in", 
                 port: "", 
+                messageComment: "",
                 parameters: []};
             state.messages = [...state.messages, message];
         },
@@ -146,6 +159,9 @@ export const { setCompInterfaceNameDispatch,
                setMessagePortDispatch,
                setBasicInterfaceTypeDispatch,
                deleteBasicInterfaceDispatch,
+               setBasicInterfaceCommentDispatch,
+               setCompInterfaceCommentDispatch,
+               setMessageCommentDispatch,
                addMessageToInterfaceDispatch,
                deleteMessageFromInterfaceDispatch,
                setMessageTypeDispatch,

@@ -344,6 +344,7 @@ function RealFunctionality(props) {
                                 defaultValue={{ value : (realFuncSelector && realFuncSelector.compositeDirectInterface) || "",
                                     label : directIntOptions.find(compositeInt => compositeInt.value === realFuncSelector.compositeDirectInterface) ? directIntOptions.find(compositeInt => compositeInt.value === realFuncSelector.compositeDirectInterface).label : "Select a Direct Interface..."}}
                                 ref={compositeDirIntRef}
+                                id="compDirIntSelect"
                             />
                         </div>
                         <div id="composite-adversary-interfaces">
@@ -355,6 +356,7 @@ function RealFunctionality(props) {
                                 defaultValue={{ value : (realFuncSelector && realFuncSelector.compositeAdversarialInterface) || "",
                                     label : advIntOptions.find(compositeInt => compositeInt.value === realFuncSelector.compositeAdversarialInterface) ? advIntOptions.find(compositeInt => compositeInt.value === realFuncSelector.compositeAdversarialInterface).label : "Select a Adversarial Interface..."}}
                                 ref={compositeAdvIntRef}
+                                id="compAdvIntSelect"
                             />
                         </div><br></br>                    
                     </div>

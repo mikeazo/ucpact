@@ -61,6 +61,7 @@ function ReactFlowBox(props) {
 
   const [show, setShow] = useState();
   const [modalTransition, setModalTransition] = useState('');
+  const [hoveredNodeId, setHoveredNodeId] = useState('');
 
   const transitionFromStateRef = React.createRef();
   const transitionToStateRef = React.createRef();
@@ -195,32 +196,55 @@ function ReactFlowBox(props) {
     setTableIndex('');
   });
 
+  const onNodeMouseEnter = (async (event, node) => {
+    setHoveredNodeId(node.id);
+  });
+
+  const onNodeMouseLeave = ((event, node) => {
+    setNodes(nodes => nodes.map((nodeInList) => nodeInList.id === hoveredNodeId ? 
+        {id: nodeInList.id, position: nodeInList.position, data: {label: nodeInList.data.label, id: nodeInList.id, initState: nodeInList.data.initState, color: nodeInList.data.color, hoveredState: false}, type: nodeInList.type} //Change hovered State
+        : nodeInList))
+    setHoveredNodeId('');
+  });
+
   // Display states
   useEffect(() => {
-    let newNodes = [];
-    thisStateMachineSelector.states.forEach(state => {
-      let thisState = stateSelector.find(thisState => thisState.id === state);
-      let isInitState = false;
-      if (thisStateMachineSelector.initState === thisState.id) {
-        isInitState = true;
-      }
-      newNodes.push({id : thisState.id, position: { x: thisState.left, y: thisState.top }, data: { label: thisState.name, id: thisState.id, initState: isInitState, color: thisState.color }, type: 'stateNode'});
-    });
-    setNodes(newNodes);
-  }, [stateMachineSelector, stateRender]);
-
+    if (nodes.length !== thisStateMachineSelector.states.length){
+        let newNodes = [];
+        thisStateMachineSelector.states.forEach(state => {
+          let thisState = stateSelector.find(thisState => thisState.id === state);
+          let isInitState = false;
+          let isHoveredState = false;
+          if (thisStateMachineSelector.initState === thisState.id) {
+            isInitState = true;
+          }
+          if (thisState.id === hoveredNodeId) {
+            isHoveredState = true;
+          }
+          newNodes.push({id : thisState.id, position: { x: thisState.left, y: thisState.top }, data: { label: thisState.name, id: thisState.id, initState: isInitState, color: thisState.color, hoveredState: isHoveredState }, type: 'stateNode'});
+        });
+        setNodes(newNodes); 
+    }else{
+        let aState = stateSelector.find(thisState => thisState.id === hoveredNodeId) //Need this for keeping the name updated
+        setNodes(nodes => nodes.map((nodeInList) => nodeInList.id === hoveredNodeId ? 
+        {id: nodeInList.id, position: nodeInList.position, data: {label: aState.name, id: nodeInList.id, initState: nodeInList.data.initState, color: aState.color, hoveredState: true}, type: nodeInList.type} //Change hovered State
+        : nodeInList)); //Otherwise the node should be the same
+    }
+    
+  }, [stateMachineSelector, stateRender, hoveredNodeId]);
+  
   // Display transitions
   useEffect(() => {
     let newEdges = [];
     thisStateMachineSelector.transitions.forEach((transition, idx) => {
-      let thisTransition = stateMachineSelector.transitions.find(thisTransition => thisTransition.id === transition);
+    let thisTransition = stateMachineSelector.transitions.find(thisTransition => thisTransition.id === transition);
 
-      let renderLabel = false;
-      if (idx === tableIndex) {
+    let renderLabel = false;
+    if (idx === tableIndex) {
         renderLabel = true;
-      }
+    }
 
-      if (thisTransition && thisTransition.fromState && thisTransition.toState) {
+    if (thisTransition && thisTransition.fromState && thisTransition.toState) {
 
         let type = '';
         if (thisTransition.fromState === thisTransition.toState) {
@@ -271,15 +295,15 @@ function ReactFlowBox(props) {
         }
 
         newEdges.push({id: thisTransition.id, type: type, source: thisTransition.fromState, sourceHandle: sourceHandle, target: thisTransition.toState, targetHandle: targetHandle,
-          markerEnd: {
+        markerEnd: {
             type: MarkerType.ArrowClosed,
             width: 14,
             height: 14,
             color: '#000000',
-          },
-          data: { label: transitionLabel, renderLabel: renderLabel, sourceHandle: thisTransition.sourceHandle, targetHandle: thisTransition.targetHandle}
+        },
+        data: { label: transitionLabel, renderLabel: renderLabel, sourceHandle: thisTransition.sourceHandle, targetHandle: thisTransition.targetHandle}
         });
-      }
+    }
     });
     setEdges(newEdges);
 
@@ -390,15 +414,19 @@ function ReactFlowBox(props) {
         paramInterPath = realFuncSelector.parameterInterfaces.find(element => element.id === mes.paramInterId).name + ".";
         let flag = false;
 
-        paramInterMessages.some((paramInterMessage) => {
-            paramInterMessage.compInter.basicInterfaces.forEach((basicInComp) => {
-                if (basicInComp.idOfBasic === mes.basicInter.id && paramInterMessage.paramInterId === mes.paramInterId) {
-                    paramInterPath += basicInComp.name + "." + mes.name;
-                    flag = true;
-                }
+        if (mes.basicInter.type === "direct") {
+            paramInterMessages.some((paramInterMessage) => {
+                paramInterMessage.compInter.basicInterfaces.forEach((basicInComp) => {
+                    if (basicInComp.idOfBasic === mes.basicInter.id && paramInterMessage.paramInterId === mes.paramInterId) {
+                        paramInterPath += basicInComp.name + "." + mes.name;
+                        flag = true;
+                    }
+                });
+                return flag;
             });
-            return flag;
-        });
+        } else {
+            paramInterPath += mes.basicInter.name + "." + mes.name;
+        }
 
         return (paramInterPath)
     }
@@ -474,13 +502,13 @@ function ReactFlowBox(props) {
             compInter.basicInterfaces.forEach((basicInter) => {
                 if (basicInter.idOfInstance === props.component.basicAdversarialInterface) {
                     partyInterAdv = interSelector.basicInters.find(element => element.id === basicInter.idOfBasic);
-                    if (partyInterAdv.messages.includes(mes.id)) {
+                    if (partyInterAdv && partyInterAdv.messages.includes(mes.id)) {
                         partyPath = compInter.name + "." + basicInter.name;
                     }         
                 }
                 if (basicInter.idOfInstance === props.component.basicDirectInterface) {
                     partyInterDir = interSelector.basicInters.find(element => element.id === basicInter.idOfBasic);
-                    if (partyInterDir.messages.includes(mes.id)) {
+                    if (partyInterDir && partyInterDir.messages.includes(mes.id)) {
                         partyPath = compInter.name + "." + basicInter.name;
                     }
                 }
@@ -651,12 +679,12 @@ function ReactFlowBox(props) {
         });
 
         if (mes.type === 'in') {
-            if (partyInterAdv.messages) { // check existence
+            if (partyInterAdv && partyInterAdv.messages) { // check existence
                 if (partyInterAdv.messages.includes(mes.id)) {
                     return (mes)
                 }
             }
-            if (partyInterDir.messages) { // check existence
+            if (partyInterDir && partyInterDir.messages) { // check existence
                 if (partyInterDir.messages.includes(mes.id)) {
                     return (mes)
                 }
@@ -727,7 +755,7 @@ function ReactFlowBox(props) {
         });
 
         if (mes.type === 'out') {
-            if (idealFuncInterAdv) { // check existence
+            if (idealFuncInterAdv && idealFuncInterAdv.messages) { // check existence
                 if (idealFuncInterAdv.messages.includes(mes.id)) {
                     return (mes)
                 }
@@ -765,12 +793,12 @@ function ReactFlowBox(props) {
         });
         
         if (mes.type === 'out') {
-            if (partyInterAdv.messages) { // check existence
+            if (partyInterAdv && partyInterAdv.messages) { // check existence
                 if (partyInterAdv.messages.includes(mes.id)) {
                     return (mes)
                 }
             }
-            if (partyInterDir.messages) { // check existence
+            if (partyInterDir && partyInterDir.messages) { // check existence
                 if (partyInterDir.messages.includes(mes.id)) {
                     return (mes)
                 }
@@ -911,6 +939,8 @@ function ReactFlowBox(props) {
                         onNodeDragStop={onNodeDragStop}
                         onEdgeMouseEnter={onEdgeMouseEnter}
                         onEdgeMouseLeave={onEdgeMouseLeave}
+                        onNodeMouseEnter={onNodeMouseEnter}
+                        onNodeMouseLeave={onNodeMouseLeave}
                     >
                         <div className="smHeader">
                             <header className="smTitle">{DisplayNameSetup(props.component.name, stateNameDnDMaxLength)} State Machine</header>

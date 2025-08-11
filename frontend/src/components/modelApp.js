@@ -55,6 +55,7 @@ function ModelApp(props) {
     const realFuncSelector = useSelector(state => state.realFunctionality);
     const modelSelector = useSelector(state => state.model);
     const reduxSelector = useSelector(state => state);
+    const simSelector = useSelector(state => state.simulator);
 
     const handleModelModalClose = () => setModelModalShow(false);
 
@@ -507,6 +508,53 @@ function ModelApp(props) {
                         }
                     });
                 }
+                if (simSelector && simSelector.realFunctionality && simSelector.realFunctionality === realFuncSelector.id) {
+                    // Make api call
+                    let token = "none";
+                    if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
+                        token = auth.user?.access_token;
+                    }
+                    let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/" + paramInter.modelName;
+                    axios({
+                        method: "GET",
+                        url: urlPath,
+                        headers: {
+                          Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
+                        },
+                    })
+                    .then((response) => {
+                        const res = response.data;
+                        if (res["idealFunctionality"]["basicAdversarialInterface"]) {
+                            let basicAdvInterface = res["interfaces"]["basicInters"].find(element => element.id === res["idealFunctionality"]["basicAdversarialInterface"]); 
+                            let basicAdvInterMessages = basicAdvInterface.messages;
+                            let messages = [];
+                            basicAdvInterMessages.forEach(messageId => {
+                                let message = res["interfaces"]["messages"].find(element => element.id === messageId);
+                                messages.push(message);
+                            })
+                            messages.forEach(message => {
+                                message["paramInterId"] = paramInter.id;
+                                message["id"] += "/" + paramInter.id;
+                                message["compInter"] = {
+                                    "basicInterfaces": [],
+                                    "id": "",
+                                    "name": "",
+                                    "type": ""
+                                };
+                                message["basicInter"] = basicAdvInterface;
+                            });
+
+                            setParamInterMessages(paramInterMessages => [...paramInterMessages, ...messages])
+                        }
+                    })
+                    .catch((err) => {
+                        if (err.response) {
+                            console.log(err.response);
+                            console.log(err.response.status);
+                            console.log(err.response.headers);
+                        }
+                    });
+                }
             });
         }
     }, [realFuncSelector]);
@@ -816,7 +864,7 @@ function ModelApp(props) {
                     updateXarrow();
                     }}
                 >
-                    <div title={<Link to="/"><img src="/images/favicon.ico" alt="logo" width="30" onClick={e => homeLink(e)}/></Link>}></div>
+                    <div title={<Link to="/"><img src="/images/favicon.ico" alt="logo" width="30" onClick={e => homeLink(e)} data-testid="home-link"/></Link>}></div>
                     <Tab eventKey="rWorld" title="Real World" className="rwTab">
                         <UCCompBox>
                             <SubFunc />

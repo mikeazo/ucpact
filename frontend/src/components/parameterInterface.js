@@ -81,49 +81,48 @@ function ParameterInterface(props) {
         if ((process.env.NODE_ENV !== 'test' && process.env.REACT_APP_AUTH_DISABLED !== 'TRUE')) {
             token = auth.user?.access_token;
         }
-        let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/compInterfaces/" + idOfCompInterface + "/messages";
-            axios({
-                method: "GET",
-                url: urlPath,
-                headers: {
-                    Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
-                },
-            })
-            .then((response) => {
-                const res = response.data;
-                transitionSelector.forEach((transition) => {
-                    let updatedTransition = {
-                        "id": transition.id,
-                        "fromState": transition.fromState,
-                        "toState": transition.toState,
-                        "toStateArguments": transition.toStateArguments,
-                        "outMessageArguments": transition.outMessageArguments,
-                        "guard": transition.guard,
-                        "outMessage": transition.outMessage,
-                        "inMessage": transition.inMessage
+        if (idOfCompInterface){ //Check if the idOfCompInterface is not empty
+            let urlPath = process.env.REACT_APP_SERVER_PREFIX + "/compInterfaces/" + idOfCompInterface + "/messages";
+                axios({
+                    method: "GET",
+                    url: urlPath,
+                    headers: {
+                        Authorization: `Bearer ${token}`, SessionTabId: `${localStorage.sessionID}/${sessionStorage.tabID}`,
+                    },
+                })
+                .then((response) => {
+                    const res = response.data;
+                    transitionSelector.forEach((transition) => {
+                        let updatedTransition = {
+                            "id": transition.id,
+                            "fromState": transition.fromState,
+                            "toState": transition.toState,
+                            "toStateArguments": transition.toStateArguments,
+                            "outMessageArguments": transition.outMessageArguments,
+                            "guard": transition.guard,
+                            "outMessage": transition.outMessage,
+                            "inMessage": transition.inMessage
+                        }
+                        res.forEach(message => {
+                            if(transition.outMessage === message.id){
+                                updatedTransition.outMessage = ""
+                                updatedTransition.outMessageArguments = []
+                            }
+                            if(transition.inMessage === message.id){
+                                updatedTransition.inMessage = ""
+                            }
+                        })
+                        dispatch(changeTransitionDispatch(updatedTransition))
+                    });
+                })
+                .catch((err) => {
+                    if (err.response) {
+                        console.log(err.response);
+                        console.log(err.response.status);
+                        console.log(err.response.headers);
                     }
-                    res.forEach(message => {
-                        if(transition.outMessage === message.id){
-                            updatedTransition.outMessage = ""
-                            updatedTransition.outMessageArguments = []
-                        }
-                        if(transition.inMessage === message.id){
-                            updatedTransition.inMessage = ""
-                        }
-                    })
-                    dispatch(changeTransitionDispatch(updatedTransition))
                 });
-            })
-            .catch((err) => {
-                if (err.response) {
-                    console.log(err.response);
-                    console.log(err.response.status);
-                    console.log(err.response.headers);
-                }
-            });
-                
-        dispatch(deleteParamInterDispatch(props.id));
-
+        }
         setShow(false);
     }
 
@@ -315,6 +314,7 @@ function ParameterInterface(props) {
                                 defaultValue={{ value : (paramInterSelector && paramInterSelector.idOfInterface) || "",
                                     label : paramInterSelector ? compDirOptions.find(compositeInt => compositeInt.value === paramInterSelector.idOfInterface) ? compDirOptions.find(compositeInt => compositeInt.value === paramInterSelector.idOfInterface).label : "Select a Direct Interface..." : "Select a Direct Interface..."}}
                                 ref={compDirRef}
+                                id="paramInterCompDirSelect"
                             />
                         </div>                                      
                     </div>

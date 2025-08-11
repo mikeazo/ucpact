@@ -187,6 +187,7 @@ function IdealFunc(props) {
                                     defaultValue={{ value : (idealFuncSelector.compositeDirectInterface) || "",
                                         label : compDirIntOptions && compDirIntOptions.find(basicInt => basicInt.value === idealFuncSelector.compositeDirectInterface) ? compDirIntOptions.find(basicInt => basicInt.value === idealFuncSelector.compositeDirectInterface).label : "Select a Composite Direct Interface..."}}
                                     ref={compDirIntRef}
+                                    id="idealFuncCompDirIntSelect"
                                 />
                             </div>
                             <h6>Basic Adversarial Interface</h6>
@@ -198,6 +199,7 @@ function IdealFunc(props) {
                                     defaultValue={{ value : (idealFuncSelector.basicAdversarialInterface) || "",
                                         label : basicAdvIntOptions && basicAdvIntOptions.find(basicInt => basicInt.value === idealFuncSelector.basicAdversarialInterface) ? basicAdvIntOptions.find(basicInt => basicInt.value === idealFuncSelector.basicAdversarialInterface).label : "Select an Adversarial Interface..."}}
                                     ref={basicAdvIntRef}
+                                    id="idealFuncBasicAdvIntSelect"
                                 />
                             </div>
                         </div>                                   

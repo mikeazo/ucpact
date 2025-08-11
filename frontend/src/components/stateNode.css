@@ -7,6 +7,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    visibility: visible;
     /*background-color: #e3c85b;*/
 }
   
@@ -21,7 +22,5 @@
 path.react-flow__edge-path {
     stroke-width: 4;
     stroke: #000000;
-}
-.react-flow__handle{
-    opacity: .5;
+    visibility: visible;
 }

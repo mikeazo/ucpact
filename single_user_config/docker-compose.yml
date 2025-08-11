@@ -56,6 +56,27 @@ services:
               source: ../frontend/src
               target: /frontend-build/src
         container_name: frontend-tests
+    frontend-integration:
+        build:
+            args:
+                - ENVFILES_DIR=single_user_integration_tests_envfiles
+            context: ../frontend
+            dockerfile: ../frontend-integration.Dockerfile
+        profiles:
+            - integration-tests
+        ports:
+            - 80:3000
+            - 3000:3000
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../frontend/public
+              target: /frontend-build/public
+            - type: bind
+              source: ../frontend/src
+              target: /frontend-build/src
+        container_name: frontend-integration
     backend:
         build:
             context: ../backend
@@ -103,6 +124,55 @@ services:
         networks:
             - nginx-network
         container_name: backend-tests
+    backend-integration:
+        build:
+            context: ../backend
+            dockerfile: ../backend.Dockerfile
+        profiles:
+            - integration-tests
+        ports:
+            - 5000:5000
+        environment:
+            MODEL_VERSION: "1.2"
+            BACKEND_AUTH_ENABLED: "false"
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ../tests/models
+              target: /app/models
+        container_name: backend-integration
+    selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+            - "4444:4444"
+            - "7900:7900"
+        environment:
+            - SE_ENABLE_TRACING=false
+        profiles:
+            - integration-tests
+        networks:
+            - nginx-network
+        container_name: selenium
+    integration-tests:
+        build:
+            context: ../tests
+            dockerfile: ../integration.Dockerfile
+        profiles:
+            - integration-tests
+        networks:
+            - nginx-network
+        depends_on:
+            - selenium
+            - frontend-integration
+            - backend-integration
+        environment:
+            - SELENIUM_URL=http://selenium:4444/wd/hub
+        volumes:
+            - type: bind
+              source: ../tests
+              target: /app/tests
+        container_name: integration-tests
 volumes:
     nginx.conf:
     models:

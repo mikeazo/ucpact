@@ -1,0 +1,7 @@
+*.swp
+env
+.env
+.pytest_cache
+__pycache__
+.pytest_cache/
+__pycache__/

@@ -69,6 +69,16 @@
     width: 200px;
 }
 
+.interComment{
+    margin-top: 7px;
+    width: 458px;
+}
+
+.messageComment{
+    margin-top: 7px;
+    width: 393px;
+}
+
 .messageTitle {
     font-weight: bold;
     font-size: 20px;

@@ -36,12 +36,14 @@
         id: <uuid>,
         name: <string>,
         basicInterfaces: [{name:<string>, idOfBasic:<id of basic interface>, idOfInstance:<id of basic instance>}, ...],
+        interfaceComment: <string>,
     }, ...],
     basicInters: [{
         type: <"adversarial" | "direct">,
         messages: [<id of message>, ...],
         id: <uuid>,
         name: <string>,
+        interfaceComment: <string>,
     }, ...],
     messages: [{
         type: <"in" | "out">,
@@ -49,7 +51,9 @@
         id: <uuid>,
         name: <string>,
         parameters: [{name: <string>, type: <string>, id:<uuid string>}*],
+        messageComment: <string>,
     }, ...],
+    
 }
 ```
 
@@ -112,7 +116,8 @@
         name: <string>,
         left: <int>, // Number of pixels from the left of the screen where the component belongs
         top: <int>, // Number of pixels from the top of the screen where the component belongs
-        color: <string> // A css color string in the form #ffffff to apply to the component
+        color: <string>, // A css color string in the form #ffffff to apply to the component
+        comment: <string>
     }, ...],
 }
 ```
@@ -134,6 +139,7 @@
         top: <int>, // Number of pixels from the top of the screen where the component belongs
         color: <string>, // A css color string in the form #ffffff to apply to the component
         parameters: [{name: <string>, type: <string>, id: <uuid>}*],
+        comment: <string>,
     }, ...],
     transitions: [{
         id: <uuid>,

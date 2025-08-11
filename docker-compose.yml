@@ -19,6 +19,25 @@ services:
               source: ./auth/realm.json
               target: /opt/keycloak/data/import/realm.json
         container_name: uc-pact-auth
+    auth-integration:
+        image: quay.io/keycloak/keycloak:22.0.0
+        profiles:
+            - integration-tests
+        environment:
+            KEYCLOAK_ADMIN: admin 
+            KEYCLOAK_ADMIN_PASSWORD: admin
+        command:
+            - start-dev
+            - --import-realm
+        ports:
+            - 8080:8080
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ./auth/realm-integration.json
+              target: /opt/keycloak/data/import/realm.json
+        container_name: uc-pact-auth-integration
     frontend:
         build:
             context: frontend
@@ -53,6 +72,25 @@ services:
               source: ./frontend/src
               target: /frontend-build/src
         container_name: frontend-dev
+    frontend-integration:
+        build:
+            context: frontend
+            dockerfile: ../frontend-integration.Dockerfile
+        profiles:
+            - integration-tests
+        ports:
+            - 80:3000
+            - 3000:3000
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ./frontend/public
+              target: /frontend-build/public
+            - type: bind
+              source: ./frontend/src
+              target: /frontend-build/src
+        container_name: frontend-integration
     frontend-tests:
         build:
             context: frontend
@@ -81,7 +119,7 @@ services:
         environment:
             KC_PUBLIC_KEY_URI: http://auth:8080/realms/UCPACT-Realm/
             KC_HTTP_RELATIVE_PATH: true
-            MODEL_VERSION: "1.2"
+            MODEL_VERSION: "1.3"
         networks:
             - nginx-network
         volumes:
@@ -100,7 +138,7 @@ services:
         environment:
             KC_PUBLIC_KEY_URI: http://auth:8080/realms/UCPACT-Realm/
             KC_HTTP_RELATIVE_PATH: true
-            MODEL_VERSION: "1.2"
+            MODEL_VERSION: "1.3"
         networks:
             - nginx-network
         volumes:
@@ -115,18 +153,73 @@ services:
         profiles:
             - pytest
         environment:
-            MODEL_VERSION: "1.2"
+            MODEL_VERSION: "1.3"
             TEST_DATA_FN: "/app/tests/testData.json"
             BACKEND_AUTH_ENABLED: "false"
         networks:
             - nginx-network
         container_name: backend-tests
+    backend-integration-tests:
+        build:
+            context: backend
+            dockerfile: ../backend.Dockerfile
+        profiles:
+            - integration-tests
+        ports:
+            - 5000:5000
+        environment:
+            KC_PUBLIC_KEY_URI: http://auth-integration:8080/realms/UCPACT-Realm/
+            KC_HTTP_RELATIVE_PATH: true
+            MODEL_VERSION: "1.3"
+        networks:
+            - nginx-network
+        volumes:
+            - type: bind
+              source: ./tests/models
+              target: /app/models
+        container_name: backend-integration-tests
+    selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+            - "4444:4444"
+            - "7900:7900"
+        environment:
+            - SE_ENABLE_TRACING=false
+            #- SE_OPTS=--enable-clipboard-autoset
+        volumes:
+            - uc_files:/home/seluser/Downloads
+        profiles:
+            - integration-tests
+        networks:
+            - nginx-network
+    integration-tests:
+        build:
+            context: ./tests
+            dockerfile: ../integration.Dockerfile
+        profiles:
+            - integration-tests
+        networks:
+            - nginx-network
+        depends_on:
+            - selenium
+            - frontend-integration
+            - backend-integration-tests
+            - auth-integration
+        environment:
+            - SELENIUM_URL=http://selenium:4444/wd/hub
+        volumes:
+            - type: bind
+              source: ./tests
+              target: /app/tests
+            - uc_files:/app/tests/uc-files
+        container_name: integration-tests
 volumes:
-    realm.json:
-    nginx.conf:
-    models:
-    src:
-    public:
+    uc_files:
+        driver: local
+        driver_opts:
+            type: none
+            device: ./tests/uc-files
+            o: bind
 networks:
     nginx-network:
         name: nginx-network

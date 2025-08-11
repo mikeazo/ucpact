@@ -1,0 +1,187 @@
+{
+  "model": {
+    "interfaces": {
+      "compInters": [
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "618b08b1-b13d-9745-f8ee-b0c8cf184c49",
+              "idOfInstance": "0dafcf3f-d7f7-3a99-8779-2c63b909c16d",
+              "name": "BasicInt1"
+            }
+          ],
+          "id": "41e7ea4c-f764-4b92-a27f-902195fef6d1",
+          "name": "CompDir1",
+          "type": "direct"
+        },
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "082b7e3e-04a3-196e-1bd5-3a921fa4bfd5",
+              "idOfInstance": "b8f17598-0b6e-bc3f-5715-ceee6e33d4cc",
+              "name": "BasicInt2"
+            }
+          ],
+          "id": "12e58655-6c5c-756d-f635-31ed73f518f1",
+          "name": "CompAdv1",
+          "type": "adversarial"
+        }
+      ],
+      "basicInters": [
+        {
+          "id": "618b08b1-b13d-9745-f8ee-b0c8cf184c49",
+          "messages": [
+            "7b825f16-ba65-e6e1-8b8c-75e8c681ad57",
+            "6e9c41b7-b0ea-91bb-089a-0d4c4f02a0b1"
+          ],
+          "name": "BasicDir1",
+          "type": "direct"
+        },
+        {
+          "id": "082b7e3e-04a3-196e-1bd5-3a921fa4bfd5",
+          "messages": [
+            "d6e46720-a026-70a1-8787-a2780938ad7c",
+            "e0634e6d-9d88-230f-8380-437118c16913"
+          ],
+          "name": "BasicAdv1",
+          "type": "adversarial"
+        }
+      ],
+      "messages": [
+        {
+          "id": "7b825f16-ba65-e6e1-8b8c-75e8c681ad57",
+          "name": "message1",
+          "parameters": [
+            {
+              "id": "dc266896-929b-f94d-6c59-4e878fa03d24",
+              "name": "param1",
+              "type": "type"
+            }
+          ],
+          "port": "pt",
+          "type": "in"
+        },
+        {
+          "id": "6e9c41b7-b0ea-91bb-089a-0d4c4f02a0b1",
+          "name": "message2",
+          "parameters": [
+            {
+              "id": "4602527b-4f77-77f8-f536-21c1c3678c20",
+              "name": "param2",
+              "type": "type"
+            }
+          ],
+          "port": "pt",
+          "type": "out"
+        },
+        {
+          "id": "d6e46720-a026-70a1-8787-a2780938ad7c",
+          "name": "message1",
+          "parameters": [
+            {
+              "id": "edf48384-3ed2-7e49-8605-4073a8649a6b",
+              "name": "param1",
+              "type": "type"
+            }
+          ],
+          "port": "",
+          "type": "in"
+        },
+        {
+          "id": "e0634e6d-9d88-230f-8380-437118c16913",
+          "name": "message2",
+          "parameters": [
+            {
+              "id": "048ff27f-9cb3-17ea-d4b2-da019a6279ca",
+              "name": "param2",
+              "type": "type"
+            }
+          ],
+          "port": "",
+          "type": "out"
+        }
+      ]
+    },
+    "parties": {
+      "parties": []
+    },
+    "subfunctionalities": {
+      "subfunctionalities": []
+    },
+    "realFunctionality": {
+      "parties": [],
+      "subfunctionalities": [],
+      "id": "c28e3840-6bd4-ef9a-edd5-fc466d475b8d",
+      "name": "Real_Functionality",
+      "compositeDirectInterface": "",
+      "compositeAdversarialInterface": "",
+      "parameterInterfaces": []
+    },
+    "simulator": {
+      "id": "3e21d8e7-e06b-5d46-afeb-b3d11d9cd515",
+      "name": "Sim",
+      "basicAdversarialInterface": "",
+      "realFunctionality": "",
+      "stateMachine": "e9915425-369c-fbc6-91c0-8e1c89a70341",
+      "color": "#6bb45c",
+      "left": 450,
+      "top": 201
+    },
+    "idealFunctionality": {
+      "id": "97e2f6a1-663d-ebc2-4fe3-7f806cf79964",
+      "name": "IF",
+      "basicAdversarialInterface": "",
+      "compositeDirectInterface": "41e7ea4c-f764-4b92-a27f-902195fef6d1",
+      "stateMachine": "c4429f1a-74b5-8c06-3af4-0e22298dda90",
+      "color": "#3e88c7",
+      "left": 250,
+      "top": 250
+    },
+    "stateMachines": {
+      "stateMachines": [
+        {
+          "id": "c4429f1a-74b5-8c06-3af4-0e22298dda90",
+          "initState": "b2953ca6-3d0e-2a9b-2406-055a7485510b",
+          "states": [
+            "b2953ca6-3d0e-2a9b-2406-055a7485510b"
+          ],
+          "transitions": []
+        },
+        {
+          "id": "e9915425-369c-fbc6-91c0-8e1c89a70341",
+          "initState": "2a023b5c-592e-79bc-f491-633063a57e8a",
+          "states": [
+            "2a023b5c-592e-79bc-f491-633063a57e8a"
+          ],
+          "transitions": []
+        }
+      ],
+      "states": [
+        {
+          "color": "#e3c85b",
+          "id": "b2953ca6-3d0e-2a9b-2406-055a7485510b",
+          "left": 270,
+          "name": "InitState",
+          "parameters": [],
+          "top": 150
+        },
+        {
+          "color": "#e3c85b",
+          "id": "2a023b5c-592e-79bc-f491-633063a57e8a",
+          "left": 270,
+          "name": "InitState",
+          "parameters": [],
+          "top": 150
+        }
+      ],
+      "transitions": []
+    },
+    "id": "13ca7efe-df3b-14a6-8913-396d045e7bd4",
+    "name": "BasicModel",
+    "readOnly": false,
+    "modelVersion": "1.1"
+  },
+  "readOnly": "",
+  "lastModified": 1723833815.117014,
+  "modelVersion": "1.1"
+}

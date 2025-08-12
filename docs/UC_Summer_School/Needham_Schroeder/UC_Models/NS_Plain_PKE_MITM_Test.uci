@@ -1,0 +1,210 @@
+(* This script illustrates one way to exploit the Needham-Schroeder protocol.
+ * The Adversary is modeled both as Principal I (for Intruder) in two
+ * instances of the Needham-Schroeder protocol, which follow the protocol in the
+ * usual way but is assumed to have shared its secret key with the EasyUC
+ * adversary, which interferes with network traffic.
+ *)
+
+load NS_Plain_PKE_MITM.
+functionality NS_Plain_PKE_MITM.NSMITMReal (NeedhamSchroederPlainPKE.NSReal,
+   NeedhamSchroederPlainPKE.NSReal).
+prover [].
+
+(* A port to drive the script along *)
+var pt : port.
+assumption envport_pt : envport func pt.
+
+var pk_a : pk_t.
+var sk_a : sk_t.
+assumption key_pair_a : gen_pair pk_a sk_a.
+var pk_b : pk_t.
+var sk_b : sk_t.
+assumption key_pair_b : gen_pair pk_b sk_b.
+var pk_i : pk_t.
+var sk_i : sk_t.
+assumption key_pair_i : gen_pair pk_i sk_i.
+var pk_table : (port, pk_t) fmap.
+assumption pk_table_def :
+  pk_table = empty.[(func, 1) <- pk_a].[(func, 2) <- pk_b].[(func, 3) <- pk_i].
+
+(* Experiment with the real world *)
+real.
+
+(* Tell NS1.Pt1 that it is principal A *)
+send pt@NS_Plain_PKE_MITM.NSMITMDir.PtAD.init_PKE (sk_a, pk_table)@((func, 1)).
+(* run 7. *)
+step. step. step. step. step. step. step.
+assert msg_out ((func, 1))@NS_Plain_PKE_MITM.NSMITMDir.PtAD.ok@pt ctrl_env.
+
+(* Tell NS2.Pt2 that it is principal B *)
+send pt@NS_Plain_PKE_MITM.NSMITMDir.PtBD.init_PKE (sk_b, pk_table)@((func, 2)).
+(* run 7. *)
+step. step. step. step. step. step. step.
+assert msg_out ((func, 2))@NS_Plain_PKE_MITM.NSMITMDir.PtBD.ok@pt ctrl_env.
+
+(* Tell NS1.Pt2 and NS2.Pt1 that they are principal I (honest, but whose secret
+ * key is known to the adversary) *)
+send pt@NS_Plain_PKE_MITM.NSMITMDir.PtID.init_PKE (sk_i, pk_table)@((func, 3)).
+(* run 11. *)
+step. step. step. step. step. step. step. step. step. step.
+step.
+assert msg_out ((func, 3))@NS_Plain_PKE_MITM.NSMITMDir.PtID.ok@pt ctrl_env.
+
+(* Part 1: tell NS1.Pt1 (A) to initiate a session with NS1.Pt2 (I) *)
+send pt@NS_Plain_PKE_MITM.NSMITMDir.PtAD.part1@((func, 1)).
+(* run 11. *)
+step. step. step. step. step. step. step. step. step. step.
+step.
+(* NS1.Fwd1 leaks {Na, A} Ki to adversary *)
+assert msg_out
+  ((func ++ [1; 1], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func ++ [1], 1), (func ++ [1], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_i
+          (epdp_int_port_plain.`enc (rand, (func, 1)))))
+  @((adv, 3))
+  ctrl_adv.
+(* Adversary learns rand = Na *)
+
+(* Adversary yields to environment to end Part 1 *)
+send ((adv, 0))@_@(([], 0)).
+step.
+
+(* Part 2: tell NS2.Pt1 (I) to initiate a session with NS2.Pt2 (B) *)
+send pt@NS_Plain_PKE_MITM.NSMITMDir.PtID.part2@((func, 3)).
+(* run 11. *)
+step. step. step. step. step. step. step. step. step. step.
+step.
+(* NS2.Fwd1 leaks {Ni, I} Kb to adversary *)
+assert msg_out
+  ((func ++ [2; 1], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func ++ [2], 1), (func ++ [2], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_b
+         (epdp_int_port_plain.`enc (rand1, (func, 3)))))
+  @((adv, 7))
+  ctrl_adv.
+(* rand1 = Ni *)
+
+(* Adversary tells NS2.Fwd1 to deliver {Na, A} Kb to B instead of {Ni, I} Kb *)
+send ((adv, 7))@
+  Forwarding.FwAdv.fw_ok
+    ((func ++ [2], 2),
+    epdp_cipher_univ.`enc
+       (enc pk_b
+         (epdp_int_port_plain.`enc (rand, (func, 1)))))
+  @((func ++ [2; 1], 1)).
+(* run 13. *)
+step. step. step. step. step. step. step. step. step. step.
+step. step. step.
+(* NS2.Fwd2 leaks {Na, Nb} Ka to adversary *)
+assert msg_out
+  ((func ++ [2; 2], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func ++ [2], 2), (func ++ [2], 1),
+      epdp_cipher_univ.`enc
+        (enc pk_a (epdp_int_int_plain.`enc (rand, rand2))))
+  @((adv, 8))
+  ctrl_adv.
+(* Adversary saves {Na, Nb} Ka to use later *)
+
+(* Adversary tells NS1.Fwd1 deliver {Na, A} Ki to NS1.Pt2 unaltered *)
+send ((adv, 3))@
+  Forwarding.FwAdv.fw_ok
+    ((func ++ [1], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_i
+          (epdp_int_port_plain.`enc (rand, (func, 1)))))
+  @((func ++ [1; 1], 1)).
+(* run 13. *)
+step. step. step. step. step. step. step. step. step. step.
+step. step. step.
+(* NS1.Fwd2 leaks {Na, Ni'} Ka to adversary *)
+assert msg_out
+  ((func ++ [1; 2], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func ++ [1], 2), (func ++ [1], 1),
+     epdp_cipher_univ.`enc
+       (enc pk_a (epdp_int_int_plain.`enc (rand, rand3))))
+  @((adv, 4))
+  ctrl_adv.
+(* rand3 = Ni' *)
+
+(* Adversary tells NS1.Fwd2 to deliver {Na, Nb} Ka to NS1.Pt1 instead of
+ * {Na, Ni'} Ka *)
+send ((adv, 4))@
+  Forwarding.FwAdv.fw_ok
+    ((func ++ [1], 1),
+     epdp_cipher_univ.`enc
+       (enc pk_a (epdp_int_int_plain.`enc (rand, rand2))))
+  @((func ++ [1; 2], 1)).
+(* run 13. *)
+step. step. step. step. step. step. step. step. step. step.
+step. step. step.
+(* NS1.Fwd3 leaks {Nb} Ki to adversary *)
+assert msg_out
+  ((func ++ [1; 3], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func ++ [1], 1), (func ++ [1], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_i (epdp_int_plain.`enc (rand2))))
+  @((adv, 5))
+  ctrl_adv.
+(* Adversary learns Nb = rand2 *)
+
+(* Adversary tells NS1.Fwd3 to deliver {Ni'} Ki to NS1.Pt2 instead of {Nb} Ki *)
+send ((adv, 5))@
+  Forwarding.FwAdv.fw_ok
+    ((func ++ [1], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_i (epdp_int_plain.`enc (rand3))))
+  @((func ++ [1; 3], 1)).
+(* run 11. *)
+step. step. step. step. step. step. step. step. step. step.
+step.
+assert msg_out
+  ((func, 3))@NS_Plain_PKE_MITM.NSMITMDir.PtID.ok@pt
+  ctrl_env.
+
+(* Environment yields to adversary *)
+send (([], 0))@_@((adv, 0)).
+(* run 1. *)
+step.
+
+(* Adversary tells NS2.Fwd2 to deliver {Ni, Nb} Ki to NS2.Pt1 unaltered *)
+send ((adv, 8))@
+  Forwarding.FwAdv.fw_ok
+    ((func ++ [2], 1),
+     epdp_cipher_univ.`enc
+       (enc pk_i (epdp_int_int_plain.`enc (rand1, rand3))))
+  @((func ++ [2; 2], 1)).
+(* run 13. *)
+step. step. step. step. step. step. step. step. step. step.
+step. step. step.
+(* NS2.Fwd3 leaks {Ni'} Kb *)
+assert msg_out
+  ((func ++ [2; 3], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func ++ [2], 1), (func ++ [2], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_b (epdp_int_plain.`enc (rand3))))
+  @((adv, 9))
+  ctrl_adv.
+
+(* Adversary tells NS2.Fwd3 to deliver {Nb} Kb to NS2.Pt2 instead of {Ni'} Kb *)
+send ((adv, 9))@
+  Forwarding.FwAdv.fw_ok
+    ((func ++ [2], 2),
+     epdp_cipher_univ.`enc
+       (enc pk_b (epdp_int_plain.`enc (rand2))))
+  @((func ++ [2; 3], 1)).
+(* run 11. *)
+step. step. step. step. step. step. step. step. step. step.
+step.
+assert msg_out
+  ((func, 2))@NS_Plain_PKE_MITM.NSMITMDir.PtBD.ok@pt
+  ctrl_env.
+
+finish.

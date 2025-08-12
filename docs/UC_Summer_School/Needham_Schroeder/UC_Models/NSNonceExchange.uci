@@ -1,0 +1,167 @@
+(* This script walks through the expected operation of the Needham-Schroeder
+ * protocol. *)
+
+load NSNonceExchange.
+functionality NSNonceExchange.NSNEReal.
+prover [""].
+
+var pt1 : port.
+assumption envport_pt1 : envport func pt1.
+var pt2 : port.
+assumption envport_pt2 : envport func pt2.
+assumption pt1_pt2_neq : pt1 <> pt2.
+
+(* Experiment with the real world *)
+real.
+
+send pt1@NSNonceExchange.NSNEDir.Pt1D.ns_req (pt2)@((func, 1)).
+(* run 8. *)
+step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func ++ [1], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_port_port_cipher_univ.`enc
+       (pt1, pt2, enc pk_b (epdp_int_port_plain.`enc (rand, pt1))))
+  @((adv, 2))
+  ctrl_adv.
+
+send
+  ((adv, 2))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2),
+     epdp_port_port_cipher_univ.`enc
+       (pt1, pt2, enc pk_b (epdp_int_port_plain.`enc (rand, pt1))))
+  @((func ++ [1], 1)).
+(* run 11. *)
+step. step. step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func, 2))@NSNonceExchange.NSNEDir.Pt2D.ns_req (pt1)@pt2
+  ctrl_env.
+
+send pt2@NSNonceExchange.NSNEDir.Pt2D.ns_acc@((func, 2)).
+(* run 8. *)
+step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func ++ [2], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 2), (func, 1),
+     epdp_cipher_univ.`enc
+       (enc pk_a (epdp_int_int_plain.`enc (rand, rand1))))
+  @((adv, 3))
+  ctrl_adv.
+
+send
+  ((adv, 3))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 1),
+     epdp_cipher_univ.`enc
+       (enc pk_a (epdp_int_int_plain.`enc (rand, rand1))))
+  @((func ++ [2], 1)).
+(* run 10. *)
+step. step. step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func, 1))@NSNonceExchange.NSNEDir.Pt1D.ns_acc (rand, rand1)@pt1
+  ctrl_env.
+
+send pt1@NSNonceExchange.NSNEDir.Pt1D.ns_ack@((func, 1)).
+(* run 7. *)
+step. step. step. step. step. step. step.
+assert msg_out
+  ((func ++ [3], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand1)))
+  @((adv, 4))
+  ctrl_adv.
+
+send
+  ((adv, 4))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2), epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand1)))
+  @((func ++ [3], 1)).
+(* run 9. *)
+step. step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func, 2))@NSNonceExchange.NSNEDir.Pt2D.ns_ack (rand, rand1)@pt2
+  ctrl_env.
+
+finish.
+
+(* Experiment with the ideal world *)
+ideal.
+
+send pt1@NSNonceExchange.NSNEDir.Pt1D.ns_req (pt2)@((func, 1)).
+(* run 8. *)
+step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func ++ [1], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_port_port_cipher_univ.`enc
+       (pt1, pt2, enc pk_b (epdp_int_port_plain.`enc (rand2, pt1))))
+  @((adv, 2))
+  ctrl_adv.
+
+send
+  ((adv, 2))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2),
+     epdp_port_port_cipher_univ.`enc
+       (pt1, pt2, enc pk_b (epdp_int_port_plain.`enc (rand2, pt1))))
+  @((func ++ [1], 1)).
+(* run 9. *)
+step. step. step. step. step. step. step. step. step.
+assert msg_out
+  ((func, 2))@NSNonceExchange.NSNEDir.Pt2D.ns_req (pt1)@pt2
+  ctrl_env.
+
+send pt2@NSNonceExchange.NSNEDir.Pt2D.ns_acc@((func, 2)).
+(* run 7. *)
+step. step. step. step. step. step. step.
+assert msg_out
+  ((func ++ [2], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 2), (func, 1),
+     epdp_cipher_univ.`enc
+       (enc pk_a (epdp_int_int_plain.`enc (rand2, rand3))))
+  @((adv, 3))
+  ctrl_adv.
+
+send
+  ((adv, 3))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 1),
+     epdp_cipher_univ.`enc
+       (enc pk_a (epdp_int_int_plain.`enc (rand2, rand3))))
+  @((func ++ [2], 1)).
+(* run 6. *)
+step. step. step. step. step. step.
+assert msg_out
+  ((func, 1))@NSNonceExchange.NSNEDir.Pt1D.ns_acc (rand, rand1)@pt1
+  ctrl_env.
+
+send pt1@NSNonceExchange.NSNEDir.Pt1D.ns_ack@((func, 1)).
+(* run 6. *)
+step. step. step. step. step. step.
+assert msg_out
+  ((func ++ [3], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand3)))
+  @((adv, 4))
+  ctrl_adv.
+
+send
+  ((adv, 4))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2), epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand3)))
+  @((func ++ [3], 1)).
+(* run 6. *)
+step. step. step. step. step. step.
+assert msg_out
+  ((func, 2))@NSNonceExchange.NSNEDir.Pt2D.ns_ack (rand, rand1)@pt2
+  ctrl_env.
+
+finish.
+

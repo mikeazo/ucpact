@@ -1,0 +1,1113 @@
+{
+  "model": {
+    "interfaces": {
+      "compInters": [
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "1fb7fd5f-dc47-b6cd-8f76-412f9493124d",
+              "idOfInstance": "a4b91d35-3f55-5b1f-ffba-3af7da93530c",
+              "name": "Pt1D"
+            },
+            {
+              "idOfBasic": "50ca560d-203e-a884-ea2a-9e70799975e9",
+              "idOfInstance": "0996407a-b4ef-514a-2c81-035e6411134d",
+              "name": "Pt2D"
+            }
+          ],
+          "id": "7b53bed4-3ac6-7d24-efd9-37c1751c8f5f",
+          "interfaceComment": "",
+          "name": "NSDir",
+          "type": "direct"
+        }
+      ],
+      "basicInters": [
+        {
+          "id": "1fb7fd5f-dc47-b6cd-8f76-412f9493124d",
+          "interfaceComment": "API for principal A, the initiator of the exchange",
+          "messages": [
+            "1766b13e-daea-ba55-a5bc-c29c16babf26",
+            "17f0b4c8-8980-1749-6f18-35372e0df80d",
+            "094c0bac-e51d-2625-93f3-7afc471b6640"
+          ],
+          "name": "Pt1Dir",
+          "type": "direct"
+        },
+        {
+          "id": "50ca560d-203e-a884-ea2a-9e70799975e9",
+          "interfaceComment": "API for principal B, the responder of the exchange",
+          "messages": [
+            "628909d4-76b0-970e-730d-5ffc8db09760",
+            "02d0719a-0d89-4621-7b0b-9ab758b2c392",
+            "8d666f5e-7558-c2d7-3093-a4566efd7f11"
+          ],
+          "name": "Pt2Dir",
+          "type": "direct"
+        },
+        {
+          "id": "9bae641a-3a4c-ac26-ab25-2cf191ad1d72",
+          "interfaceComment": "",
+          "messages": [
+            "118a6c1f-5617-cbcf-9db0-55e6c5745710",
+            "93a0f620-9fb2-b8f6-f74d-5258385efcd1",
+            "4ae58dd5-c2a5-9e5b-46cb-f7bdff3bab66"
+          ],
+          "name": "NSI2S",
+          "type": "adversarial"
+        }
+      ],
+      "messages": [
+        {
+          "id": "1766b13e-daea-ba55-a5bc-c29c16babf26",
+          "messageComment": "Initialize initiator with its identity, secret key and all public keys",
+          "name": "init_PKE",
+          "parameters": [
+            {
+              "id": "7cfa7c80-af36-a3c2-eb1b-faae8236dd9e",
+              "name": "sk_a",
+              "type": "sk_t"
+            },
+            {
+              "id": "78ce626d-8f6f-f7d2-18ac-e3e5a2a98a0c",
+              "name": "pk_table",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "port": "pt1",
+          "type": "in"
+        },
+        {
+          "id": "17f0b4c8-8980-1749-6f18-35372e0df80d",
+          "messageComment": "",
+          "name": "init_PKE_resp",
+          "parameters": [],
+          "port": "pt1",
+          "type": "out"
+        },
+        {
+          "id": "094c0bac-e51d-2625-93f3-7afc471b6640",
+          "messageComment": "Request session with pt2",
+          "name": "ns_req",
+          "parameters": [
+            {
+              "id": "b48bc361-79dd-5802-23ea-e3e8725ec227",
+              "name": "pt2",
+              "type": "port"
+            }
+          ],
+          "port": "pt1",
+          "type": "in"
+        },
+        {
+          "id": "628909d4-76b0-970e-730d-5ffc8db09760",
+          "messageComment": "Initializes responder with its identity, secret key and all public keys",
+          "name": "init_PKE",
+          "parameters": [
+            {
+              "id": "940adeab-1de5-5177-7fcc-df250c03f388",
+              "name": "sk_b",
+              "type": "sk_t"
+            },
+            {
+              "id": "92610774-48b0-dedb-e85f-24ba65b3a9ff",
+              "name": "pk_table",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "port": "pt2",
+          "type": "in"
+        },
+        {
+          "id": "02d0719a-0d89-4621-7b0b-9ab758b2c392",
+          "messageComment": "",
+          "name": "init_PKE_resp",
+          "parameters": [],
+          "port": "pt2",
+          "type": "out"
+        },
+        {
+          "id": "8d666f5e-7558-c2d7-3093-a4566efd7f11",
+          "messageComment": "Accepts session with pt1",
+          "name": "ns_acc",
+          "parameters": [
+            {
+              "id": "9bb4e110-7dee-80ef-9f4a-4d9b61357518",
+              "name": "pt1",
+              "type": "port"
+            }
+          ],
+          "port": "pt2",
+          "type": "out"
+        },
+        {
+          "id": "118a6c1f-5617-cbcf-9db0-55e6c5745710",
+          "messageComment": "",
+          "name": "init",
+          "parameters": [],
+          "port": "",
+          "type": "out"
+        },
+        {
+          "id": "93a0f620-9fb2-b8f6-f74d-5258385efcd1",
+          "messageComment": "",
+          "name": "leak",
+          "parameters": [
+            {
+              "id": "11361597-fff8-5ef1-2f15-c18cee7aecf1",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "5082fab6-193c-63ea-eff4-48eac67b0793",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "ab74e289-4717-1f58-b6fd-89475390561a",
+              "name": "pk_table_A",
+              "type": "(port, pk_t) fmap"
+            },
+            {
+              "id": "e783538c-81a5-2207-64a1-17992c82f815",
+              "name": "pk_table_B",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "port": "",
+          "type": "out"
+        },
+        {
+          "id": "4ae58dd5-c2a5-9e5b-46cb-f7bdff3bab66",
+          "messageComment": "",
+          "name": "ok",
+          "parameters": [],
+          "port": "",
+          "type": "in"
+        }
+      ]
+    },
+    "parties": {
+      "parties": [
+        {
+          "basicAdversarialInterface": "",
+          "basicDirectInterface": "a4b91d35-3f55-5b1f-ffba-3af7da93530c",
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "e8512c43-a437-d032-7644-a3965b33717c",
+          "left": 572,
+          "name": "Pt1",
+          "stateMachine": "a0d1b750-3c8a-2755-9d0c-c2dc642a1716",
+          "top": 223
+        },
+        {
+          "basicAdversarialInterface": "",
+          "basicDirectInterface": "0996407a-b4ef-514a-2c81-035e6411134d",
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "d3bcfecf-6826-4740-22df-225e660c9e42",
+          "left": 904,
+          "name": "Pt2",
+          "stateMachine": "34686120-34db-8dbd-62cf-80cdcc0fbfb2",
+          "top": 267
+        }
+      ]
+    },
+    "subfunctionalities": {
+      "subfunctionalities": [
+        {
+          "color": "#8a6996",
+          "id": "5ffb4d98-cec4-66a4-acf5-3f1f48367caf",
+          "idealFuncModel": "NSForward",
+          "idealFunctionalityId": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+          "idealFunctionalityName": "Forw",
+          "left": 510,
+          "name": "Fwd1",
+          "top": 388
+        },
+        {
+          "color": "#8a6996",
+          "id": "b8efc32d-ad82-ce94-0806-2a46925a152a",
+          "idealFuncModel": "NSForward",
+          "idealFunctionalityId": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+          "idealFunctionalityName": "Forw",
+          "left": 740,
+          "name": "Fwd2",
+          "top": 448
+        },
+        {
+          "color": "#8a6996",
+          "id": "7901d858-0cb5-6119-3276-51d66f10f67c",
+          "idealFuncModel": "NSForward",
+          "idealFunctionalityId": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+          "idealFunctionalityName": "Forw",
+          "left": 966,
+          "name": "Fwd3",
+          "top": 500
+        }
+      ]
+    },
+    "realFunctionality": {
+      "parties": [
+        "e8512c43-a437-d032-7644-a3965b33717c",
+        "d3bcfecf-6826-4740-22df-225e660c9e42"
+      ],
+      "subfunctionalities": [
+        "5ffb4d98-cec4-66a4-acf5-3f1f48367caf",
+        "b8efc32d-ad82-ce94-0806-2a46925a152a",
+        "7901d858-0cb5-6119-3276-51d66f10f67c"
+      ],
+      "id": "d0dfc15e-d4b4-f90f-aa77-b1d93953b2b2",
+      "name": "NSReal",
+      "compositeDirectInterface": "7b53bed4-3ac6-7d24-efd9-37c1751c8f5f",
+      "compositeAdversarialInterface": "",
+      "parameterInterfaces": []
+    },
+    "simulator": {
+      "id": "963de0a9-6545-089a-2cd8-06e21deff4aa",
+      "name": "NSSim",
+      "basicAdversarialInterface": "9bae641a-3a4c-ac26-ab25-2cf191ad1d72",
+      "realFunctionality": "d0dfc15e-d4b4-f90f-aa77-b1d93953b2b2",
+      "stateMachine": "e56197f8-512b-f07c-1ea5-d719b9a20b2f",
+      "color": "#6bb45c",
+      "left": 450,
+      "top": 201
+    },
+    "idealFunctionality": {
+      "id": "8fe978ce-7885-6fc9-16a4-92defab389a9",
+      "name": "NSideal",
+      "basicAdversarialInterface": "9bae641a-3a4c-ac26-ab25-2cf191ad1d72",
+      "compositeDirectInterface": "7b53bed4-3ac6-7d24-efd9-37c1751c8f5f",
+      "stateMachine": "3508c073-954e-83bf-9499-75730c042c95",
+      "color": "#3e88c7",
+      "left": 250,
+      "top": 250
+    },
+    "stateMachines": {
+      "stateMachines": [
+        {
+          "id": "3508c073-954e-83bf-9499-75730c042c95",
+          "initState": "e3ad8655-d59d-85e8-294f-129477cd8773",
+          "states": [
+            "e3ad8655-d59d-85e8-294f-129477cd8773",
+            "357ed19e-bf36-8957-344f-3ae4fecbfbdb",
+            "ce213477-6e01-08c6-74e5-2ad4e4bb48eb",
+            "cb51ee95-2593-c50a-cb80-b04846519a8f",
+            "2ba77cb8-7d50-126f-a0e7-74d2760d1b8d",
+            "7941b5f1-912a-f3eb-c32c-fd6bbbd1958f",
+            "43f21177-4616-8783-70b6-944efcb01956",
+            "b7c6219a-2833-97b2-714b-770937050627"
+          ],
+          "transitions": [
+            "22dee6a6-467f-f8c1-c75b-6c1e8cb803fd",
+            "0c913189-63ab-01b3-4f32-6861d4ed8b23",
+            "888242c1-ce9d-1bc1-c666-250cc4b07ea5",
+            "216f6345-f071-926a-9f4b-45eeab8ffc12",
+            "9983e606-b957-71a3-2931-b414be977528",
+            "74feebe7-aa1e-f5d5-6ce9-38e00a9a27ae",
+            "e687c4f7-2f48-48c2-6434-19ecea9f3c42",
+            "b5f4af26-a256-57b9-4573-e37951dfcd0d"
+          ]
+        },
+        {
+          "id": "e56197f8-512b-f07c-1ea5-d719b9a20b2f",
+          "initState": "a716f4b3-c423-f0c2-5acc-d2e67ece00d5",
+          "states": [
+            "a716f4b3-c423-f0c2-5acc-d2e67ece00d5"
+          ],
+          "transitions": []
+        },
+        {
+          "id": "a0d1b750-3c8a-2755-9d0c-c2dc642a1716",
+          "initState": "05e4c066-e7f5-f28f-aa09-567988142ea2",
+          "states": [
+            "05e4c066-e7f5-f28f-aa09-567988142ea2",
+            "b98b3720-dde5-8b87-9f5e-a86a53704c6b",
+            "c42dd72d-4203-7ed5-8bdd-9bb5ce53a10c",
+            "13583f6d-5f3b-3fa8-8cb1-3cb7576c4e96"
+          ],
+          "transitions": [
+            "8bbc7dc6-42f6-976f-0832-05f40c83cab2",
+            "859b6fff-cbae-cb87-2060-f5a18ceef1b8",
+            "880084a3-c90a-f3c3-a01b-7b28fb1063a1"
+          ]
+        },
+        {
+          "id": "34686120-34db-8dbd-62cf-80cdcc0fbfb2",
+          "initState": "8031aaf1-4a53-9726-69c6-3616267cb963",
+          "states": [
+            "8031aaf1-4a53-9726-69c6-3616267cb963",
+            "8e2d7fe4-63fe-9bfa-0127-3647bd69d370",
+            "c9dff238-f24d-83cf-8f1b-467f01f8d340",
+            "1b294133-1164-a215-d930-2ec3921dc668"
+          ],
+          "transitions": [
+            "42ed78c8-dd09-5ef3-cb7c-07de22ad7349",
+            "b7ff9cd3-7bbc-5509-9b19-8fc6bd3545a7",
+            "684cf6fb-003d-283b-43f3-2140c8df6274"
+          ]
+        }
+      ],
+      "states": [
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "e3ad8655-d59d-85e8-294f-129477cd8773",
+          "left": 31,
+          "name": "Init",
+          "parameters": [],
+          "top": 126
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "a716f4b3-c423-f0c2-5acc-d2e67ece00d5",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "05e4c066-e7f5-f28f-aa09-567988142ea2",
+          "left": 25,
+          "name": "Init",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "8031aaf1-4a53-9726-69c6-3616267cb963",
+          "left": 25,
+          "name": "Init",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "b98b3720-dde5-8b87-9f5e-a86a53704c6b",
+          "left": 271,
+          "name": "WaitRequest",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "9cfcb54d-38b7-cd88-ff6b-fcfe06e61c37",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "8b998653-cc50-cbc2-ddec-0bc39094ee78",
+              "name": "sk_a",
+              "type": "sk_t"
+            },
+            {
+              "comment": "",
+              "id": "ef4e2993-21bc-3c7a-c0ec-04e1186808e1",
+              "name": "pk_table",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "c42dd72d-4203-7ed5-8bdd-9bb5ce53a10c",
+          "left": 511,
+          "name": "WaitFwd2",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "8dda92b3-8726-daa8-1ce1-658a0e4e0e77",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "dc279085-5221-0ea5-9ac7-8d418470a768",
+              "name": "sk_a",
+              "type": "sk_t"
+            },
+            {
+              "comment": "",
+              "id": "27d11f4b-13bd-85a6-51c4-a0357b68ca91",
+              "name": "pk_table",
+              "type": "(port, pk_t) fmap"
+            },
+            {
+              "comment": "",
+              "id": "e2ee47d7-4765-1652-2dc3-22cfa4f3740a",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "fc09de9b-5283-6123-6914-0da16398e823",
+              "name": "n_A",
+              "type": "int"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "13583f6d-5f3b-3fa8-8cb1-3cb7576c4e96",
+          "left": 743,
+          "name": "Final",
+          "parameters": [],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "8e2d7fe4-63fe-9bfa-0127-3647bd69d370",
+          "left": 243,
+          "name": "WaitFwd1",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "ae3293c6-fbc6-9852-3ec2-fa5804f46f9d",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "df308019-7f11-fe99-ea63-82fa4d8f1fa1",
+              "name": "sk_b",
+              "type": "sk_t"
+            },
+            {
+              "comment": "",
+              "id": "2f4032a8-aff0-5471-2c31-1989cf0680c4",
+              "name": "pk_table",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 49
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "c9dff238-f24d-83cf-8f1b-467f01f8d340",
+          "left": 477,
+          "name": "WaitFwd3",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "59386cb2-4b9f-fa7e-d12f-27a0431e1b9e",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "36de7195-d18f-aba0-d845-cb507ed6958e",
+              "name": "sk_b",
+              "type": "sk_t"
+            },
+            {
+              "comment": "",
+              "id": "52bfed52-081e-0e9d-19b4-56534ff352ff",
+              "name": "pk_table",
+              "type": "(port, pk_t) fmap"
+            },
+            {
+              "comment": "",
+              "id": "bd156068-140d-ac97-08d1-a24cf2809a8e",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "06eb7f29-6fbe-0455-3402-fb04312a6432",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "comment": "",
+              "id": "1566be58-aae1-4ab2-88ae-446997a27dc2",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 49
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "1b294133-1164-a215-d930-2ec3921dc668",
+          "left": 717,
+          "name": "Final",
+          "parameters": [],
+          "top": 49
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "357ed19e-bf36-8957-344f-3ae4fecbfbdb",
+          "left": 815,
+          "name": "Final",
+          "parameters": [],
+          "top": 229
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "ce213477-6e01-08c6-74e5-2ad4e4bb48eb",
+          "left": 209,
+          "name": "WaitSim_A",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "845b236a-dd32-c790-ad20-de6dae72f7cd",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "49cd9789-6960-ddec-a10a-118a54f07a4d",
+              "name": "pk_table_a",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 33
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "cb51ee95-2593-c50a-cb80-b04846519a8f",
+          "left": 207,
+          "name": "WaitSim_B",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "1601d0ba-cc28-b278-139a-5854e60faae1",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "ece23fe4-7980-8606-8710-c0f5ef8de293",
+              "name": "pk_table_b",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 221
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "2ba77cb8-7d50-126f-a0e7-74d2760d1b8d",
+          "left": 437,
+          "name": "WaitInitPKE_A",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "ec56e67f-6c92-801c-1bf1-483bbf6450f2",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "b0231e4e-8e3f-8079-a214-c05ddc9359a0",
+              "name": "pk_table_b",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 225
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "7941b5f1-912a-f3eb-c32c-fd6bbbd1958f",
+          "left": 437,
+          "name": "WaitInitPKE_B",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "cca1ad14-9c63-ac0a-fda3-1442b6723c99",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "35dc841c-3b6b-6fd3-14a4-db88a4db7a51",
+              "name": "pk_table_a",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 35
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "43f21177-4616-8783-70b6-944efcb01956",
+          "left": 623,
+          "name": "WaitRequest",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "2a42b96b-fd8a-7095-f4db-f706022dbc37",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "19912af0-c789-6ec5-52df-a4c061c5d234",
+              "name": "pk_table_a",
+              "type": "(port, pk_t) fmap"
+            },
+            {
+              "comment": "",
+              "id": "9ed38d0f-9b38-0e22-efc5-908b6c9671c6",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "eb04f2f7-693c-7ff1-5bfd-10bbdd7abd63",
+              "name": "pk_table_b",
+              "type": "(port, pk_t) fmap"
+            }
+          ],
+          "top": 133
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "b7c6219a-2833-97b2-714b-770937050627",
+          "left": 817,
+          "name": "WaitSim2",
+          "parameters": [
+            {
+              "comment": "",
+              "id": "83097921-1633-044c-8433-4f886c7de6b8",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "comment": "",
+              "id": "bdf697a2-d382-13f2-a723-5ccb31a341b9",
+              "name": "id_B",
+              "type": "port"
+            }
+          ],
+          "top": 35
+        }
+      ],
+      "transitions": [
+        {
+          "fromState": "05e4c066-e7f5-f28f-aa09-567988142ea2",
+          "guard": "",
+          "id": "8bbc7dc6-42f6-976f-0832-05f40c83cab2",
+          "inMessage": "1766b13e-daea-ba55-a5bc-c29c16babf26",
+          "name": "",
+          "outMessage": "17f0b4c8-8980-1749-6f18-35372e0df80d",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt1",
+          "toState": "b98b3720-dde5-8b87-9f5e-a86a53704c6b",
+          "toStateArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "9cfcb54d-38b7-cd88-ff6b-fcfe06e61c37"
+            },
+            {
+              "argValue": "sk_a",
+              "paraID": "8b998653-cc50-cbc2-ddec-0bc39094ee78"
+            },
+            {
+              "argValue": "pk_table",
+              "paraID": "ef4e2993-21bc-3c7a-c0ec-04e1186808e1"
+            }
+          ]
+        },
+        {
+          "fromState": "b98b3720-dde5-8b87-9f5e-a86a53704c6b",
+          "guard": "pt1 = id_A and envport pt2 and pk_table.[pt2] <> None",
+          "id": "859b6fff-cbae-cb87-2060-f5a18ceef1b8",
+          "inMessage": "094c0bac-e51d-2625-93f3-7afc471b6640",
+          "name": "",
+          "outMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d/5ffb4d98-cec4-66a4-acf5-3f1f48367caf",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt2",
+              "paraID": "dac6baf4-4249-6994-d26f-5f8c4bf0a731"
+            },
+            {
+              "argValue": "{n_A, id_A} Kb",
+              "paraID": "40d39006-3b01-b867-eeaf-053ff92895d5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "c42dd72d-4203-7ed5-8bdd-9bb5ce53a10c",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "8dda92b3-8726-daa8-1ce1-658a0e4e0e77"
+            },
+            {
+              "argValue": "sk_a",
+              "paraID": "dc279085-5221-0ea5-9ac7-8d418470a768"
+            },
+            {
+              "argValue": "pk_table",
+              "paraID": "27d11f4b-13bd-85a6-51c4-a0357b68ca91"
+            },
+            {
+              "argValue": "pt2",
+              "paraID": "e2ee47d7-4765-1652-2dc3-22cfa4f3740a"
+            },
+            {
+              "argValue": "n_A <$ dnonce",
+              "paraID": "fc09de9b-5283-6123-6914-0da16398e823"
+            }
+          ]
+        },
+        {
+          "fromState": "c42dd72d-4203-7ed5-8bdd-9bb5ce53a10c",
+          "guard": "",
+          "id": "880084a3-c90a-f3c3-a01b-7b28fb1063a1",
+          "inMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8/b8efc32d-ad82-ce94-0806-2a46925a152a",
+          "name": "",
+          "outMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d/7901d858-0cb5-6119-3276-51d66f10f67c",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt2",
+              "paraID": "dac6baf4-4249-6994-d26f-5f8c4bf0a731"
+            },
+            {
+              "argValue": "{n_B} Kb",
+              "paraID": "40d39006-3b01-b867-eeaf-053ff92895d5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "13583f6d-5f3b-3fa8-8cb1-3cb7576c4e96",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "8031aaf1-4a53-9726-69c6-3616267cb963",
+          "guard": "",
+          "id": "42ed78c8-dd09-5ef3-cb7c-07de22ad7349",
+          "inMessage": "628909d4-76b0-970e-730d-5ffc8db09760",
+          "name": "",
+          "outMessage": "02d0719a-0d89-4621-7b0b-9ab758b2c392",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt2",
+          "toState": "8e2d7fe4-63fe-9bfa-0127-3647bd69d370",
+          "toStateArguments": [
+            {
+              "argValue": "pt2",
+              "paraID": "ae3293c6-fbc6-9852-3ec2-fa5804f46f9d"
+            },
+            {
+              "argValue": "sk_b",
+              "paraID": "df308019-7f11-fe99-ea63-82fa4d8f1fa1"
+            },
+            {
+              "argValue": "pk_table",
+              "paraID": "2f4032a8-aff0-5471-2c31-1989cf0680c4"
+            }
+          ]
+        },
+        {
+          "fromState": "8e2d7fe4-63fe-9bfa-0127-3647bd69d370",
+          "guard": "",
+          "id": "b7ff9cd3-7bbc-5509-9b19-8fc6bd3545a7",
+          "inMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8/5ffb4d98-cec4-66a4-acf5-3f1f48367caf",
+          "name": "",
+          "outMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d/b8efc32d-ad82-ce94-0806-2a46925a152a",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt1",
+              "paraID": "dac6baf4-4249-6994-d26f-5f8c4bf0a731"
+            },
+            {
+              "argValue": "{n_A, n_B} Ka",
+              "paraID": "40d39006-3b01-b867-eeaf-053ff92895d5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "c9dff238-f24d-83cf-8f1b-467f01f8d340",
+          "toStateArguments": [
+            {
+              "argValue": "id_B",
+              "paraID": "59386cb2-4b9f-fa7e-d12f-27a0431e1b9e"
+            },
+            {
+              "argValue": "sk_b",
+              "paraID": "36de7195-d18f-aba0-d845-cb507ed6958e"
+            },
+            {
+              "argValue": "pk_table",
+              "paraID": "52bfed52-081e-0e9d-19b4-56534ff352ff"
+            },
+            {
+              "argValue": "id_A from msg",
+              "paraID": "bd156068-140d-ac97-08d1-a24cf2809a8e"
+            },
+            {
+              "argValue": "n_A from msg",
+              "paraID": "06eb7f29-6fbe-0455-3402-fb04312a6432"
+            },
+            {
+              "argValue": "n_B <$ dnonce",
+              "paraID": "1566be58-aae1-4ab2-88ae-446997a27dc2"
+            }
+          ]
+        },
+        {
+          "fromState": "c9dff238-f24d-83cf-8f1b-467f01f8d340",
+          "guard": "n_B param = n_B' from msg",
+          "id": "684cf6fb-003d-283b-43f3-2140c8df6274",
+          "inMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8/7901d858-0cb5-6119-3276-51d66f10f67c",
+          "name": "",
+          "outMessage": "8d666f5e-7558-c2d7-3093-a4566efd7f11",
+          "outMessageArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "9bb4e110-7dee-80ef-9f4a-4d9b61357518"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt2",
+          "toState": "1b294133-1164-a215-d930-2ec3921dc668",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "e3ad8655-d59d-85e8-294f-129477cd8773",
+          "guard": "",
+          "id": "22dee6a6-467f-f8c1-c75b-6c1e8cb803fd",
+          "inMessage": "1766b13e-daea-ba55-a5bc-c29c16babf26",
+          "name": "",
+          "outMessage": "118a6c1f-5617-cbcf-9db0-55e6c5745710",
+          "outMessageArguments": [],
+          "sourceHandle": "16",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "ce213477-6e01-08c6-74e5-2ad4e4bb48eb",
+          "toStateArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "845b236a-dd32-c790-ad20-de6dae72f7cd"
+            },
+            {
+              "argValue": "pk_table_a",
+              "paraID": "49cd9789-6960-ddec-a10a-118a54f07a4d"
+            }
+          ]
+        },
+        {
+          "fromState": "e3ad8655-d59d-85e8-294f-129477cd8773",
+          "guard": "",
+          "id": "0c913189-63ab-01b3-4f32-6861d4ed8b23",
+          "inMessage": "628909d4-76b0-970e-730d-5ffc8db09760",
+          "name": "",
+          "outMessage": "118a6c1f-5617-cbcf-9db0-55e6c5745710",
+          "outMessageArguments": [],
+          "sourceHandle": "10",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "cb51ee95-2593-c50a-cb80-b04846519a8f",
+          "toStateArguments": [
+            {
+              "argValue": "pt2",
+              "paraID": "1601d0ba-cc28-b278-139a-5854e60faae1"
+            },
+            {
+              "argValue": "pk_table_b",
+              "paraID": "ece23fe4-7980-8606-8710-c0f5ef8de293"
+            }
+          ]
+        },
+        {
+          "fromState": "ce213477-6e01-08c6-74e5-2ad4e4bb48eb",
+          "guard": "",
+          "id": "888242c1-ce9d-1bc1-c666-250cc4b07ea5",
+          "inMessage": "4ae58dd5-c2a5-9e5b-46cb-f7bdff3bab66",
+          "name": "",
+          "outMessage": "17f0b4c8-8980-1749-6f18-35372e0df80d",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "id_A",
+          "toState": "7941b5f1-912a-f3eb-c32c-fd6bbbd1958f",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "cca1ad14-9c63-ac0a-fda3-1442b6723c99"
+            },
+            {
+              "argValue": "pk_table_a",
+              "paraID": "35dc841c-3b6b-6fd3-14a4-db88a4db7a51"
+            }
+          ]
+        },
+        {
+          "fromState": "cb51ee95-2593-c50a-cb80-b04846519a8f",
+          "guard": "",
+          "id": "216f6345-f071-926a-9f4b-45eeab8ffc12",
+          "inMessage": "4ae58dd5-c2a5-9e5b-46cb-f7bdff3bab66",
+          "name": "",
+          "outMessage": "02d0719a-0d89-4621-7b0b-9ab758b2c392",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "id_B",
+          "toState": "2ba77cb8-7d50-126f-a0e7-74d2760d1b8d",
+          "toStateArguments": [
+            {
+              "argValue": "id_B",
+              "paraID": "ec56e67f-6c92-801c-1bf1-483bbf6450f2"
+            },
+            {
+              "argValue": "pk_table_b",
+              "paraID": "b0231e4e-8e3f-8079-a214-c05ddc9359a0"
+            }
+          ]
+        },
+        {
+          "fromState": "7941b5f1-912a-f3eb-c32c-fd6bbbd1958f",
+          "guard": "",
+          "id": "9983e606-b957-71a3-2931-b414be977528",
+          "inMessage": "628909d4-76b0-970e-730d-5ffc8db09760",
+          "name": "",
+          "outMessage": "02d0719a-0d89-4621-7b0b-9ab758b2c392",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "2",
+          "targetPort": "pt2",
+          "toState": "43f21177-4616-8783-70b6-944efcb01956",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "2a42b96b-fd8a-7095-f4db-f706022dbc37"
+            },
+            {
+              "argValue": "pk_table_a",
+              "paraID": "19912af0-c789-6ec5-52df-a4c061c5d234"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "9ed38d0f-9b38-0e22-efc5-908b6c9671c6"
+            },
+            {
+              "argValue": "pk_table_b",
+              "paraID": "eb04f2f7-693c-7ff1-5bfd-10bbdd7abd63"
+            }
+          ]
+        },
+        {
+          "fromState": "2ba77cb8-7d50-126f-a0e7-74d2760d1b8d",
+          "guard": "",
+          "id": "74feebe7-aa1e-f5d5-6ce9-38e00a9a27ae",
+          "inMessage": "1766b13e-daea-ba55-a5bc-c29c16babf26",
+          "name": "",
+          "outMessage": "17f0b4c8-8980-1749-6f18-35372e0df80d",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "8",
+          "targetPort": "id_A",
+          "toState": "43f21177-4616-8783-70b6-944efcb01956",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "2a42b96b-fd8a-7095-f4db-f706022dbc37"
+            },
+            {
+              "argValue": "pk_table_a",
+              "paraID": "19912af0-c789-6ec5-52df-a4c061c5d234"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "9ed38d0f-9b38-0e22-efc5-908b6c9671c6"
+            },
+            {
+              "argValue": "pk_table_b",
+              "paraID": "eb04f2f7-693c-7ff1-5bfd-10bbdd7abd63"
+            }
+          ]
+        },
+        {
+          "fromState": "43f21177-4616-8783-70b6-944efcb01956",
+          "guard": "",
+          "id": "e687c4f7-2f48-48c2-6434-19ecea9f3c42",
+          "inMessage": "094c0bac-e51d-2625-93f3-7afc471b6640",
+          "name": "",
+          "outMessage": "93a0f620-9fb2-b8f6-f74d-5258385efcd1",
+          "outMessageArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "11361597-fff8-5ef1-2f15-c18cee7aecf1"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "5082fab6-193c-63ea-eff4-48eac67b0793"
+            },
+            {
+              "argValue": "pk_table_a",
+              "paraID": "ab74e289-4717-1f58-b6fd-89475390561a"
+            },
+            {
+              "argValue": "pk_table_b",
+              "paraID": "e783538c-81a5-2207-64a1-17992c82f815"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "b7c6219a-2833-97b2-714b-770937050627",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "83097921-1633-044c-8433-4f886c7de6b8"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "bdf697a2-d382-13f2-a723-5ccb31a341b9"
+            }
+          ]
+        },
+        {
+          "fromState": "b7c6219a-2833-97b2-714b-770937050627",
+          "guard": "",
+          "id": "b5f4af26-a256-57b9-4573-e37951dfcd0d",
+          "inMessage": "4ae58dd5-c2a5-9e5b-46cb-f7bdff3bab66",
+          "name": "",
+          "outMessage": "8d666f5e-7558-c2d7-3093-a4566efd7f11",
+          "outMessageArguments": [
+            {
+              "argValue": "id_B",
+              "paraID": "9bb4e110-7dee-80ef-9f4a-4d9b61357518"
+            }
+          ],
+          "sourceHandle": "9",
+          "targetHandle": "1",
+          "targetPort": "pt2",
+          "toState": "357ed19e-bf36-8957-344f-3ae4fecbfbdb",
+          "toStateArguments": []
+        }
+      ]
+    },
+    "id": "5c08f372-6857-ccc9-5fb7-8d33bc75fb52",
+    "name": "NeedhamSchroederPKE",
+    "readOnly": "",
+    "modelVersion": "1.3"
+  },
+  "readOnly": "user1/0d09fcbc-1143-8ac4-d524-f02205467abe/38885af9-d2b7-4148-af83-31592307cbe7",
+  "lastModified": 1754776952.6145692,
+  "modelVersion": "1.3"
+}

@@ -1,0 +1,170 @@
+(* This script walks through the expected operation of the plain model of the
+ * Needham-Schroeder protocol with [init_PKE] messages. *)
+
+load NeedhamSchroederPlainPKE.
+functionality NeedhamSchroederPlainPKE.NSReal.
+prover [].
+
+var pt1 : port.
+assumption envport_pt1 : envport func pt1.
+var pt2 : port.
+assumption envport_pt2 : envport func pt2.
+assumption pt1_pt2_ne : pt1 <> pt2.
+
+var pk_a : pk_t.
+var sk_a : sk_t.
+assumption key_pair_a : gen_pair pk_a sk_a.
+var pk_b : pk_t.
+var sk_b : sk_t.
+assumption key_pair_b : gen_pair pk_b sk_b.
+var pk_table : (port, pk_t) fmap.
+assumption pk_table_def : pk_table = empty.[pt1 <- pk_a].[pt2 <- pk_b].
+
+(* Experiment with the real world *)
+real.
+
+send pt1@NeedhamSchroederPlainPKE.NSDir.Pt1D.init_PKE (sk_a, pk_table)
+  @((func, 1)).
+run 3.
+(* step. step. step. *)
+assert msg_out
+  ((func, 1))@NeedhamSchroederPlainPKE.NSDir.Pt1D.init_PKE_resp@pt1
+  ctrl_env.
+
+send pt2@NeedhamSchroederPlainPKE.NSDir.Pt2D.init_PKE (sk_b, pk_table)
+  @((func, 2)).
+run 3.
+(* step. step. step. *)
+assert msg_out
+  ((func, 2))@NeedhamSchroederPlainPKE.NSDir.Pt2D.init_PKE_resp@pt2
+  ctrl_env.
+
+send pt1@NeedhamSchroederPlainPKE.NSDir.Pt1D.ns_req (pt2)@((func, 1)).
+run 9.
+(* step. step. step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func ++ [1], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_port_plain.`enc (rand, pt1))))
+  @((adv, 2))
+  ctrl_adv.
+
+send ((adv, 2))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_port_plain.`enc (rand, pt1))))
+  @((func ++ [1], 1)).
+run 13.
+(* step. step. step. step. step. step. step. step. step. step.
+step. step. step. *)
+assert msg_out
+  ((func ++ [2], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 2), (func, 1),
+     epdp_cipher_univ.`enc (enc pk_a (epdp_int_int_plain.`enc (rand, rand1))))
+  @((adv, 3))
+  ctrl_adv.
+
+send ((adv, 3))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 1),
+     epdp_cipher_univ.`enc (enc pk_a (epdp_int_int_plain.`enc (rand, rand1))))
+  @((func ++ [2], 1)).
+run 13.
+(* step. step. step. step. step. step. step. step. step. step.
+step. step. step. *)
+assert msg_out
+  ((func ++ [3], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand1)))
+  @((adv, 4))
+  ctrl_adv.
+
+send ((adv, 4))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand1)))
+  @((func ++ [3], 1)).
+run 9.
+(* step. step. step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func, 2))@NeedhamSchroederPlainPKE.NSDir.Pt2D.ns_acc (pt1)@pt2
+  ctrl_env.
+
+finish.
+
+(* Experiment with the ideal world *)
+ideal.
+
+send pt1@NeedhamSchroederPlainPKE.NSDir.Pt1D.init_PKE (sk_a, pk_table)
+  @((func, 1)).
+run 7.
+(* step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func, 1))@NeedhamSchroederPlainPKE.NSDir.Pt1D.init_PKE_resp@pt1
+  ctrl_env.
+
+send pt2@NeedhamSchroederPlainPKE.NSDir.Pt2D.init_PKE (sk_b, pk_table)
+  @((func, 2)).
+run 3.
+(* step. step. step. *)
+assert msg_out
+  ((func, 2))@NeedhamSchroederPlainPKE.NSDir.Pt2D.init_PKE_resp@pt2
+  ctrl_env.
+
+send pt1@NeedhamSchroederPlainPKE.NSDir.Pt1D.ns_req (pt2)@((func, 1)).
+run 8.
+(* step. step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func ++ [1], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_port_plain.`enc (rand, pt1))))
+  @((adv, 2))
+  ctrl_adv.
+
+send ((adv, 2))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_port_plain.`enc (rand, pt1))))
+  @((func ++ [1], 1)).
+run 8.
+(* step. step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func ++ [2], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 2), (func, 1),
+     epdp_cipher_univ.`enc (enc pk_a (epdp_int_int_plain.`enc (rand, rand1))))
+  @((adv, 3))
+  ctrl_adv.
+
+send ((adv, 3))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 1),
+     epdp_cipher_univ.`enc (enc pk_a (epdp_int_int_plain.`enc (rand, rand1))))
+  @((func ++ [2], 1)).
+run 7.
+(* step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func ++ [3], 1))@
+  Forwarding.FwAdv.fw_obs
+    ((func, 1), (func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand1)))
+  @((adv, 4))
+  ctrl_adv.
+
+send ((adv, 4))@
+  Forwarding.FwAdv.fw_ok
+    ((func, 2),
+     epdp_cipher_univ.`enc (enc pk_b (epdp_int_plain.`enc rand1)))
+  @((func ++ [3], 1)).
+run 8.
+(* step. step. step. step. step. step. step. step. *)
+assert msg_out
+  ((func, 2))@NeedhamSchroederPlainPKE.NSDir.Pt2D.ns_acc (pt1)@pt2
+  ctrl_env.
+
+finish.
+

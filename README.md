@@ -175,7 +175,9 @@ Run `./reset_docker.sh` in `bash` and confirm when prompted by entering `y`.
 
 ## Additional Information
 
-For additional information on the Web Application or for understanding EasyUC. Check out the `docs` folder for additional information on both of these topics.
+For additional information on the Web Application or for understanding EasyUC. Check out the `docs` folder for additional information on both of these topics. 
+
+We also have slides and material available as examples in the `docs/UC_Summer_School` folder path.
 
 ## Contact
 

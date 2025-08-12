@@ -1,0 +1,1291 @@
+{
+  "model": {
+    "interfaces": {
+      "compInters": [
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "3039b4ab-0e8b-54b3-e9c6-fb0f9a0e9ece",
+              "idOfInstance": "b34d5835-45fd-1263-035b-cf3ecd24ef54",
+              "name": "Pt1D"
+            },
+            {
+              "idOfBasic": "1472dae9-cef3-c024-5f8e-217c4dfebebb",
+              "idOfInstance": "11533406-99a5-6891-e7fb-e40af8953210",
+              "name": "Pt2D"
+            }
+          ],
+          "id": "566ebc16-1d6b-5076-e254-ae7532cd93fb",
+          "interfaceComment": "",
+          "name": "NSNEDir",
+          "type": "direct"
+        }
+      ],
+      "basicInters": [
+        {
+          "id": "3039b4ab-0e8b-54b3-e9c6-fb0f9a0e9ece",
+          "interfaceComment": "",
+          "messages": [
+            "99ab7ec0-43f6-7df3-7971-def0b36272a8",
+            "67bb5396-0e6e-efb9-f9f3-43ed926736a4",
+            "7609fe36-06c1-6119-0cc4-a23344614501"
+          ],
+          "name": "Pt1Dir",
+          "type": "direct"
+        },
+        {
+          "id": "1472dae9-cef3-c024-5f8e-217c4dfebebb",
+          "interfaceComment": "",
+          "messages": [
+            "3ba3e2f9-6df6-bf3a-9977-e02d713fb71d",
+            "a385f254-cd91-9736-7404-f3e8325f61f3",
+            "0fe9da72-f61c-e66b-19e0-f510a6ba5865"
+          ],
+          "name": "Pt2Dir",
+          "type": "direct"
+        },
+        {
+          "id": "9bae619c-784b-38da-b8ed-9adef0f931b7",
+          "interfaceComment": "",
+          "messages": [
+            "93da34fa-a773-92e8-3597-20c47023598c",
+            "6a9f976c-18b7-085c-c965-c45f793a443f"
+          ],
+          "name": "NSNEI2S",
+          "type": "adversarial"
+        }
+      ],
+      "messages": [
+        {
+          "id": "99ab7ec0-43f6-7df3-7971-def0b36272a8",
+          "messageComment": "",
+          "name": "ns_req",
+          "parameters": [
+            {
+              "id": "7c7cc8eb-e3ff-a89c-0dcc-48d44d0e2f9a",
+              "name": "pt2",
+              "type": "port"
+            }
+          ],
+          "port": "pt1",
+          "type": "in"
+        },
+        {
+          "id": "3ba3e2f9-6df6-bf3a-9977-e02d713fb71d",
+          "messageComment": "",
+          "name": "ns_req",
+          "parameters": [
+            {
+              "id": "bce376dd-836b-66da-c72b-3c6d46684e55",
+              "name": "pt1",
+              "type": "port"
+            }
+          ],
+          "port": "pt2",
+          "type": "out"
+        },
+        {
+          "id": "a385f254-cd91-9736-7404-f3e8325f61f3",
+          "messageComment": "",
+          "name": "ns_acc",
+          "parameters": [],
+          "port": "pt2",
+          "type": "in"
+        },
+        {
+          "id": "0fe9da72-f61c-e66b-19e0-f510a6ba5865",
+          "messageComment": "",
+          "name": "ns_ack",
+          "parameters": [
+            {
+              "id": "1ab4ae1b-aa53-2614-8839-b2d121ec5ea5",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "7800e3b3-3da0-a6f1-6f5f-3fe310899347",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "port": "pt2",
+          "type": "out"
+        },
+        {
+          "id": "67bb5396-0e6e-efb9-f9f3-43ed926736a4",
+          "messageComment": "",
+          "name": "ns_acc",
+          "parameters": [
+            {
+              "id": "f28e6daa-8061-06eb-b697-2ce0fe61e63e",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "dc1137b8-0967-a871-d19e-03ab200b5e4a",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "port": "pt1",
+          "type": "out"
+        },
+        {
+          "id": "7609fe36-06c1-6119-0cc4-a23344614501",
+          "messageComment": "",
+          "name": "ns_ack",
+          "parameters": [],
+          "port": "pt1",
+          "type": "in"
+        },
+        {
+          "id": "93da34fa-a773-92e8-3597-20c47023598c",
+          "messageComment": "",
+          "name": "leak",
+          "parameters": [
+            {
+              "id": "e98fec5d-dac0-5b25-e2b1-b53e0ed4242c",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "c789ea0a-0923-fdf6-c208-711b6be07cdf",
+              "name": "id_B",
+              "type": "port"
+            }
+          ],
+          "port": "",
+          "type": "out"
+        },
+        {
+          "id": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "messageComment": "",
+          "name": "ok",
+          "parameters": [],
+          "port": "",
+          "type": "in"
+        }
+      ]
+    },
+    "parties": {
+      "parties": [
+        {
+          "basicAdversarialInterface": "",
+          "basicDirectInterface": "b34d5835-45fd-1263-035b-cf3ecd24ef54",
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "b2f30e9a-115c-6789-ec82-2973bc894bbe",
+          "left": 538,
+          "name": "Pt1",
+          "stateMachine": "aea1eb52-55f1-9af1-ac2b-e0d801f1100f",
+          "top": 207
+        },
+        {
+          "basicAdversarialInterface": "",
+          "basicDirectInterface": "11533406-99a5-6891-e7fb-e40af8953210",
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "b63dfde0-ec80-9b80-3d55-3de54a10fe66",
+          "left": 932,
+          "name": "Pt2",
+          "stateMachine": "5e4ef848-90d8-bc31-33c2-6678c47a3505",
+          "top": 303
+        }
+      ]
+    },
+    "subfunctionalities": {
+      "subfunctionalities": [
+        {
+          "color": "#8a6996",
+          "id": "958c859a-8147-bb9c-d87a-8086922feece",
+          "idealFuncModel": "NSForward",
+          "idealFunctionalityId": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+          "idealFunctionalityName": "Forw",
+          "left": 590,
+          "name": "Fwd1",
+          "top": 398
+        },
+        {
+          "color": "#8a6996",
+          "id": "ac7b435b-f3df-ca26-9b6a-32852c308047",
+          "idealFuncModel": "NSForward",
+          "idealFunctionalityId": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+          "idealFunctionalityName": "Forw",
+          "left": 736,
+          "name": "Fwd2",
+          "top": 484
+        },
+        {
+          "color": "#8a6996",
+          "id": "398eab0d-7491-7d75-99b2-1ad78077342f",
+          "idealFuncModel": "NSForward",
+          "idealFunctionalityId": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+          "idealFunctionalityName": "Forw",
+          "left": 880,
+          "name": "Fwd3",
+          "top": 570
+        }
+      ]
+    },
+    "realFunctionality": {
+      "parties": [
+        "b2f30e9a-115c-6789-ec82-2973bc894bbe",
+        "b63dfde0-ec80-9b80-3d55-3de54a10fe66"
+      ],
+      "subfunctionalities": [
+        "958c859a-8147-bb9c-d87a-8086922feece",
+        "ac7b435b-f3df-ca26-9b6a-32852c308047",
+        "398eab0d-7491-7d75-99b2-1ad78077342f"
+      ],
+      "id": "6c7a6cea-1192-0304-0e0b-697745dfc02b",
+      "name": "NSNEReal",
+      "compositeDirectInterface": "566ebc16-1d6b-5076-e254-ae7532cd93fb",
+      "compositeAdversarialInterface": "",
+      "parameterInterfaces": []
+    },
+    "simulator": {
+      "id": "a1f17420-0a0d-6dea-22a9-f76c9e115bb9",
+      "name": "NSNESim",
+      "basicAdversarialInterface": "9bae619c-784b-38da-b8ed-9adef0f931b7",
+      "realFunctionality": "6c7a6cea-1192-0304-0e0b-697745dfc02b",
+      "stateMachine": "ac5eaaa5-b155-952c-f686-acfd83eea15a",
+      "color": "#6bb45c",
+      "left": 450,
+      "top": 201
+    },
+    "idealFunctionality": {
+      "id": "86acc67d-f1ef-ca24-3963-d916750f251e",
+      "name": "NSNEIdeal",
+      "basicAdversarialInterface": "9bae619c-784b-38da-b8ed-9adef0f931b7",
+      "compositeDirectInterface": "566ebc16-1d6b-5076-e254-ae7532cd93fb",
+      "stateMachine": "360fef45-72a9-83f4-dbe0-9ce129fe40a4",
+      "color": "#3e88c7",
+      "left": 250,
+      "top": 250
+    },
+    "stateMachines": {
+      "stateMachines": [
+        {
+          "id": "360fef45-72a9-83f4-dbe0-9ce129fe40a4",
+          "initState": "9833af37-0de2-9856-9825-5588eacaff50",
+          "states": [
+            "9833af37-0de2-9856-9825-5588eacaff50",
+            "3859f256-773d-fc10-0ccd-b368f9988631",
+            "1ee82a7c-d08c-00ba-6a4c-760433ebde4c",
+            "10ab529e-0559-d9df-42e7-79279c402d2f",
+            "b7733a8d-403c-4230-41e7-2086b269062e",
+            "30728935-94d2-3b1d-e888-e936ffe37695",
+            "a90e3dbd-fabf-fe99-1f9b-18a25688e121"
+          ],
+          "transitions": [
+            "3184b282-da74-41d0-253b-908e26de5940",
+            "af11ddf4-023b-d5a1-f1df-87b52cbdfc9f",
+            "a59eeffe-cb70-4115-ae49-808ac0873baf",
+            "6022f187-d1a1-1c31-7ee6-a32a5f9f3129",
+            "1fed37bd-e8a9-b617-d62a-60cd37f1d7d3",
+            "8bc82b28-8162-2e62-0e97-186b949855f4"
+          ]
+        },
+        {
+          "id": "ac5eaaa5-b155-952c-f686-acfd83eea15a",
+          "initState": "ad88297d-60d9-0088-ad1b-ad2d49f723c2",
+          "states": [
+            "ad88297d-60d9-0088-ad1b-ad2d49f723c2",
+            "4c9ff471-273b-a374-843c-c53242a9d875",
+            "34c3afe9-362b-faf0-6f58-2ae16e62bc10",
+            "b7c8ab28-a788-a56e-4265-244d991bb075",
+            "c34796d5-c89d-8c79-11ae-f9243fe3cf1a",
+            "a76022ab-2469-f745-e3c0-92c4b19df0e0",
+            "3dccab0e-c157-aafc-32c0-f11dc25cc5c1"
+          ],
+          "transitions": [
+            "668d5f17-2fd8-0521-cc37-15bfb6d9af27",
+            "eb6cd873-72b1-737b-8ea5-3a90fcb00993",
+            "6b962bb2-3c0d-b6e1-e07b-289228b9666d",
+            "9adfb6c8-c0ab-11a1-1767-0d00ab0b0715",
+            "096bd9ad-1905-db0f-737d-f3079d02ded9",
+            "9f0d36d0-91fc-6ed2-80de-911bd724198f"
+          ]
+        },
+        {
+          "id": "aea1eb52-55f1-9af1-ac2b-e0d801f1100f",
+          "initState": "5afdcf70-f40e-2e3e-3368-fffbf1572381",
+          "states": [
+            "5afdcf70-f40e-2e3e-3368-fffbf1572381",
+            "3c7930e2-c22b-55a5-b4ca-b596e0bd44bc",
+            "7908bbcd-4d8e-b32d-4919-e7e6ab367600",
+            "6db6bb63-5799-cdac-08d9-b2ef8e72aacb"
+          ],
+          "transitions": [
+            "3d5b6980-54af-e860-a9b0-103172f300df",
+            "f2d13480-bcf3-3b25-5781-b411b1ba21fe",
+            "1a2646ac-9505-a76e-729d-a1d88a03cee7"
+          ]
+        },
+        {
+          "id": "5e4ef848-90d8-bc31-33c2-6678c47a3505",
+          "initState": "75e455a2-7671-738d-3ee7-89899ac68216",
+          "states": [
+            "75e455a2-7671-738d-3ee7-89899ac68216",
+            "56369c54-ec53-0f4a-d2f7-bd0aa29dc834",
+            "e4562f50-b69c-d502-8d63-f231b5a98627",
+            "27777321-ad2d-ba5d-a1ad-3f0a234b612b"
+          ],
+          "transitions": [
+            "c391ebe9-d79a-df92-7e5f-ec544454320b",
+            "b4bf2168-9e57-2bdb-ad98-7d018346310c",
+            "898b4bfc-059c-995c-1e2e-1bb4a45b5c9d"
+          ]
+        }
+      ],
+      "states": [
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "9833af37-0de2-9856-9825-5588eacaff50",
+          "left": 25,
+          "name": "WaitRequest",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "ad88297d-60d9-0088-ad1b-ad2d49f723c2",
+          "left": 25,
+          "name": "WaitLeak1",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "5afdcf70-f40e-2e3e-3368-fffbf1572381",
+          "left": 25,
+          "name": "WaitRequest",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "75e455a2-7671-738d-3ee7-89899ac68216",
+          "left": 25,
+          "name": "WaitFwd1",
+          "parameters": [],
+          "top": 48
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "3859f256-773d-fc10-0ccd-b368f9988631",
+          "left": 833,
+          "name": "Final",
+          "parameters": [],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "3c7930e2-c22b-55a5-b4ca-b596e0bd44bc",
+          "left": 743,
+          "name": "Final",
+          "parameters": [],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "4c9ff471-273b-a374-843c-c53242a9d875",
+          "left": 771,
+          "name": "Final",
+          "parameters": [],
+          "top": 55
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "7908bbcd-4d8e-b32d-4919-e7e6ab367600",
+          "left": 267,
+          "name": "WaitFwd2",
+          "parameters": [
+            {
+              "id": "2e20e458-ba6a-7622-e65f-f2641951702a",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "b9f847fc-1f03-a4f6-a038-30b8476e0ea7",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "559f5d0f-8ce0-27ef-8bf9-992aed706c10",
+              "name": "n_A",
+              "type": "int"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "6db6bb63-5799-cdac-08d9-b2ef8e72aacb",
+          "left": 503,
+          "name": "WaitAck",
+          "parameters": [],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "1ee82a7c-d08c-00ba-6a4c-760433ebde4c",
+          "left": 147,
+          "name": "WaitSim1",
+          "parameters": [
+            {
+              "id": "b4e0cd52-cd26-9124-c725-f4ab19074565",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "cba0ef41-ec8c-f3fe-fd40-8b788d785256",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "64ea4aba-2288-03d6-39c4-313e0ff043f0",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "f11727c0-2ea5-9562-56e3-96303468ad91",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 181
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "10ab529e-0559-d9df-42e7-79279c402d2f",
+          "left": 279,
+          "name": "WaitAccept",
+          "parameters": [
+            {
+              "id": "e9d7bf44-1cd2-80b1-70ec-cce4df1c7cba",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "9bb87dd2-37cd-4ba7-daf7-717d23c3cfd3",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "f30e814a-0184-633e-dcb5-0976b5393f93",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "849b87fe-bc25-2a9a-47f7-4761a2f6a145",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "b7733a8d-403c-4230-41e7-2086b269062e",
+          "left": 413,
+          "name": "WaitSim2",
+          "parameters": [
+            {
+              "id": "5854b7c0-a8f1-e4b1-6286-f871cad03728",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "fb0e6dfa-6d1c-76dd-e5b8-a343ebb7a4bb",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "d3361f7c-e5ed-c2a5-3272-f4cc91006c21",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "bd5c9d86-8844-451e-4218-afb52d966507",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 181
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "30728935-94d2-3b1d-e888-e936ffe37695",
+          "left": 551,
+          "name": "WaitAcknowledge",
+          "parameters": [
+            {
+              "id": "f149068c-36e5-0a70-f30b-7a41d233b4dd",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "73b1212b-a692-1f57-23ce-099caf33ec6a",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "c2f10dd1-7d76-6637-31e7-ddf9c7ba243a",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "1fce9616-66a8-f28d-ecef-b86ad72f1309",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "a90e3dbd-fabf-fe99-1f9b-18a25688e121",
+          "left": 687,
+          "name": "WaitSim3",
+          "parameters": [
+            {
+              "id": "779d37a6-39ba-1d47-206e-dd02ccc53111",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "f7e94552-a3ba-31d7-de39-12453e1a344a",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "bd821709-2ac5-7f82-b05c-fcb082cf09c7",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "c0b8dfa0-dcf1-5891-4c1a-ee3c203e9763",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 181
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "56369c54-ec53-0f4a-d2f7-bd0aa29dc834",
+          "left": 255,
+          "name": "WaitAccept",
+          "parameters": [
+            {
+              "id": "1b985fa1-6661-a99e-0a6d-c9c57772e899",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "7edd6dd2-1c0d-6513-0bee-83f268441086",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "0d2ac36c-38ba-8183-1c31-2eb54abb544e",
+              "name": "n_A",
+              "type": "int"
+            }
+          ],
+          "top": 49
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "e4562f50-b69c-d502-8d63-f231b5a98627",
+          "left": 491,
+          "name": "WaitFwd3",
+          "parameters": [
+            {
+              "id": "7565f5b0-e06c-c7da-529c-3534b112bf4e",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "0bfaa85f-a7dc-92ec-1606-ad6ffeea90e3",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "a5d968df-edac-6d36-fce2-f06f4b2abfbd",
+              "name": "n_A",
+              "type": "int"
+            },
+            {
+              "id": "4b486882-70fb-7eb3-824a-6bcf39ebabb2",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 49
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "27777321-ad2d-ba5d-a1ad-3f0a234b612b",
+          "left": 739,
+          "name": "Final",
+          "parameters": [],
+          "top": 49
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "34c3afe9-362b-faf0-6f58-2ae16e62bc10",
+          "left": 149,
+          "name": "WaitAdv1",
+          "parameters": [
+            {
+              "id": "22b8aa42-a75d-9df1-9135-a3830506c07c",
+              "name": "id_A",
+              "type": "port"
+            },
+            {
+              "id": "cf5b58e9-f834-76d0-e7ee-b74cd898d0f5",
+              "name": "id_B",
+              "type": "port"
+            },
+            {
+              "id": "e5f61dd3-e041-c6f7-042e-9107172c9b55",
+              "name": "n_A",
+              "type": "int"
+            }
+          ],
+          "top": 185
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "b7c8ab28-a788-a56e-4265-244d991bb075",
+          "left": 271,
+          "name": "WaitLeak2",
+          "parameters": [
+            {
+              "id": "a1e213bd-33e3-7b56-966f-79555b536af5",
+              "name": "n_A",
+              "type": "int"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "c34796d5-c89d-8c79-11ae-f9243fe3cf1a",
+          "left": 395,
+          "name": "WaitAdv2",
+          "parameters": [
+            {
+              "id": "78f64e5e-ad30-5192-b8fe-715adc0474c5",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 185
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "a76022ab-2469-f745-e3c0-92c4b19df0e0",
+          "left": 523,
+          "name": "WaitLeak3",
+          "parameters": [
+            {
+              "id": "416651d1-849b-d7e8-96f5-6f18d1e224be",
+              "name": "n_B",
+              "type": "int"
+            }
+          ],
+          "top": 51
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "3dccab0e-c157-aafc-32c0-f11dc25cc5c1",
+          "left": 649,
+          "name": "WaitAdv3",
+          "parameters": [],
+          "top": 185
+        }
+      ],
+      "transitions": [
+        {
+          "fromState": "5afdcf70-f40e-2e3e-3368-fffbf1572381",
+          "guard": "",
+          "id": "3d5b6980-54af-e860-a9b0-103172f300df",
+          "inMessage": "99ab7ec0-43f6-7df3-7971-def0b36272a8",
+          "name": "",
+          "outMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d/958c859a-8147-bb9c-d87a-8086922feece",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt2",
+              "paraID": "dac6baf4-4249-6994-d26f-5f8c4bf0a731"
+            },
+            {
+              "argValue": "pt1, pt2, {n_A, pt1) Ka",
+              "paraID": "40d39006-3b01-b867-eeaf-053ff92895d5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "7908bbcd-4d8e-b32d-4919-e7e6ab367600",
+          "toStateArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "2e20e458-ba6a-7622-e65f-f2641951702a"
+            },
+            {
+              "argValue": "pt2",
+              "paraID": "b9f847fc-1f03-a4f6-a038-30b8476e0ea7"
+            },
+            {
+              "argValue": "n_A <$ dnonce",
+              "paraID": "559f5d0f-8ce0-27ef-8bf9-992aed706c10"
+            }
+          ]
+        },
+        {
+          "fromState": "7908bbcd-4d8e-b32d-4919-e7e6ab367600",
+          "guard": "if n_A = n_A' from u",
+          "id": "f2d13480-bcf3-3b25-5781-b411b1ba21fe",
+          "inMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8/ac7b435b-f3df-ca26-9b6a-32852c308047",
+          "name": "",
+          "outMessage": "67bb5396-0e6e-efb9-f9f3-43ed926736a4",
+          "outMessageArguments": [
+            {
+              "argValue": "n_A",
+              "paraID": "f28e6daa-8061-06eb-b697-2ce0fe61e63e"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "dc1137b8-0967-a871-d19e-03ab200b5e4a"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt1",
+          "toState": "6db6bb63-5799-cdac-08d9-b2ef8e72aacb",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "6db6bb63-5799-cdac-08d9-b2ef8e72aacb",
+          "guard": "if pt1 = id_A",
+          "id": "1a2646ac-9505-a76e-729d-a1d88a03cee7",
+          "inMessage": "7609fe36-06c1-6119-0cc4-a23344614501",
+          "name": "",
+          "outMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d/398eab0d-7491-7d75-99b2-1ad78077342f",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt2",
+              "paraID": "dac6baf4-4249-6994-d26f-5f8c4bf0a731"
+            },
+            {
+              "argValue": "{n_B} Kb",
+              "paraID": "40d39006-3b01-b867-eeaf-053ff92895d5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "3c7930e2-c22b-55a5-b4ca-b596e0bd44bc",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "9833af37-0de2-9856-9825-5588eacaff50",
+          "guard": "",
+          "id": "3184b282-da74-41d0-253b-908e26de5940",
+          "inMessage": "99ab7ec0-43f6-7df3-7971-def0b36272a8",
+          "name": "",
+          "outMessage": "93da34fa-a773-92e8-3597-20c47023598c",
+          "outMessageArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "e98fec5d-dac0-5b25-e2b1-b53e0ed4242c"
+            },
+            {
+              "argValue": "pt2",
+              "paraID": "c789ea0a-0923-fdf6-c208-711b6be07cdf"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "2",
+          "targetPort": "",
+          "toState": "1ee82a7c-d08c-00ba-6a4c-760433ebde4c",
+          "toStateArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "b4e0cd52-cd26-9124-c725-f4ab19074565"
+            },
+            {
+              "argValue": "pt2",
+              "paraID": "cba0ef41-ec8c-f3fe-fd40-8b788d785256"
+            },
+            {
+              "argValue": "n_A <$ dnonce",
+              "paraID": "64ea4aba-2288-03d6-39c4-313e0ff043f0"
+            },
+            {
+              "argValue": "n_B <$ dnonce",
+              "paraID": "f11727c0-2ea5-9562-56e3-96303468ad91"
+            }
+          ]
+        },
+        {
+          "fromState": "1ee82a7c-d08c-00ba-6a4c-760433ebde4c",
+          "guard": "",
+          "id": "af11ddf4-023b-d5a1-f1df-87b52cbdfc9f",
+          "inMessage": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "name": "",
+          "outMessage": "3ba3e2f9-6df6-bf3a-9977-e02d713fb71d",
+          "outMessageArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "bce376dd-836b-66da-c72b-3c6d46684e55"
+            }
+          ],
+          "sourceHandle": "16",
+          "targetHandle": "6",
+          "targetPort": "pt1",
+          "toState": "10ab529e-0559-d9df-42e7-79279c402d2f",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "e9d7bf44-1cd2-80b1-70ec-cce4df1c7cba"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "9bb87dd2-37cd-4ba7-daf7-717d23c3cfd3"
+            },
+            {
+              "argValue": "n_A",
+              "paraID": "f30e814a-0184-633e-dcb5-0976b5393f93"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "849b87fe-bc25-2a9a-47f7-4761a2f6a145"
+            }
+          ]
+        },
+        {
+          "fromState": "10ab529e-0559-d9df-42e7-79279c402d2f",
+          "guard": "if pt2 = id_B",
+          "id": "a59eeffe-cb70-4115-ae49-808ac0873baf",
+          "inMessage": "a385f254-cd91-9736-7404-f3e8325f61f3",
+          "name": "",
+          "outMessage": "93da34fa-a773-92e8-3597-20c47023598c",
+          "outMessageArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "e98fec5d-dac0-5b25-e2b1-b53e0ed4242c"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "c789ea0a-0923-fdf6-c208-711b6be07cdf"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "2",
+          "targetPort": "",
+          "toState": "b7733a8d-403c-4230-41e7-2086b269062e",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "5854b7c0-a8f1-e4b1-6286-f871cad03728"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "fb0e6dfa-6d1c-76dd-e5b8-a343ebb7a4bb"
+            },
+            {
+              "argValue": "n_A",
+              "paraID": "d3361f7c-e5ed-c2a5-3272-f4cc91006c21"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "bd5c9d86-8844-451e-4218-afb52d966507"
+            }
+          ]
+        },
+        {
+          "fromState": "b7733a8d-403c-4230-41e7-2086b269062e",
+          "guard": "",
+          "id": "6022f187-d1a1-1c31-7ee6-a32a5f9f3129",
+          "inMessage": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "name": "",
+          "outMessage": "67bb5396-0e6e-efb9-f9f3-43ed926736a4",
+          "outMessageArguments": [
+            {
+              "argValue": "n_A",
+              "paraID": "f28e6daa-8061-06eb-b697-2ce0fe61e63e"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "dc1137b8-0967-a871-d19e-03ab200b5e4a"
+            }
+          ],
+          "sourceHandle": "16",
+          "targetHandle": "6",
+          "targetPort": "pt1",
+          "toState": "30728935-94d2-3b1d-e888-e936ffe37695",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "f149068c-36e5-0a70-f30b-7a41d233b4dd"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "73b1212b-a692-1f57-23ce-099caf33ec6a"
+            },
+            {
+              "argValue": "n_A",
+              "paraID": "c2f10dd1-7d76-6637-31e7-ddf9c7ba243a"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "1fce9616-66a8-f28d-ecef-b86ad72f1309"
+            }
+          ]
+        },
+        {
+          "fromState": "30728935-94d2-3b1d-e888-e936ffe37695",
+          "guard": "if pt1 = id_A",
+          "id": "1fed37bd-e8a9-b617-d62a-60cd37f1d7d3",
+          "inMessage": "7609fe36-06c1-6119-0cc4-a23344614501",
+          "name": "",
+          "outMessage": "93da34fa-a773-92e8-3597-20c47023598c",
+          "outMessageArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "e98fec5d-dac0-5b25-e2b1-b53e0ed4242c"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "c789ea0a-0923-fdf6-c208-711b6be07cdf"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "2",
+          "targetPort": "",
+          "toState": "a90e3dbd-fabf-fe99-1f9b-18a25688e121",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "779d37a6-39ba-1d47-206e-dd02ccc53111"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "f7e94552-a3ba-31d7-de39-12453e1a344a"
+            },
+            {
+              "argValue": "n_A",
+              "paraID": "bd821709-2ac5-7f82-b05c-fcb082cf09c7"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "c0b8dfa0-dcf1-5891-4c1a-ee3c203e9763"
+            }
+          ]
+        },
+        {
+          "fromState": "a90e3dbd-fabf-fe99-1f9b-18a25688e121",
+          "guard": "",
+          "id": "8bc82b28-8162-2e62-0e97-186b949855f4",
+          "inMessage": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "name": "",
+          "outMessage": "0fe9da72-f61c-e66b-19e0-f510a6ba5865",
+          "outMessageArguments": [
+            {
+              "argValue": "n_A",
+              "paraID": "1ab4ae1b-aa53-2614-8839-b2d121ec5ea5"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "7800e3b3-3da0-a6f1-6f5f-3fe310899347"
+            }
+          ],
+          "sourceHandle": "16",
+          "targetHandle": "6",
+          "targetPort": "",
+          "toState": "3859f256-773d-fc10-0ccd-b368f9988631",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "75e455a2-7671-738d-3ee7-89899ac68216",
+          "guard": "",
+          "id": "c391ebe9-d79a-df92-7e5f-ec544454320b",
+          "inMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8/958c859a-8147-bb9c-d87a-8086922feece",
+          "name": "",
+          "outMessage": "3ba3e2f9-6df6-bf3a-9977-e02d713fb71d",
+          "outMessageArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "bce376dd-836b-66da-c72b-3c6d46684e55"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt2",
+          "toState": "56369c54-ec53-0f4a-d2f7-bd0aa29dc834",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "1b985fa1-6661-a99e-0a6d-c9c57772e899"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "7edd6dd2-1c0d-6513-0bee-83f268441086"
+            },
+            {
+              "argValue": "n_A",
+              "paraID": "0d2ac36c-38ba-8183-1c31-2eb54abb544e"
+            }
+          ]
+        },
+        {
+          "fromState": "56369c54-ec53-0f4a-d2f7-bd0aa29dc834",
+          "guard": "",
+          "id": "b4bf2168-9e57-2bdb-ad98-7d018346310c",
+          "inMessage": "a385f254-cd91-9736-7404-f3e8325f61f3",
+          "name": "",
+          "outMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d/ac7b435b-f3df-ca26-9b6a-32852c308047",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt1",
+              "paraID": "dac6baf4-4249-6994-d26f-5f8c4bf0a731"
+            },
+            {
+              "argValue": "{n_A, n_B} Ka",
+              "paraID": "40d39006-3b01-b867-eeaf-053ff92895d5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "e4562f50-b69c-d502-8d63-f231b5a98627",
+          "toStateArguments": [
+            {
+              "argValue": "id_A",
+              "paraID": "7565f5b0-e06c-c7da-529c-3534b112bf4e"
+            },
+            {
+              "argValue": "id_B",
+              "paraID": "0bfaa85f-a7dc-92ec-1606-ad6ffeea90e3"
+            },
+            {
+              "argValue": "n_A",
+              "paraID": "a5d968df-edac-6d36-fce2-f06f4b2abfbd"
+            },
+            {
+              "argValue": "n_B <$ dnonce",
+              "paraID": "4b486882-70fb-7eb3-824a-6bcf39ebabb2"
+            }
+          ]
+        },
+        {
+          "fromState": "e4562f50-b69c-d502-8d63-f231b5a98627",
+          "guard": "",
+          "id": "898b4bfc-059c-995c-1e2e-1bb4a45b5c9d",
+          "inMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8/398eab0d-7491-7d75-99b2-1ad78077342f",
+          "name": "",
+          "outMessage": "0fe9da72-f61c-e66b-19e0-f510a6ba5865",
+          "outMessageArguments": [
+            {
+              "argValue": "n_A",
+              "paraID": "1ab4ae1b-aa53-2614-8839-b2d121ec5ea5"
+            },
+            {
+              "argValue": "n_B",
+              "paraID": "7800e3b3-3da0-a6f1-6f5f-3fe310899347"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt2",
+          "toState": "27777321-ad2d-ba5d-a1ad-3f0a234b612b",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "ad88297d-60d9-0088-ad1b-ad2d49f723c2",
+          "guard": "",
+          "id": "668d5f17-2fd8-0521-cc37-15bfb6d9af27",
+          "inMessage": "93da34fa-a773-92e8-3597-20c47023598c",
+          "name": "",
+          "outMessage": "7434c877-1186-b458-4434-6e5fda9b68dc/958c859a-8147-bb9c-d87a-8086922feece",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt1",
+              "paraID": "62212d07-04dd-e3c3-e369-6def950e768b"
+            },
+            {
+              "argValue": "intport Pt2",
+              "paraID": "8875da5b-e659-9703-75fb-2bec4b97e7d7"
+            },
+            {
+              "argValue": "(pt1, pt2, {n_A, pt1} Kb)",
+              "paraID": "bd23e92d-ef98-ee08-7232-f8205e46181d"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "2",
+          "targetPort": "",
+          "toState": "34c3afe9-362b-faf0-6f58-2ae16e62bc10",
+          "toStateArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "22b8aa42-a75d-9df1-9135-a3830506c07c"
+            },
+            {
+              "argValue": "pt2",
+              "paraID": "cf5b58e9-f834-76d0-e7ee-b74cd898d0f5"
+            },
+            {
+              "argValue": "n_A <$ dnonce",
+              "paraID": "e5f61dd3-e041-c6f7-042e-9107172c9b55"
+            }
+          ]
+        },
+        {
+          "fromState": "34c3afe9-362b-faf0-6f58-2ae16e62bc10",
+          "guard": "if pt = intport Pt2 and id_A = id_A' from u and id_B = id_B' from u",
+          "id": "eb6cd873-72b1-737b-8ea5-3a90fcb00993",
+          "inMessage": "0ff4f091-1ae1-fb54-bf02-e6c5414f9f9c/958c859a-8147-bb9c-d87a-8086922feece",
+          "name": "",
+          "outMessage": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "outMessageArguments": [],
+          "sourceHandle": "16",
+          "targetHandle": "6",
+          "targetPort": "",
+          "toState": "b7c8ab28-a788-a56e-4265-244d991bb075",
+          "toStateArguments": [
+            {
+              "argValue": "n_A",
+              "paraID": "a1e213bd-33e3-7b56-966f-79555b536af5"
+            }
+          ]
+        },
+        {
+          "fromState": "b7c8ab28-a788-a56e-4265-244d991bb075",
+          "guard": "",
+          "id": "6b962bb2-3c0d-b6e1-e07b-289228b9666d",
+          "inMessage": "93da34fa-a773-92e8-3597-20c47023598c",
+          "name": "",
+          "outMessage": "7434c877-1186-b458-4434-6e5fda9b68dc/ac7b435b-f3df-ca26-9b6a-32852c308047",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt2",
+              "paraID": "62212d07-04dd-e3c3-e369-6def950e768b"
+            },
+            {
+              "argValue": "intport Pt1",
+              "paraID": "8875da5b-e659-9703-75fb-2bec4b97e7d7"
+            },
+            {
+              "argValue": "{n_A, n_B} Ka",
+              "paraID": "bd23e92d-ef98-ee08-7232-f8205e46181d"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "2",
+          "targetPort": "",
+          "toState": "c34796d5-c89d-8c79-11ae-f9243fe3cf1a",
+          "toStateArguments": [
+            {
+              "argValue": "n_B <$ dnonce",
+              "paraID": "78f64e5e-ad30-5192-b8fe-715adc0474c5"
+            }
+          ]
+        },
+        {
+          "fromState": "c34796d5-c89d-8c79-11ae-f9243fe3cf1a",
+          "guard": "if pt = intport Pt1",
+          "id": "9adfb6c8-c0ab-11a1-1767-0d00ab0b0715",
+          "inMessage": "0ff4f091-1ae1-fb54-bf02-e6c5414f9f9c/ac7b435b-f3df-ca26-9b6a-32852c308047",
+          "name": "",
+          "outMessage": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "outMessageArguments": [],
+          "sourceHandle": "16",
+          "targetHandle": "6",
+          "targetPort": "",
+          "toState": "a76022ab-2469-f745-e3c0-92c4b19df0e0",
+          "toStateArguments": [
+            {
+              "argValue": "n_B",
+              "paraID": "416651d1-849b-d7e8-96f5-6f18d1e224be"
+            }
+          ]
+        },
+        {
+          "fromState": "a76022ab-2469-f745-e3c0-92c4b19df0e0",
+          "guard": "",
+          "id": "096bd9ad-1905-db0f-737d-f3079d02ded9",
+          "inMessage": "93da34fa-a773-92e8-3597-20c47023598c",
+          "name": "",
+          "outMessage": "7434c877-1186-b458-4434-6e5fda9b68dc/398eab0d-7491-7d75-99b2-1ad78077342f",
+          "outMessageArguments": [
+            {
+              "argValue": "intport Pt1",
+              "paraID": "62212d07-04dd-e3c3-e369-6def950e768b"
+            },
+            {
+              "argValue": "intport Pt2",
+              "paraID": "8875da5b-e659-9703-75fb-2bec4b97e7d7"
+            },
+            {
+              "argValue": "{n_B} Kb",
+              "paraID": "bd23e92d-ef98-ee08-7232-f8205e46181d"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "2",
+          "targetPort": "",
+          "toState": "3dccab0e-c157-aafc-32c0-f11dc25cc5c1",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "3dccab0e-c157-aafc-32c0-f11dc25cc5c1",
+          "guard": "if pt = intport Pt2",
+          "id": "9f0d36d0-91fc-6ed2-80de-911bd724198f",
+          "inMessage": "0ff4f091-1ae1-fb54-bf02-e6c5414f9f9c/398eab0d-7491-7d75-99b2-1ad78077342f",
+          "name": "",
+          "outMessage": "6a9f976c-18b7-085c-c965-c45f793a443f",
+          "outMessageArguments": [],
+          "sourceHandle": "16",
+          "targetHandle": "6",
+          "targetPort": "",
+          "toState": "4c9ff471-273b-a374-843c-c53242a9d875",
+          "toStateArguments": []
+        }
+      ]
+    },
+    "id": "72255be2-d05c-4c45-a133-09aa5aa4af2b",
+    "name": "NSNonceExchange",
+    "readOnly": "",
+    "modelVersion": "1.3"
+  },
+  "readOnly": "",
+  "lastModified": 1754419961.3087785,
+  "modelVersion": "1.3"
+}

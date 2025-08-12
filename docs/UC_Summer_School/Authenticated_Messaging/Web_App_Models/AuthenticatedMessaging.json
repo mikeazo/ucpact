@@ -1,0 +1,1363 @@
+{
+  "model": {
+    "interfaces": {
+      "compInters": [
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "32558b2c-a766-4d02-e544-b70fc27c4f16",
+              "idOfInstance": "0459326e-89c4-57f2-db58-bcfee73a4dbe",
+              "name": "Sender"
+            },
+            {
+              "idOfBasic": "f2d0ea6c-ad97-52ea-5472-98bcae2d1d61",
+              "idOfInstance": "a2fc7fb7-adc4-031d-d3a0-a26143fde1c9",
+              "name": "Receiver"
+            }
+          ],
+          "id": "f50ed18d-8d48-8bda-0a67-b3284d48710c",
+          "interfaceComment": "",
+          "name": "D",
+          "type": "direct"
+        }
+      ],
+      "basicInters": [
+        {
+          "id": "32558b2c-a766-4d02-e544-b70fc27c4f16",
+          "interfaceComment": "",
+          "messages": [
+            "32519cd7-b5a9-c973-85ca-735c0971347b",
+            "9618ed7c-a63c-2222-e60b-eea65658510f"
+          ],
+          "name": "SenderAPI",
+          "type": "direct"
+        },
+        {
+          "id": "f2d0ea6c-ad97-52ea-5472-98bcae2d1d61",
+          "interfaceComment": "",
+          "messages": [
+            "f58e0eed-2479-7685-b167-20dcf8984aa8",
+            "40792988-d42d-671f-d154-e2e457c87a32"
+          ],
+          "name": "ReceiverAPI",
+          "type": "direct"
+        },
+        {
+          "id": "7fb577c2-c9bb-244e-3cfe-2a78b1c5e867",
+          "interfaceComment": "",
+          "messages": [
+            "e5282ce6-7736-7f3b-d2af-efa255372364",
+            "ffd36f5f-f0e4-ebb8-59f2-e15b58d097e7",
+            "5066035b-d933-5ba8-3903-68eb95cca4d9",
+            "c6a1fa05-fe28-5545-25a7-b86daac7713e",
+            "f8fe66cf-4009-944e-b4d1-306248355a12"
+          ],
+          "name": "AuthMsgToSim",
+          "type": "adversarial"
+        }
+      ],
+      "messages": [
+        {
+          "id": "32519cd7-b5a9-c973-85ca-735c0971347b",
+          "messageComment": "",
+          "name": "sendm",
+          "parameters": [
+            {
+              "id": "eb4091c3-fe14-62be-a6ed-48b5230172dd",
+              "name": "msg",
+              "type": "univ"
+            },
+            {
+              "id": "7b389f74-afc6-2d9b-4992-84c1835cd037",
+              "name": "recipient",
+              "type": "port"
+            }
+          ],
+          "port": "pt",
+          "type": "in"
+        },
+        {
+          "id": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "messageComment": "",
+          "name": "receive",
+          "parameters": [
+            {
+              "id": "084118ee-934b-b0bf-80c2-77bb7f826fd6",
+              "name": "msg",
+              "type": "univ"
+            },
+            {
+              "id": "9e8d9526-58cd-5801-a98b-006bf88242c3",
+              "name": "sender",
+              "type": "port"
+            }
+          ],
+          "port": "pt",
+          "type": "out"
+        },
+        {
+          "id": "9618ed7c-a63c-2222-e60b-eea65658510f",
+          "messageComment": "",
+          "name": "setup",
+          "parameters": [
+            {
+              "id": "057c640b-729d-f19f-1d06-7c96221c622b",
+              "name": "recipient",
+              "type": "port"
+            }
+          ],
+          "port": "pt",
+          "type": "in"
+        },
+        {
+          "id": "40792988-d42d-671f-d154-e2e457c87a32",
+          "messageComment": "",
+          "name": "setupDone",
+          "parameters": [],
+          "port": "pt",
+          "type": "out"
+        },
+        {
+          "id": "e5282ce6-7736-7f3b-d2af-efa255372364",
+          "messageComment": "",
+          "name": "doSetup",
+          "parameters": [
+            {
+              "id": "2902f88e-282a-444e-f1e2-0d988aa9cf46",
+              "name": "sender",
+              "type": "port"
+            },
+            {
+              "id": "35a9bb3f-0bf0-5fd5-6139-7702141b56c5",
+              "name": "recipient",
+              "type": "port"
+            }
+          ],
+          "port": "",
+          "type": "out"
+        },
+        {
+          "id": "ffd36f5f-f0e4-ebb8-59f2-e15b58d097e7",
+          "messageComment": "",
+          "name": "doneSetup",
+          "parameters": [],
+          "port": "",
+          "type": "in"
+        },
+        {
+          "id": "5066035b-d933-5ba8-3903-68eb95cca4d9",
+          "messageComment": "",
+          "name": "doSend",
+          "parameters": [
+            {
+              "id": "2cfdcbd9-2846-ecf1-914f-63b9633cac16",
+              "name": "msg",
+              "type": "univ"
+            },
+            {
+              "id": "fdaa080e-10e0-3f35-3e02-df2e12188e4a",
+              "name": "sender",
+              "type": "port"
+            },
+            {
+              "id": "bec46074-2cfc-ac19-c686-711dd206a9ac",
+              "name": "recipient",
+              "type": "port"
+            }
+          ],
+          "port": "",
+          "type": "out"
+        },
+        {
+          "id": "c6a1fa05-fe28-5545-25a7-b86daac7713e",
+          "messageComment": "",
+          "name": "doDeliver",
+          "parameters": [],
+          "port": "",
+          "type": "in"
+        },
+        {
+          "id": "f8fe66cf-4009-944e-b4d1-306248355a12",
+          "messageComment": "",
+          "name": "receiveInject",
+          "parameters": [
+            {
+              "id": "a5d18f27-bd03-7481-74f9-881712d502f4",
+              "name": "sender",
+              "type": "port"
+            },
+            {
+              "id": "0c79e35d-3304-3dd8-c476-771a77efc0ba",
+              "name": "receiver",
+              "type": "port"
+            },
+            {
+              "id": "cf29fa80-d86b-6e9c-20ff-836d840de31e",
+              "name": "msg",
+              "type": "univ"
+            },
+            {
+              "id": "176f93a0-9395-61f1-bb7c-18f0e7c9b1cd",
+              "name": "internal_port",
+              "type": "port"
+            }
+          ],
+          "port": "",
+          "type": "in"
+        }
+      ]
+    },
+    "parties": {
+      "parties": [
+        {
+          "basicAdversarialInterface": "",
+          "basicDirectInterface": "0459326e-89c4-57f2-db58-bcfee73a4dbe",
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "3cccbc3d-be6c-0f45-7c0b-9f5ec7f61804",
+          "left": 894,
+          "name": "Sender",
+          "stateMachine": "4e66749a-7459-b99a-eebc-928c184dce7f",
+          "top": 281
+        },
+        {
+          "basicAdversarialInterface": "",
+          "basicDirectInterface": "a2fc7fb7-adc4-031d-d3a0-a26143fde1c9",
+          "color": "#6fa5c6",
+          "comment": "",
+          "id": "85902c40-f8e5-b25b-5d61-b96afb97eedd",
+          "left": 573,
+          "name": "Receiver",
+          "stateMachine": "64002c40-ca14-59ae-3624-c8789eb6458e",
+          "top": 282
+        }
+      ]
+    },
+    "subfunctionalities": {
+      "subfunctionalities": [
+        {
+          "color": "#8e9cc6",
+          "id": "27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "idealFuncModel": "RandomOracle",
+          "idealFunctionalityId": "19d12a62-6a36-b923-410c-3419357e7ccf",
+          "idealFunctionalityName": "IF",
+          "left": 506,
+          "name": "RO",
+          "top": 544
+        },
+        {
+          "color": "#8a6996",
+          "id": "d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "idealFuncModel": "LeakyChannel",
+          "idealFunctionalityId": "d4c25c48-ff7b-28c4-a338-4017a52b16eb",
+          "idealFunctionalityName": "IF",
+          "left": 891,
+          "name": "FIFOLeakyDelivery",
+          "top": 419
+        }
+      ]
+    },
+    "realFunctionality": {
+      "parties": [
+        "3cccbc3d-be6c-0f45-7c0b-9f5ec7f61804",
+        "85902c40-f8e5-b25b-5d61-b96afb97eedd"
+      ],
+      "subfunctionalities": [
+        "27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+        "d0ea8903-4ee4-439f-f13e-e3f5458c6f01"
+      ],
+      "id": "2da97acc-1d1f-2875-6307-565017ac507c",
+      "name": "AuthMsgReal",
+      "compositeDirectInterface": "f50ed18d-8d48-8bda-0a67-b3284d48710c",
+      "compositeAdversarialInterface": "",
+      "parameterInterfaces": []
+    },
+    "simulator": {
+      "id": "95be11c2-d418-7e3d-c92c-8c999a7379f7",
+      "name": "Sim",
+      "basicAdversarialInterface": "7fb577c2-c9bb-244e-3cfe-2a78b1c5e867",
+      "realFunctionality": "2da97acc-1d1f-2875-6307-565017ac507c",
+      "stateMachine": "726ec060-a0f8-1de6-574e-57fd12f6e44d",
+      "color": "#6bb45c",
+      "left": 450,
+      "top": 201
+    },
+    "idealFunctionality": {
+      "id": "156b9834-1fdc-512f-0f2c-ccf673f37e26",
+      "name": "AuthMsgIdeal",
+      "basicAdversarialInterface": "7fb577c2-c9bb-244e-3cfe-2a78b1c5e867",
+      "compositeDirectInterface": "f50ed18d-8d48-8bda-0a67-b3284d48710c",
+      "stateMachine": "a5f86526-db75-9f76-8c07-7ed50ec5ea5a",
+      "color": "#3e88c7",
+      "left": 250,
+      "top": 250
+    },
+    "stateMachines": {
+      "stateMachines": [
+        {
+          "id": "a5f86526-db75-9f76-8c07-7ed50ec5ea5a",
+          "initState": "98c2ecd8-dae1-e12f-3a93-8912a94b490b",
+          "states": [
+            "98c2ecd8-dae1-e12f-3a93-8912a94b490b",
+            "9a959362-c8a5-f06f-c090-9dd46cbbe3c6",
+            "09acd4ff-d267-b9be-d646-4131a98c8b47",
+            "ecc7a51e-e771-507c-7652-fa95685e0bbd"
+          ],
+          "transitions": [
+            "9ba07211-b3e0-118e-3c94-ddc82f09b627",
+            "21ce7b47-ba34-921d-5089-fc326d164adb",
+            "ce3aa95c-a525-67ef-abce-461d2e3a19e5",
+            "d79de784-ac0f-7696-3eea-b514049abaa0",
+            "dc1fa4f5-3d42-b29c-6bb0-93aaa372e028",
+            "bb38dab9-f2f5-d526-d4e6-9980f2937c6d",
+            "0dca73f8-4f9a-3844-da39-8b5188caa527"
+          ]
+        },
+        {
+          "id": "726ec060-a0f8-1de6-574e-57fd12f6e44d",
+          "initState": "d13f69f3-af72-51c3-2f9d-b0a4ace694db",
+          "states": [
+            "d13f69f3-af72-51c3-2f9d-b0a4ace694db",
+            "17b5ec17-6595-394c-2fb5-18a444623304"
+          ],
+          "transitions": [
+            "ef3a3094-4cfb-aad0-8100-13a50eb09127",
+            "925990eb-e849-71bc-1d60-3f5a2a67cb83",
+            "7dd1005b-d4a3-bb8c-c589-42cc9af6ccc3",
+            "d0fa2612-b852-f56b-d225-a95c5380c6ef"
+          ]
+        },
+        {
+          "id": "4e66749a-7459-b99a-eebc-928c184dce7f",
+          "initState": "a72089df-ef5e-3de0-b582-7e729a49559f",
+          "states": [
+            "a72089df-ef5e-3de0-b582-7e729a49559f",
+            "0107edec-5fd9-ed25-472e-a34e52c49b1c",
+            "a24bd5b7-c9ac-e7c8-9e1c-cab6a60a008e",
+            "558ec127-0478-538f-66b6-aeceb899a42a",
+            "771bdb11-35e6-3d4b-a954-fa6bee88838b"
+          ],
+          "transitions": [
+            "bf65eb0b-8fc8-bfe2-3095-fe3d35436a26",
+            "1f07176d-144d-9285-b1fc-415e6b22c1e8",
+            "f9d8947f-0eca-0a64-3a88-af3401693450",
+            "be737bf3-de5b-4532-90c0-54ba737ce9c9",
+            "3697f637-b94f-696f-968e-c5f38539ab8f",
+            "1ae76a65-87fa-b5a7-0fa7-5c010c97494e",
+            "937f95c8-3daa-70f3-0b7e-3aebc050a160"
+          ]
+        },
+        {
+          "id": "64002c40-ca14-59ae-3624-c8789eb6458e",
+          "initState": "909fe505-9e7d-2792-74a1-249fafd47c9f",
+          "states": [
+            "909fe505-9e7d-2792-74a1-249fafd47c9f",
+            "79ae8575-d68c-ffb2-45c8-58a618c1d542",
+            "ab21f131-f53f-1a20-aa01-7ca4b049036d",
+            "4ad12e6f-49c0-4134-c5a9-008edf8fc54b"
+          ],
+          "transitions": [
+            "efa20a94-9c42-532d-d10d-051e7a2bd078",
+            "3d66d869-bf88-0db8-9189-7ce5b89a7fb0",
+            "006d62f8-a108-f976-6fdb-bd65d154180d",
+            "f09b4c28-287d-b24f-7910-09bc2a35bc73",
+            "9051cd73-71b7-26d4-020c-841589f8659a"
+          ]
+        }
+      ],
+      "states": [
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "98c2ecd8-dae1-e12f-3a93-8912a94b490b",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "d13f69f3-af72-51c3-2f9d-b0a4ace694db",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "a72089df-ef5e-3de0-b582-7e729a49559f",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#e3c85b",
+          "comment": "",
+          "id": "909fe505-9e7d-2792-74a1-249fafd47c9f",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50
+        },
+        {
+          "color": "#6fa5c6",
+          "comment": "",
+          "id": "0107edec-5fd9-ed25-472e-a34e52c49b1c",
+          "left": 239,
+          "name": "ComputeHashes",
+          "parameters": [
+            {
+              "id": "61439d39-5cf8-56a8-b97e-224523f4544f",
+              "name": "recipient",
+              "type": "port"
+            },
+            {
+              "id": "2f857b63-ff2b-c40a-d27c-2dbac915b278",
+              "name": "password",
+              "type": "univ"
+            },
+            {
+              "id": "a49896f3-3b62-02ea-ac7f-f3231b062c5a",
+              "name": "currentHash",
+              "type": "some UINT256"
+            },
+            {
+              "id": "03c9dd40-87ba-64ab-8756-e4613029da31",
+              "name": "n",
+              "type": "int"
+            },
+            {
+              "id": "b7b27ae2-4d84-36f1-a727-c985fcc946a4",
+              "name": "sender",
+              "type": "port"
+            }
+          ],
+          "top": 99
+        },
+        {
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "a24bd5b7-c9ac-e7c8-9e1c-cab6a60a008e",
+          "left": 468,
+          "name": "Main",
+          "parameters": [
+            {
+              "id": "9748e1f2-69fb-3f14-8b22-2b1fa3e7033a",
+              "name": "password",
+              "type": "univ"
+            },
+            {
+              "id": "9af4ab12-77cb-3021-f43d-ff67f5a7f02f",
+              "name": "n",
+              "type": "int"
+            }
+          ],
+          "top": 151
+        },
+        {
+          "color": "#bfe1d9",
+          "comment": "",
+          "id": "558ec127-0478-538f-66b6-aeceb899a42a",
+          "left": 412,
+          "name": "ComputeToken",
+          "parameters": [
+            {
+              "id": "6eceb357-5a1e-eb71-bcd4-f1d837a3ab79",
+              "name": "sender",
+              "type": "port"
+            },
+            {
+              "id": "2341440d-e6e9-4744-405c-7ce52135061e",
+              "name": "recipient",
+              "type": "port"
+            },
+            {
+              "id": "44a8bcaa-8d11-f0f0-502e-1545543a8cdb",
+              "name": "msg",
+              "type": "univ"
+            },
+            {
+              "id": "6897f645-2a06-2492-82e6-e51896eef031",
+              "name": "password",
+              "type": "univ"
+            },
+            {
+              "id": "4df710a1-885e-8b15-4246-af8d01983972",
+              "name": "n",
+              "type": "int"
+            },
+            {
+              "id": "c5386f83-d543-6ffa-5164-1500ebf757bc",
+              "name": "hashCount",
+              "type": "int"
+            }
+          ],
+          "top": 364
+        },
+        {
+          "color": "#b75d69",
+          "comment": "",
+          "id": "771bdb11-35e6-3d4b-a954-fa6bee88838b",
+          "left": 679,
+          "name": "Done",
+          "parameters": [],
+          "top": 295
+        },
+        {
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "79ae8575-d68c-ffb2-45c8-58a618c1d542",
+          "left": 370,
+          "name": "Main",
+          "parameters": [
+            {
+              "id": "5528c268-a59a-cef3-f885-ef6e95995cc5",
+              "name": "next_token",
+              "type": "UINT256"
+            },
+            {
+              "id": "043ce46b-320b-ac15-0d67-cdafbd5bf0fa",
+              "name": "messages_left",
+              "type": "int"
+            }
+          ],
+          "top": 132
+        },
+        {
+          "color": "#6fa5c6",
+          "comment": "",
+          "id": "ab21f131-f53f-1a20-aa01-7ca4b049036d",
+          "left": 577,
+          "name": "ComputeToken",
+          "parameters": [
+            {
+              "id": "7fc23bce-8c6c-5b28-4e7a-f0ecf5782788",
+              "name": "msg",
+              "type": "univ"
+            },
+            {
+              "id": "815fba7c-2798-9253-788c-f76a0d509903",
+              "name": "expected_token",
+              "type": "UINT256"
+            },
+            {
+              "id": "9d5b7550-8b6a-415f-14b9-6bac8fe574a5",
+              "name": "sender",
+              "type": "port"
+            },
+            {
+              "id": "6b2b5675-3026-5d62-6f01-cfe35dfcecb2",
+              "name": "messages_left",
+              "type": "int"
+            }
+          ],
+          "top": 74
+        },
+        {
+          "color": "#b75d69",
+          "comment": "",
+          "id": "4ad12e6f-49c0-4134-c5a9-008edf8fc54b",
+          "left": 661,
+          "name": "Done",
+          "parameters": [],
+          "top": 310
+        },
+        {
+          "color": "#6fa5c6",
+          "comment": "",
+          "id": "9a959362-c8a5-f06f-c090-9dd46cbbe3c6",
+          "left": 211,
+          "name": "WaitSimulatedSetup",
+          "parameters": [
+            {
+              "id": "4658a4c8-c531-83ca-8f3f-66e7d992042f",
+              "name": "recipient",
+              "type": "port"
+            }
+          ],
+          "top": 115
+        },
+        {
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "left": 382,
+          "name": "Main",
+          "parameters": [
+            {
+              "id": "e065364f-a581-34e6-24d4-91585e35862d",
+              "name": "n",
+              "type": "int"
+            },
+            {
+              "id": "d431980c-ebd9-382b-7086-cee4c8f86948",
+              "name": "messageQueue",
+              "type": "(univ, port, port) list"
+            }
+          ],
+          "top": 198
+        },
+        {
+          "color": "#b75d69",
+          "comment": "",
+          "id": "ecc7a51e-e771-507c-7652-fa95685e0bbd",
+          "left": 640,
+          "name": "Done",
+          "parameters": [],
+          "top": 315
+        },
+        {
+          "color": "#c4dd88",
+          "comment": "",
+          "id": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "left": 277,
+          "name": "Main",
+          "parameters": [],
+          "top": 118
+        }
+      ],
+      "transitions": [
+        {
+          "fromState": "a72089df-ef5e-3de0-b582-7e729a49559f",
+          "guard": "",
+          "id": "bf65eb0b-8fc8-bfe2-3095-fe3d35436a26",
+          "inMessage": "9618ed7c-a63c-2222-e60b-eea65658510f",
+          "name": "Start Hashing",
+          "outMessage": "a3b71a8d-7cc1-d2b7-15a2-45569fcfa055/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "outMessageArguments": [
+            {
+              "argValue": "randomPassword",
+              "paraID": "94d2bd23-9fd6-bd3f-040a-521c6c806d2e"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "4",
+          "targetPort": "",
+          "toState": "0107edec-5fd9-ed25-472e-a34e52c49b1c",
+          "toStateArguments": [
+            {
+              "argValue": "recipient",
+              "paraID": "61439d39-5cf8-56a8-b97e-224523f4544f"
+            },
+            {
+              "argValue": "randomPassword",
+              "paraID": "2f857b63-ff2b-c40a-d27c-2dbac915b278"
+            },
+            {
+              "argValue": "nil",
+              "paraID": "a49896f3-3b62-02ea-ac7f-f3231b062c5a"
+            },
+            {
+              "argValue": "1000",
+              "paraID": "03c9dd40-87ba-64ab-8756-e4613029da31"
+            },
+            {
+              "argValue": "pt",
+              "paraID": "b7b27ae2-4d84-36f1-a727-c985fcc946a4"
+            }
+          ]
+        },
+        {
+          "fromState": "0107edec-5fd9-ed25-472e-a34e52c49b1c",
+          "guard": "n > 0",
+          "id": "1f07176d-144d-9285-b1fc-415e6b22c1e8",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Keep Hashing",
+          "outMessage": "a3b71a8d-7cc1-d2b7-15a2-45569fcfa055/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "outMessageArguments": [
+            {
+              "argValue": "UINT256toUniv(value)",
+              "paraID": "94d2bd23-9fd6-bd3f-040a-521c6c806d2e"
+            }
+          ],
+          "sourceHandle": "9",
+          "targetHandle": "11",
+          "targetPort": "",
+          "toState": "0107edec-5fd9-ed25-472e-a34e52c49b1c",
+          "toStateArguments": [
+            {
+              "argValue": "recipient",
+              "paraID": "61439d39-5cf8-56a8-b97e-224523f4544f"
+            },
+            {
+              "argValue": "password",
+              "paraID": "2f857b63-ff2b-c40a-d27c-2dbac915b278"
+            },
+            {
+              "argValue": "value",
+              "paraID": "a49896f3-3b62-02ea-ac7f-f3231b062c5a"
+            },
+            {
+              "argValue": "n-1",
+              "paraID": "03c9dd40-87ba-64ab-8756-e4613029da31"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "b7b27ae2-4d84-36f1-a727-c985fcc946a4"
+            }
+          ]
+        },
+        {
+          "fromState": "0107edec-5fd9-ed25-472e-a34e52c49b1c",
+          "guard": "n=0",
+          "id": "f9d8947f-0eca-0a64-3a88-af3401693450",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Deliver Hash and Begin Main",
+          "outMessage": "fb79cf4f-f4ac-8661-3eb3-a453b74ee2aa/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "outMessageArguments": [
+            {
+              "argValue": "nil",
+              "paraID": "91b86154-3b0b-6f35-1a31-37aac352cbf8"
+            },
+            {
+              "argValue": "value",
+              "paraID": "ba55d80f-6031-5cdd-003b-5f59c511153a"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "76efffcf-9768-a0f4-27d9-96aba0b19761"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "4",
+          "targetPort": "",
+          "toState": "a24bd5b7-c9ac-e7c8-9e1c-cab6a60a008e",
+          "toStateArguments": [
+            {
+              "argValue": "password",
+              "paraID": "9748e1f2-69fb-3f14-8b22-2b1fa3e7033a"
+            },
+            {
+              "argValue": "1000",
+              "paraID": "9af4ab12-77cb-3021-f43d-ff67f5a7f02f"
+            }
+          ]
+        },
+        {
+          "fromState": "a24bd5b7-c9ac-e7c8-9e1c-cab6a60a008e",
+          "guard": "",
+          "id": "be737bf3-de5b-4532-90c0-54ba737ce9c9",
+          "inMessage": "32519cd7-b5a9-c973-85ca-735c0971347b",
+          "name": "Start Token Calc",
+          "outMessage": "a3b71a8d-7cc1-d2b7-15a2-45569fcfa055/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "outMessageArguments": [
+            {
+              "argValue": "password",
+              "paraID": "94d2bd23-9fd6-bd3f-040a-521c6c806d2e"
+            }
+          ],
+          "sourceHandle": "8",
+          "targetHandle": "1",
+          "targetPort": "",
+          "toState": "558ec127-0478-538f-66b6-aeceb899a42a",
+          "toStateArguments": [
+            {
+              "argValue": "pt",
+              "paraID": "6eceb357-5a1e-eb71-bcd4-f1d837a3ab79"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "2341440d-e6e9-4744-405c-7ce52135061e"
+            },
+            {
+              "argValue": "msg",
+              "paraID": "44a8bcaa-8d11-f0f0-502e-1545543a8cdb"
+            },
+            {
+              "argValue": "password",
+              "paraID": "6897f645-2a06-2492-82e6-e51896eef031"
+            },
+            {
+              "argValue": "n-1",
+              "paraID": "4df710a1-885e-8b15-4246-af8d01983972"
+            },
+            {
+              "argValue": "1",
+              "paraID": "c5386f83-d543-6ffa-5164-1500ebf757bc"
+            }
+          ]
+        },
+        {
+          "fromState": "558ec127-0478-538f-66b6-aeceb899a42a",
+          "guard": "hashCount <> n",
+          "id": "3697f637-b94f-696f-968e-c5f38539ab8f",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Keep Calculating",
+          "outMessage": "a3b71a8d-7cc1-d2b7-15a2-45569fcfa055/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "outMessageArguments": [
+            {
+              "argValue": "UINT256toUniv(value)",
+              "paraID": "94d2bd23-9fd6-bd3f-040a-521c6c806d2e"
+            }
+          ],
+          "sourceHandle": "8",
+          "targetHandle": "11",
+          "targetPort": "",
+          "toState": "558ec127-0478-538f-66b6-aeceb899a42a",
+          "toStateArguments": [
+            {
+              "argValue": "sender",
+              "paraID": "6eceb357-5a1e-eb71-bcd4-f1d837a3ab79"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "2341440d-e6e9-4744-405c-7ce52135061e"
+            },
+            {
+              "argValue": "msg",
+              "paraID": "44a8bcaa-8d11-f0f0-502e-1545543a8cdb"
+            },
+            {
+              "argValue": "password",
+              "paraID": "6897f645-2a06-2492-82e6-e51896eef031"
+            },
+            {
+              "argValue": "n",
+              "paraID": "4df710a1-885e-8b15-4246-af8d01983972"
+            },
+            {
+              "argValue": "hashCount + 1",
+              "paraID": "c5386f83-d543-6ffa-5164-1500ebf757bc"
+            }
+          ]
+        },
+        {
+          "fromState": "558ec127-0478-538f-66b6-aeceb899a42a",
+          "guard": "n > 1",
+          "id": "1ae76a65-87fa-b5a7-0fa7-5c010c97494e",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Deliver and Continue",
+          "outMessage": "fb79cf4f-f4ac-8661-3eb3-a453b74ee2aa/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "91b86154-3b0b-6f35-1a31-37aac352cbf8"
+            },
+            {
+              "argValue": "value",
+              "paraID": "ba55d80f-6031-5cdd-003b-5f59c511153a"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "76efffcf-9768-a0f4-27d9-96aba0b19761"
+            }
+          ],
+          "sourceHandle": "14",
+          "targetHandle": "10",
+          "targetPort": "",
+          "toState": "a24bd5b7-c9ac-e7c8-9e1c-cab6a60a008e",
+          "toStateArguments": [
+            {
+              "argValue": "password",
+              "paraID": "9748e1f2-69fb-3f14-8b22-2b1fa3e7033a"
+            },
+            {
+              "argValue": "n",
+              "paraID": "9af4ab12-77cb-3021-f43d-ff67f5a7f02f"
+            }
+          ]
+        },
+        {
+          "fromState": "558ec127-0478-538f-66b6-aeceb899a42a",
+          "guard": "n = 1",
+          "id": "937f95c8-3daa-70f3-0b7e-3aebc050a160",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Deliver and Done",
+          "outMessage": "fb79cf4f-f4ac-8661-3eb3-a453b74ee2aa/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "91b86154-3b0b-6f35-1a31-37aac352cbf8"
+            },
+            {
+              "argValue": "value",
+              "paraID": "ba55d80f-6031-5cdd-003b-5f59c511153a"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "76efffcf-9768-a0f4-27d9-96aba0b19761"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "6",
+          "targetPort": "",
+          "toState": "771bdb11-35e6-3d4b-a954-fa6bee88838b",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "909fe505-9e7d-2792-74a1-249fafd47c9f",
+          "guard": "",
+          "id": "efa20a94-9c42-532d-d10d-051e7a2bd078",
+          "inMessage": "056bf4d5-ad32-8615-8110-fd30a2b7cab6/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "name": "",
+          "outMessage": "40792988-d42d-671f-d154-e2e457c87a32",
+          "outMessageArguments": [],
+          "sourceHandle": "13",
+          "targetHandle": "4",
+          "targetPort": "recipient",
+          "toState": "79ae8575-d68c-ffb2-45c8-58a618c1d542",
+          "toStateArguments": [
+            {
+              "argValue": "auth_token",
+              "paraID": "5528c268-a59a-cef3-f885-ef6e95995cc5"
+            },
+            {
+              "argValue": "999",
+              "paraID": "043ce46b-320b-ac15-0d67-cdafbd5bf0fa"
+            }
+          ]
+        },
+        {
+          "fromState": "79ae8575-d68c-ffb2-45c8-58a618c1d542",
+          "guard": "",
+          "id": "3d66d869-bf88-0db8-9189-7ce5b89a7fb0",
+          "inMessage": "056bf4d5-ad32-8615-8110-fd30a2b7cab6/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "name": "Compute Token",
+          "outMessage": "a3b71a8d-7cc1-d2b7-15a2-45569fcfa055/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "outMessageArguments": [
+            {
+              "argValue": "UINT256ToUniv(auth_token)",
+              "paraID": "94d2bd23-9fd6-bd3f-040a-521c6c806d2e"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "4",
+          "targetPort": "",
+          "toState": "ab21f131-f53f-1a20-aa01-7ca4b049036d",
+          "toStateArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "7fc23bce-8c6c-5b28-4e7a-f0ecf5782788"
+            },
+            {
+              "argValue": "next_token",
+              "paraID": "815fba7c-2798-9253-788c-f76a0d509903"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "9d5b7550-8b6a-415f-14b9-6bac8fe574a5"
+            },
+            {
+              "argValue": "messages_left",
+              "paraID": "6b2b5675-3026-5d62-6f01-cfe35dfcecb2"
+            }
+          ]
+        },
+        {
+          "fromState": "ab21f131-f53f-1a20-aa01-7ca4b049036d",
+          "guard": "value = next_token",
+          "id": "006d62f8-a108-f976-6fdb-bd65d154180d",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Deliver and Continue",
+          "outMessage": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "084118ee-934b-b0bf-80c2-77bb7f826fd6"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "9e8d9526-58cd-5801-a98b-006bf88242c3"
+            }
+          ],
+          "sourceHandle": "7",
+          "targetHandle": "12",
+          "targetPort": "recipient",
+          "toState": "79ae8575-d68c-ffb2-45c8-58a618c1d542",
+          "toStateArguments": [
+            {
+              "argValue": "auth_token",
+              "paraID": "5528c268-a59a-cef3-f885-ef6e95995cc5"
+            },
+            {
+              "argValue": "messages_left - 1",
+              "paraID": "043ce46b-320b-ac15-0d67-cdafbd5bf0fa"
+            }
+          ]
+        },
+        {
+          "fromState": "ab21f131-f53f-1a20-aa01-7ca4b049036d",
+          "guard": "value <> next_token",
+          "id": "f09b4c28-287d-b24f-7910-09bc2a35bc73",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Not Deliver and Continue",
+          "outMessage": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "outMessageArguments": [
+            {
+              "argValue": "nil",
+              "paraID": "084118ee-934b-b0bf-80c2-77bb7f826fd6"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "9e8d9526-58cd-5801-a98b-006bf88242c3"
+            }
+          ],
+          "sourceHandle": "9",
+          "targetHandle": "11",
+          "targetPort": "recipient",
+          "toState": "79ae8575-d68c-ffb2-45c8-58a618c1d542",
+          "toStateArguments": [
+            {
+              "argValue": "next_token",
+              "paraID": "5528c268-a59a-cef3-f885-ef6e95995cc5"
+            },
+            {
+              "argValue": "messages_left",
+              "paraID": "043ce46b-320b-ac15-0d67-cdafbd5bf0fa"
+            }
+          ]
+        },
+        {
+          "fromState": "ab21f131-f53f-1a20-aa01-7ca4b049036d",
+          "guard": "messages_left = 0",
+          "id": "9051cd73-71b7-26d4-020c-841589f8659a",
+          "inMessage": "3e9026ab-0649-2c58-e1c3-ad19780625f2/27ff3613-fb5a-d2ff-a41e-ac07b9c3229a",
+          "name": "Deliver and Stop",
+          "outMessage": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "084118ee-934b-b0bf-80c2-77bb7f826fd6"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "9e8d9526-58cd-5801-a98b-006bf88242c3"
+            }
+          ],
+          "sourceHandle": "10",
+          "targetHandle": "1",
+          "targetPort": "recipient",
+          "toState": "4ad12e6f-49c0-4134-c5a9-008edf8fc54b",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "98c2ecd8-dae1-e12f-3a93-8912a94b490b",
+          "guard": "",
+          "id": "9ba07211-b3e0-118e-3c94-ddc82f09b627",
+          "inMessage": "9618ed7c-a63c-2222-e60b-eea65658510f",
+          "name": "Start Setup",
+          "outMessage": "e5282ce6-7736-7f3b-d2af-efa255372364",
+          "outMessageArguments": [
+            {
+              "argValue": "pt",
+              "paraID": "2902f88e-282a-444e-f1e2-0d988aa9cf46"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "35a9bb3f-0bf0-5fd5-6139-7702141b56c5"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "4",
+          "targetPort": "",
+          "toState": "9a959362-c8a5-f06f-c090-9dd46cbbe3c6",
+          "toStateArguments": [
+            {
+              "argValue": "recipient",
+              "paraID": "4658a4c8-c531-83ca-8f3f-66e7d992042f"
+            }
+          ]
+        },
+        {
+          "fromState": "9a959362-c8a5-f06f-c090-9dd46cbbe3c6",
+          "guard": "",
+          "id": "21ce7b47-ba34-921d-5089-fc326d164adb",
+          "inMessage": "ffd36f5f-f0e4-ebb8-59f2-e15b58d097e7",
+          "name": "Setup Done",
+          "outMessage": "40792988-d42d-671f-d154-e2e457c87a32",
+          "outMessageArguments": [],
+          "sourceHandle": "12",
+          "targetHandle": "4",
+          "targetPort": "recipient",
+          "toState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "toStateArguments": [
+            {
+              "argValue": "1000",
+              "paraID": "e065364f-a581-34e6-24d4-91585e35862d"
+            },
+            {
+              "argValue": "[]",
+              "paraID": "d431980c-ebd9-382b-7086-cee4c8f86948"
+            }
+          ]
+        },
+        {
+          "fromState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "guard": "n > 1",
+          "id": "ce3aa95c-a525-67ef-abce-461d2e3a19e5",
+          "inMessage": "32519cd7-b5a9-c973-85ca-735c0971347b",
+          "name": "Continue Sending",
+          "outMessage": "5066035b-d933-5ba8-3903-68eb95cca4d9",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "2cfdcbd9-2846-ecf1-914f-63b9633cac16"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "fdaa080e-10e0-3f35-3e02-df2e12188e4a"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "bec46074-2cfc-ac19-c686-711dd206a9ac"
+            }
+          ],
+          "sourceHandle": "6",
+          "targetHandle": "8",
+          "targetPort": "",
+          "toState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "toStateArguments": [
+            {
+              "argValue": "n",
+              "paraID": "e065364f-a581-34e6-24d4-91585e35862d"
+            },
+            {
+              "argValue": "messageQueue ++ [(msg, pt, recipient)]",
+              "paraID": "d431980c-ebd9-382b-7086-cee4c8f86948"
+            }
+          ]
+        },
+        {
+          "fromState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "guard": "",
+          "id": "d79de784-ac0f-7696-3eea-b514049abaa0",
+          "inMessage": "f8fe66cf-4009-944e-b4d1-306248355a12",
+          "name": "Do Inject",
+          "outMessage": "5066035b-d933-5ba8-3903-68eb95cca4d9",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "2cfdcbd9-2846-ecf1-914f-63b9633cac16"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "fdaa080e-10e0-3f35-3e02-df2e12188e4a"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "bec46074-2cfc-ac19-c686-711dd206a9ac"
+            }
+          ],
+          "sourceHandle": "15",
+          "targetHandle": "1",
+          "targetPort": "",
+          "toState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "toStateArguments": [
+            {
+              "argValue": "n",
+              "paraID": "e065364f-a581-34e6-24d4-91585e35862d"
+            },
+            {
+              "argValue": "messageQueue ++ [(nil, sender, receiver)]",
+              "paraID": "d431980c-ebd9-382b-7086-cee4c8f86948"
+            }
+          ]
+        },
+        {
+          "fromState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "guard": "head[0] <> nil & n>1",
+          "id": "dc1fa4f5-3d42-b29c-6bb0-93aaa372e028",
+          "inMessage": "c6a1fa05-fe28-5545-25a7-b86daac7713e",
+          "name": "Deliver Message",
+          "outMessage": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "outMessageArguments": [
+            {
+              "argValue": "head[0]",
+              "paraID": "084118ee-934b-b0bf-80c2-77bb7f826fd6"
+            },
+            {
+              "argValue": "head[1]",
+              "paraID": "9e8d9526-58cd-5801-a98b-006bf88242c3"
+            }
+          ],
+          "sourceHandle": "10",
+          "targetHandle": "11",
+          "targetPort": "head[2]",
+          "toState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "toStateArguments": [
+            {
+              "argValue": "n-1",
+              "paraID": "e065364f-a581-34e6-24d4-91585e35862d"
+            },
+            {
+              "argValue": "behead(messageQueue)",
+              "paraID": "d431980c-ebd9-382b-7086-cee4c8f86948"
+            }
+          ]
+        },
+        {
+          "fromState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "guard": "head[0] = nil",
+          "id": "bb38dab9-f2f5-d526-d4e6-9980f2937c6d",
+          "inMessage": "c6a1fa05-fe28-5545-25a7-b86daac7713e",
+          "name": "Deliver Bad",
+          "outMessage": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "outMessageArguments": [
+            {
+              "argValue": "nil",
+              "paraID": "084118ee-934b-b0bf-80c2-77bb7f826fd6"
+            },
+            {
+              "argValue": "head[1]",
+              "paraID": "9e8d9526-58cd-5801-a98b-006bf88242c3"
+            }
+          ],
+          "sourceHandle": "12",
+          "targetHandle": "13",
+          "targetPort": "head[2]",
+          "toState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "toStateArguments": [
+            {
+              "argValue": "n",
+              "paraID": "e065364f-a581-34e6-24d4-91585e35862d"
+            },
+            {
+              "argValue": "behead(messageQueue)",
+              "paraID": "d431980c-ebd9-382b-7086-cee4c8f86948"
+            }
+          ]
+        },
+        {
+          "fromState": "09acd4ff-d267-b9be-d646-4131a98c8b47",
+          "guard": "head[0] <> nil & n=1",
+          "id": "0dca73f8-4f9a-3844-da39-8b5188caa527",
+          "inMessage": "c6a1fa05-fe28-5545-25a7-b86daac7713e",
+          "name": "Deliver and Done",
+          "outMessage": "f58e0eed-2479-7685-b167-20dcf8984aa8",
+          "outMessageArguments": [
+            {
+              "argValue": "head[0]",
+              "paraID": "084118ee-934b-b0bf-80c2-77bb7f826fd6"
+            },
+            {
+              "argValue": "head[1]",
+              "paraID": "9e8d9526-58cd-5801-a98b-006bf88242c3"
+            }
+          ],
+          "sourceHandle": "14",
+          "targetHandle": "4",
+          "targetPort": "head[2]",
+          "toState": "ecc7a51e-e771-507c-7652-fa95685e0bbd",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "d13f69f3-af72-51c3-2f9d-b0a4ace694db",
+          "guard": "",
+          "id": "ef3a3094-4cfb-aad0-8100-13a50eb09127",
+          "inMessage": "e5282ce6-7736-7f3b-d2af-efa255372364",
+          "name": "Do Setup",
+          "outMessage": "0648a529-fd79-8070-d821-3dea27407503/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "outMessageArguments": [
+            {
+              "argValue": "nil",
+              "paraID": "ed6bc845-40d5-32ef-d400-d799036489a9"
+            },
+            {
+              "argValue": "randomToken",
+              "paraID": "7acbf8b0-c275-da71-1a99-ded8f3c32ac3"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "092381d1-15b8-b249-9094-5960e0c0e1ed"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "f98feaef-cacc-ad3d-2006-d66207842167"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "4",
+          "targetPort": "",
+          "toState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "guard": "",
+          "id": "925990eb-e849-71bc-1d60-3f5a2a67cb83",
+          "inMessage": "5f7496fb-53fe-1e59-38c2-d38d4bf605d7/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "name": "Do Deliver",
+          "outMessage": "c6a1fa05-fe28-5545-25a7-b86daac7713e",
+          "outMessageArguments": [],
+          "sourceHandle": "7",
+          "targetHandle": "8",
+          "targetPort": "",
+          "toState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "guard": "",
+          "id": "7dd1005b-d4a3-bb8c-c589-42cc9af6ccc3",
+          "inMessage": "df7710ea-5eb0-7c64-aac7-835bb213aa97/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "name": "",
+          "outMessage": "f8fe66cf-4009-944e-b4d1-306248355a12",
+          "outMessageArguments": [
+            {
+              "argValue": "sender",
+              "paraID": "a5d18f27-bd03-7481-74f9-881712d502f4"
+            },
+            {
+              "argValue": "receiver",
+              "paraID": "0c79e35d-3304-3dd8-c476-771a77efc0ba"
+            },
+            {
+              "argValue": "msg",
+              "paraID": "cf29fa80-d86b-6e9c-20ff-836d840de31e"
+            },
+            {
+              "argValue": "",
+              "paraID": "176f93a0-9395-61f1-bb7c-18f0e7c9b1cd"
+            }
+          ],
+          "sourceHandle": "10",
+          "targetHandle": "11",
+          "targetPort": "",
+          "toState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "toStateArguments": []
+        },
+        {
+          "fromState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "guard": "",
+          "id": "d0fa2612-b852-f56b-d225-a95c5380c6ef",
+          "inMessage": "5066035b-d933-5ba8-3903-68eb95cca4d9",
+          "name": "Sim Send",
+          "outMessage": "0648a529-fd79-8070-d821-3dea27407503/d0ea8903-4ee4-439f-f13e-e3f5458c6f01",
+          "outMessageArguments": [
+            {
+              "argValue": "msg",
+              "paraID": "ed6bc845-40d5-32ef-d400-d799036489a9"
+            },
+            {
+              "argValue": "randomToken",
+              "paraID": "7acbf8b0-c275-da71-1a99-ded8f3c32ac3"
+            },
+            {
+              "argValue": "sender",
+              "paraID": "092381d1-15b8-b249-9094-5960e0c0e1ed"
+            },
+            {
+              "argValue": "recipient",
+              "paraID": "f98feaef-cacc-ad3d-2006-d66207842167"
+            }
+          ],
+          "sourceHandle": "16",
+          "targetHandle": "1",
+          "targetPort": "",
+          "toState": "17b5ec17-6595-394c-2fb5-18a444623304",
+          "toStateArguments": []
+        }
+      ]
+    },
+    "id": "293f237e-5d1f-7cfc-e724-22badd34e8de",
+    "name": "AuthenticatedMessaging",
+    "readOnly": "",
+    "modelVersion": "1.3"
+  },
+  "readOnly": "",
+  "lastModified": 1754668451.9282246,
+  "modelVersion": "1.3"
+}

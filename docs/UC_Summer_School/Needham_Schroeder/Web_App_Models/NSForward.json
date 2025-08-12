@@ -1,0 +1,294 @@
+{
+  "model": {
+    "interfaces": {
+      "compInters": [
+        {
+          "basicInterfaces": [
+            {
+              "idOfBasic": "7b43d6f4-1a53-6011-935c-2605fcb942c6",
+              "idOfInstance": "9e95d27b-73d3-12be-37bb-67e7faca67d4",
+              "name": "D"
+            }
+          ],
+          "id": "1f09ffa5-4797-ccb5-98e0-7e3a44a065cf",
+          "name": "FwdDir",
+          "type": "direct",
+          "interfaceComment": ""
+        }
+      ],
+      "basicInters": [
+        {
+          "id": "7b43d6f4-1a53-6011-935c-2605fcb942c6",
+          "messages": [
+            "8ef5b025-b873-6d9e-36ff-e0df1d62665d",
+            "8726cb8a-79fe-c783-8ca8-33802b0d48c8"
+          ],
+          "name": "FwdDir'",
+          "type": "direct",
+          "interfaceComment": ""
+        },
+        {
+          "id": "4b92d2ff-d254-6a00-50f4-0330c8c9232f",
+          "messages": [
+            "7434c877-1186-b458-4434-6e5fda9b68dc",
+            "0ff4f091-1ae1-fb54-bf02-e6c5414f9f9c"
+          ],
+          "name": "FwdAdv",
+          "type": "adversarial",
+          "interfaceComment": ""
+        }
+      ],
+      "messages": [
+        {
+          "id": "8ef5b025-b873-6d9e-36ff-e0df1d62665d",
+          "name": "fw_req",
+          "parameters": [
+            {
+              "id": "dac6baf4-4249-6994-d26f-5f8c4bf0a731",
+              "name": "pt2",
+              "type": "port"
+            },
+            {
+              "id": "40d39006-3b01-b867-eeaf-053ff92895d5",
+              "name": "u",
+              "type": "univ"
+            }
+          ],
+          "port": "pt1",
+          "type": "in",
+          "messageComment": ""
+        },
+        {
+          "id": "8726cb8a-79fe-c783-8ca8-33802b0d48c8",
+          "name": "fw_rsp",
+          "parameters": [
+            {
+              "id": "e21bf94f-3e60-e128-aba8-4aaacfbf781a",
+              "name": "pt1",
+              "type": "port"
+            },
+            {
+              "id": "3e3dabc8-ae01-ee95-1122-231626bad1f4",
+              "name": "u",
+              "type": "univ"
+            }
+          ],
+          "port": "pt2",
+          "type": "out",
+          "messageComment": ""
+        },
+        {
+          "id": "7434c877-1186-b458-4434-6e5fda9b68dc",
+          "name": "fw_obs",
+          "parameters": [
+            {
+              "id": "62212d07-04dd-e3c3-e369-6def950e768b",
+              "name": "pt1",
+              "type": "port"
+            },
+            {
+              "id": "8875da5b-e659-9703-75fb-2bec4b97e7d7",
+              "name": "pt2",
+              "type": "port"
+            },
+            {
+              "id": "bd23e92d-ef98-ee08-7232-f8205e46181d",
+              "name": "u",
+              "type": "univ"
+            }
+          ],
+          "port": "",
+          "type": "out",
+          "messageComment": ""
+        },
+        {
+          "id": "0ff4f091-1ae1-fb54-bf02-e6c5414f9f9c",
+          "name": "fw_ok",
+          "parameters": [
+            {
+              "id": "d7dc05fc-75ad-5538-0b3c-5c553076f08f",
+              "name": "pt2",
+              "type": "port"
+            },
+            {
+              "id": "cc22fdae-c18d-f160-2911-847c7dd160c2",
+              "name": "u",
+              "type": "univ"
+            }
+          ],
+          "port": "",
+          "type": "in",
+          "messageComment": ""
+        }
+      ]
+    },
+    "parties": {
+      "parties": []
+    },
+    "subfunctionalities": {
+      "subfunctionalities": []
+    },
+    "realFunctionality": {
+      "parties": [],
+      "subfunctionalities": [],
+      "id": "73846de7-74e7-069f-ce5a-180039f091ac",
+      "name": "Real_Functionality",
+      "compositeDirectInterface": "",
+      "compositeAdversarialInterface": "",
+      "parameterInterfaces": []
+    },
+    "simulator": {
+      "id": "e8443e7e-29bf-217e-8ced-8872534407a3",
+      "name": "Sim",
+      "basicAdversarialInterface": "",
+      "realFunctionality": "",
+      "stateMachine": "fcbdd125-0d74-d71b-a682-347ec4cd0a2e",
+      "color": "#6bb45c",
+      "left": 450,
+      "top": 201
+    },
+    "idealFunctionality": {
+      "id": "0b2ce277-67e9-7199-e9d9-d1b2daadd232",
+      "name": "Forw",
+      "basicAdversarialInterface": "4b92d2ff-d254-6a00-50f4-0330c8c9232f",
+      "compositeDirectInterface": "1f09ffa5-4797-ccb5-98e0-7e3a44a065cf",
+      "stateMachine": "010c2b02-4a4d-5a00-efa3-46d6cda701ae",
+      "color": "#3e88c7",
+      "left": 250,
+      "top": 250
+    },
+    "stateMachines": {
+      "stateMachines": [
+        {
+          "id": "010c2b02-4a4d-5a00-efa3-46d6cda701ae",
+          "initState": "6f274bf4-e10d-7a97-2b7f-881648beac19",
+          "states": [
+            "6f274bf4-e10d-7a97-2b7f-881648beac19",
+            "ec24310f-d10a-f11f-38ae-e04967123b6f",
+            "ba1f3687-8750-2a96-c934-1d010b2fdd08"
+          ],
+          "transitions": [
+            "cc2cc4ad-e80e-a881-294d-91b623676843",
+            "89994b3c-2242-1beb-354c-9123f6e3c391"
+          ]
+        },
+        {
+          "id": "fcbdd125-0d74-d71b-a682-347ec4cd0a2e",
+          "initState": "aad36e84-f477-fc39-d6aa-93f8bd070dd2",
+          "states": [
+            "aad36e84-f477-fc39-d6aa-93f8bd070dd2"
+          ],
+          "transitions": []
+        }
+      ],
+      "states": [
+        {
+          "color": "#e3c85b",
+          "id": "6f274bf4-e10d-7a97-2b7f-881648beac19",
+          "left": 25,
+          "name": "Init",
+          "parameters": [],
+          "top": 50,
+          "comment": ""
+        },
+        {
+          "color": "#e3c85b",
+          "id": "aad36e84-f477-fc39-d6aa-93f8bd070dd2",
+          "left": 25,
+          "name": "InitState",
+          "parameters": [],
+          "top": 50,
+          "comment": ""
+        },
+        {
+          "color": "#e3c85b",
+          "id": "ec24310f-d10a-f11f-38ae-e04967123b6f",
+          "left": 311,
+          "name": "Wait",
+          "parameters": [
+            {
+              "id": "2463d916-b6de-6ca4-27a0-8ae55de2a964",
+              "name": "pt1",
+              "type": "port"
+            }
+          ],
+          "top": 51,
+          "comment": ""
+        },
+        {
+          "color": "#e3c85b",
+          "id": "ba1f3687-8750-2a96-c934-1d010b2fdd08",
+          "left": 603,
+          "name": "Final",
+          "parameters": [],
+          "top": 51,
+          "comment": ""
+        }
+      ],
+      "transitions": [
+        {
+          "fromState": "6f274bf4-e10d-7a97-2b7f-881648beac19",
+          "guard": "if (envport pt2)",
+          "id": "cc2cc4ad-e80e-a881-294d-91b623676843",
+          "inMessage": "8ef5b025-b873-6d9e-36ff-e0df1d62665d",
+          "name": "",
+          "outMessage": "7434c877-1186-b458-4434-6e5fda9b68dc",
+          "outMessageArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "62212d07-04dd-e3c3-e369-6def950e768b"
+            },
+            {
+              "argValue": "pt2",
+              "paraID": "8875da5b-e659-9703-75fb-2bec4b97e7d7"
+            },
+            {
+              "argValue": "u",
+              "paraID": "bd23e92d-ef98-ee08-7232-f8205e46181d"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "",
+          "toState": "ec24310f-d10a-f11f-38ae-e04967123b6f",
+          "toStateArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "2463d916-b6de-6ca4-27a0-8ae55de2a964"
+            }
+          ]
+        },
+        {
+          "fromState": "ec24310f-d10a-f11f-38ae-e04967123b6f",
+          "guard": "",
+          "id": "89994b3c-2242-1beb-354c-9123f6e3c391",
+          "inMessage": "0ff4f091-1ae1-fb54-bf02-e6c5414f9f9c",
+          "name": "",
+          "outMessage": "8726cb8a-79fe-c783-8ca8-33802b0d48c8",
+          "outMessageArguments": [
+            {
+              "argValue": "pt1",
+              "paraID": "e21bf94f-3e60-e128-aba8-4aaacfbf781a"
+            },
+            {
+              "argValue": "u",
+              "paraID": "3e3dabc8-ae01-ee95-1122-231626bad1f4"
+            }
+          ],
+          "sourceHandle": "13",
+          "targetHandle": "5",
+          "targetPort": "pt2",
+          "toState": "ba1f3687-8750-2a96-c934-1d010b2fdd08",
+          "toStateArguments": []
+        }
+      ]
+    },
+    "id": "debaad37-a427-367f-2646-3b08b3fd6fe1",
+    "name": "NSForward",
+    "readOnly": false,
+    "modelVersion": "1.3"
+  },
+  "readOnly": "",
+  "lastModified": 1753455054.6147602,
+  "modelVersion": "1.3"
+}
